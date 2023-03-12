@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sportspotter/search_page.dart';
 
 
 class NavigationWidget extends StatefulWidget {
@@ -113,6 +114,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                         setState(() {
                           _selectedIndex = 1;
                         });
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen()));
                       },
                       child: Container(
                           width: MediaQuery.of(context).size.width / 4,
