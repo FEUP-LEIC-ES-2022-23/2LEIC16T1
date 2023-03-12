@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:sportspotter/navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -35,19 +36,28 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home Page'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MapScreen(showMap: true),
-              ),
-            );
-          },
-          child: const Text('Show Map'),
-        ),
-      ),
+      body: Stack(
+        children: [
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MapScreen(showMap: true),
+                  ),
+                );
+              },
+              child: const Text('Show Map'),
+            ),
+          ),
+          Positioned(
+              bottom: 0,
+              left: 0,
+              child: NavigationWidget()
+          )
+        ],
+      )
     );
   }
 }
