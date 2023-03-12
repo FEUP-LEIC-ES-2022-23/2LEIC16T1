@@ -39,8 +39,10 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                   child: GestureDetector(
                       onTap: () {
                         if (widget.selectedIndex != 3) {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => ProfileScreen()));
+                          Navigator.push(context, PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) => ProfileScreen(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero));
                         }
                       },
                       child: Container(
@@ -80,8 +82,10 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                   child: GestureDetector(
                       onTap: () {
                         if (widget.selectedIndex != 2) {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => FavouritesScreen()));
+                          Navigator.push(context, PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) => FavouritesScreen(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero));
                         }
                       },
                       child: Container(
@@ -121,8 +125,10 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                   child: GestureDetector(
                       onTap: () {
                         if (widget.selectedIndex != 1) {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => SearchScreen()));
+                          Navigator.push(context, PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) => SearchScreen(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero));
                         }
                       },
                       child: Container(
@@ -162,8 +168,10 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                 child: GestureDetector(
                     onTap: () {
                       if (widget.selectedIndex != 0) {
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => MyHomePage()));
+                        Navigator.push(context, PageRouteBuilder(
+                            pageBuilder: (context, animation1, animation2) => MyHomePage(),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero));
                       }
                     },
                     child: Container(
