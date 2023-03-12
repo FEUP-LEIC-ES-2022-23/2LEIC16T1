@@ -1,34 +1,46 @@
 
 ## Architecture and Design
-The architecture of a software system encompasses the set of key decisions about its overall organization. 
 
-A well written architecture document is brief but reduces the amount of time it takes new programmers to a project to understand the code to feel able to make modifications and enhancements.
-
-To document the architecture requires describing the decomposition of the system in their parts (high-level components) and the key behaviors and collaborations between them. 
-
-In this section you should start by briefly describing the overall components of the project and their interrelations. You should also describe how you solved typical problems you may have encountered, pointing to well-known architectural and design patterns, if applicable.
+In this section we'll describe the logical and physical architectures of our project.
 
 ### Logical architecture
-The purpose of this subsection is to document the high-level logical structure of the code (Logical View), using a UML diagram with logical packages, without the worry of allocating to components, processes or machines.
+In order to provide maintenance of the code and a good organization, our project was divided in these sections:
+- `SportSpotter`: This package represents the top-level package for the application on the smartphone. It contains the other logical packages that make up the system.
 
-It can be beneficial to present the system both in a horizontal or vertical decomposition:
-* horizontal decomposition may define layers and implementation concepts, such as the user interface, business logic and concepts; 
-* vertical decomposition can define a hierarchy of subsystems that cover all layers of implementation.
+- `SportSpotter UI`: This package contains the frontend logic for the application, including user interface components.
 
-Example of _UML package diagram_ showing a _logical view_ of the Eletronic Ticketing System (to be accompanied by a short description of each package):
+- `SportSpotter Business Logic`: This package contains the user-side business logic, and API calls to the backend.
 
-![LogicalView](https://user-images.githubusercontent.com/9655877/160585416-b1278ad7-18d7-463c-b8c6-afa4f7ac7639.png)
+- `SportSpotter Database Schema`: This package contains the local database logic and API.
+
+- `External SportSpotter Services`: This package represents the top-level package for the external services to the smartphone. It contains the other SportSpotter services that make up the system.
+
+- `SportSpotter Database API`: This package contains the backend logic for the application, including database access and business rules.
+
+- `External Services`: This package represents the top-level package for external services application depends on. It contains other logical packages that make up the system.
+
+- `Google Maps API`: This package contains the Google Maps API.
+
+![LogicalView](../images/LogicalArchitecture.png)
 
 ### Physical architecture
-The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams (Deployment View) or component diagrams (Implementation View), separate or integrated, showing the physical structure of the system.
+- `Mobile Device`: This is the top-level node that represents the application system in a smartphone.
 
-It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for uni4all are, for example, frameworks for mobile applications (such as Flutter).
+- `App`: This artifact represents the application software using flutter framework software that is installed on the client devices and used to build and run the system's mobile application.
 
-Example of _UML deployment diagram_ showing a _deployment view_ of the Eletronic Ticketing System (please notice that, instead of software components, one should represent their physical/executable manifestations for deployment, called artifacts in UML; the diagram should be accompanied by a short description of each node and artifact):
+- `Locale Storage`: This artifact represents the local database on the client devices. It includes the SQLite software that is installed on the client devices.
 
-![DeploymentView](https://user-images.githubusercontent.com/9655877/160592491-20e85af9-0758-4e1e-a704-0db1be3ee65d.png)
+- `Software Application Server`: This is the top-level node that represents the application backend system, installed in a server.
 
+- `Account`, `Facilities`, `Account Services` and `Search Services`: These artifacts represent all the dart files that contains the backend logic for the application.
 
+- `Application Database`: This artifact represents the database associated with the server. It uses NoSQL and is implemented using Firebase.
+
+- `Google Server`: This node represents the Google's server.
+
+- `Google Maps`: This artifact represents the Google Maps system and database.
+
+![DeploymentView](../images/PhysicalArchitecture.png)
 
 ### Vertical prototype
 To help on validating all the architectural, design and technological decisions made, we usually implement a vertical prototype, a thin vertical slice of the system.
@@ -36,4 +48,3 @@ To help on validating all the architectural, design and technological decisions 
 In this subsection please describe which feature you have implemented, and how, together with a snapshot of the user interface, if applicable.
 
 At this phase, instead of a complete user story, you can simply implement a feature that demonstrates thay you can use the technology, for example, show a screen with the app credits (name and authors).
-
