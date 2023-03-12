@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "914793270513",
+    "project_id": "sportspotter-fe3c7",
+    "storage_bucket": "sportspotter-fe3c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914793270513:android:397861feb544fa1abe6d50",
+        "android_client_info": {
+          "package_name": "com.sportspotter.sportspotter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "914793270513-t04q6reu1994acpq8jvi6096r6pm2jp0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpScdTVl6OzBlw3RALpNU5o_1WX_2X3Kw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "914793270513-t04q6reu1994acpq8jvi6096r6pm2jp0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "914793270513-tv4kq5atrt7m7882odunjq0ufto5vk7q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sportspotter.sportspotter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
