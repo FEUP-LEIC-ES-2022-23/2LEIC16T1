@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -35,14 +34,15 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Home Page'),
       ),
       body: Stack(
-        children: [
+        children: const [
           Positioned(
               bottom: 0,
               left: 0,
-              child: NavigationWidget()
+              child: NavigationWidget(selectedIndex: 0)
           )
         ],
       )

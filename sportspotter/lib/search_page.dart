@@ -33,10 +33,10 @@ class SearchScreen extends StatelessWidget {
                 child: const Text('Show Map'),
               ),
             ),
-            Positioned(
+            const Positioned(
                 bottom: 0,
                 left: 0,
-                child: NavigationWidget()
+                child: NavigationWidget(selectedIndex: 1)
             )
           ],
         )
