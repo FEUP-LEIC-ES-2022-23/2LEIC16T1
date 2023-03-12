@@ -32,7 +32,7 @@ In order to provide maintenance of the code and a good organization, our project
 
 - `Software Application Server`: This is the top-level node that represents the application backend system, installed in a server.
 
-- `Account, Facilities, Account Services` and `Search Services`: These artifacts represent all the dart files that contains the backend logic for the application.
+- `Account`, `Facilities`, `Account Services` and `Search Services`: These artifacts represent all the dart files that contains the backend logic for the application.
 
 - `Application Database`: This artifact represents the database associated with the server. It uses NoSQL and is implemented using Firebase.
 
