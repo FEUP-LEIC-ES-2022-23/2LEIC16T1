@@ -43,8 +43,10 @@ In order to provide maintenance of the code and a good organization, our project
 ![DeploymentView](../images/PhysicalArchitecture.png)
 
 ### Vertical prototype
-To help on validating all the architectural, design and technological decisions made, we usually implement a vertical prototype, a thin vertical slice of the system.
+We started by creating a navigation bar to navigate between the different pages of the mobile application. We implemented this feature by creating a NavigationWidget class that allows the user to move to the respective application screen after clicking on one of the icons in the navigation bar. When the user clicks on one of the icons in the navigation bar, that icon changes color.
 
-In this subsection please describe which feature you have implemented, and how, together with a snapshot of the user interface, if applicable.
+On the search page screen, we added a search bar that allows the user to input a certain location, with access to some predefined options. We implemented this feature by creating a SearchScreen class and a CustomSearch class that allow the user to enter text in the search bar using the keyboard.
 
-At this phase, instead of a complete user story, you can simply implement a feature that demonstrates thay you can use the technology, for example, show a screen with the app credits (name and authors).
+In order to establish the connection with the Google Maps API, we started by adding the respective dependency to the pubspec.yaml file. After installing the packages, we imported them into the .dart file corresponding to the search page of the mobile application. Lastly, a button was added to the search page that allows the user to open a window that shows the map screen through the Google Maps API.
+
+We also created a project in Firebase for the mobile application administrators, and we connected to the project in Flutter by adding the respective dependencies to the pubspec.yaml file. After installing the packages, they were imported into the .dart files that will need to communicate with external Firebase services.
