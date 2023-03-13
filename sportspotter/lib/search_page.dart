@@ -14,10 +14,28 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Search Screen'),
-      ),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                showSearch(
+                    context: context,
+                    delegate: CustomSearch()
+                );
+              }
+          ),
+          title: GestureDetector(
+            onTap: () {
+              showSearch(
+                context: context,
+                delegate: CustomSearch(),
+              );
+            },
+            child: const Text('Enter a location'),
+          ),
+        ),
+
         body: Stack(
           children: [
             Center(
@@ -40,6 +58,72 @@ class SearchScreen extends StatelessWidget {
             )
           ],
         )
+    );
+  }
+}
+
+class CustomSearch extends SearchDelegate {
+  List<String> data = [
+    'Ginásio de Paranhos', 'Ginásio de Paranhos 2', 'Ginásio de Paranhos 3'
+  ];
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+          onPressed: () {
+            query = '';
+          },
+          icon: const Icon(Icons.clear)
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          close(context, null);
+        },
+        icon: const Icon(Icons.arrow_back)
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<String> matchQuery = [];
+    for (var item in data) {
+      if (item.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(item);
+      }
+    }
+    return ListView.builder(
+      itemCount: matchQuery.length,
+        itemBuilder: (context, index) {
+        var result = matchQuery[index];
+        return ListTile(
+          title: Text(result),
+        );
+      }
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    List<String> matchQuery = [];
+    for (var item in data) {
+      if (item.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(item);
+      }
+    }
+    return ListView.builder(
+        itemCount: matchQuery.length,
+        itemBuilder: (context, index) {
+          var result = matchQuery[index];
+          return ListTile(
+            title: Text(result),
+          );
+        }
     );
   }
 }
