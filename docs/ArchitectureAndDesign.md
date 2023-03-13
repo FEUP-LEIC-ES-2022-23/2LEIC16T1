@@ -50,3 +50,5 @@ On the search page screen, we added a search bar that allows the user to input a
 In order to establish the connection with the Google Maps API, we started by adding the respective dependency to the pubspec.yaml file. After installing the packages, we imported them into the .dart file corresponding to the search page of the mobile application. Lastly, a button was added to the search page that allows the user to open a window that shows the map screen through the Google Maps API.
 
 We also created a project in Firebase for the mobile application administrators, and we connected to the project in Flutter by adding the respective dependencies to the pubspec.yaml file. After installing the packages, they were imported into the .dart files that will need to communicate with external Firebase services.
+
+![HomePage](../images/verticalprototype/home_page.png) ![SearchPage](../images/verticalprototype/search_page.png) ![SearchBar](../images/verticalprototype/search_bar.png) ![Map](../images/verticalprototype/map.png)
