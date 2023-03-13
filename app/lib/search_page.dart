@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sportspotter/navigation.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 
 class SearchScreen extends StatelessWidget {
