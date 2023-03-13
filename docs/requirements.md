@@ -1,8 +1,6 @@
 
 ## Requirements
 
-In this section, you should describe all kinds of requirements for your module: functional and non-functional requirements.
-
 
 ### Domain model
 - The User class represents any user of the application. It has no attributes because it can only search facilities or register to create an account.
