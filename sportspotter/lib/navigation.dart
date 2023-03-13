@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:sportspotter/favourites.dart';
+import 'package:sportspotter/main.dart';
+import 'package:sportspotter/profile.dart';
+import 'package:sportspotter/search_page.dart';
 
 
 class NavigationWidget extends StatefulWidget {
+  final int selectedIndex;
+
+  const NavigationWidget({Key? key, required this.selectedIndex}): super(key: key);
+
   @override
   _NavigationWidgetState createState() => _NavigationWidgetState();
 }
 
 class _NavigationWidgetState extends State<NavigationWidget> {
-  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,9 +38,12 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                   left: MediaQuery.of(context).size.width / 4 * 3,
                   child: GestureDetector(
                       onTap: () {
-                        setState(() {
-                          _selectedIndex = 3;
-                        });
+                        if (widget.selectedIndex != 3) {
+                          Navigator.push(context, PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) => ProfileScreen(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero));
+                        }
                       },
                       child: Container(
                           width: MediaQuery.of(context).size.width / 4,
@@ -43,7 +54,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                                     heightFactor: 2,
                                     child: Image.asset(
                                         'assets/icons/profile.png',
-                                      color: _selectedIndex == 3
+                                      color: widget.selectedIndex == 3
                                           ? const Color.fromRGBO(94, 97, 115, 1)
                                           : const Color.fromRGBO(94, 97, 115, 0.5)
                                     )
@@ -52,7 +63,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                                     alignment: Alignment.bottomCenter,
                                     heightFactor: 5,
                                     child: Text('Profile', textAlign: TextAlign.left, style: TextStyle(
-                                        color: _selectedIndex == 3
+                                        color: widget.selectedIndex == 3
                                             ? const Color.fromRGBO(94, 97, 115, 1)
                                             : const Color.fromRGBO(94, 97, 115, 0.5),
                                         fontFamily: 'Inter',
@@ -70,9 +81,12 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                   left: MediaQuery.of(context).size.width / 4 * 2,
                   child: GestureDetector(
                       onTap: () {
-                        setState(() {
-                          _selectedIndex = 2;
-                        });
+                        if (widget.selectedIndex != 2) {
+                          Navigator.push(context, PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) => FavouritesScreen(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero));
+                        }
                       },
                       child: Container(
                           width: MediaQuery.of(context).size.width / 4,
@@ -83,7 +97,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                                   heightFactor: 2,
                                     child: Image.asset(
                                       'assets/icons/favorites.png',
-                                      color: _selectedIndex == 2
+                                      color: widget.selectedIndex == 2
                                           ? const Color.fromRGBO(94, 97, 115, 1)
                                           : const Color.fromRGBO(94, 97, 115, 0.5)
                                     )
@@ -92,7 +106,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                                     alignment: Alignment.bottomCenter,
                                     heightFactor: 5,
                                     child: Text('Favourites', textAlign: TextAlign.left, style: TextStyle(
-                                        color: _selectedIndex == 2
+                                        color: widget.selectedIndex == 2
                                             ? const Color.fromRGBO(94, 97, 115, 1)
                                             : const Color.fromRGBO(94, 97, 115, 0.5),
                                         fontFamily: 'Inter',
@@ -110,9 +124,12 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                   left: MediaQuery.of(context).size.width / 4 * 1,
                   child: GestureDetector(
                       onTap: () {
-                        setState(() {
-                          _selectedIndex = 1;
-                        });
+                        if (widget.selectedIndex != 1) {
+                          Navigator.push(context, PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) => SearchScreen(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero));
+                        }
                       },
                       child: Container(
                           width: MediaQuery.of(context).size.width / 4,
@@ -123,7 +140,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                                     heightFactor: 2,
                                     child: Image.asset(
                                         'assets/icons/search.png',
-                                      color: _selectedIndex == 1
+                                      color: widget.selectedIndex == 1
                                           ? const Color.fromRGBO(94, 97, 115, 1)
                                           : const Color.fromRGBO(94, 97, 115, 0.5)
                                     )
@@ -132,7 +149,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                                     alignment: Alignment.bottomCenter,
                                     heightFactor: 5,
                                     child: Text('Search', textAlign: TextAlign.left, style: TextStyle(
-                                        color: _selectedIndex == 1
+                                        color: widget.selectedIndex == 1
                                             ? const Color.fromRGBO(94, 97, 115, 1)
                                             : const Color.fromRGBO(94, 97, 115, 0.5),
                                         fontFamily: 'Inter',
@@ -150,9 +167,12 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                 left: 0,
                 child: GestureDetector(
                     onTap: () {
-                      setState(() {
-                        _selectedIndex = 0;
-                      });
+                      if (widget.selectedIndex != 0) {
+                        Navigator.push(context, PageRouteBuilder(
+                            pageBuilder: (context, animation1, animation2) => MyHomePage(),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero));
+                      }
                     },
                     child: Container(
                         width: MediaQuery.of(context).size.width / 4,
@@ -163,7 +183,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                                 heightFactor: 2,
                                   child: Image.asset(
                                       'assets/icons/home.png',
-                                    color: _selectedIndex == 0
+                                    color: widget.selectedIndex == 0
                                         ? const Color.fromRGBO(94, 97, 115, 1)
                                         : const Color.fromRGBO(94, 97, 115, 0.5)
                                   )
@@ -172,7 +192,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                                   alignment: Alignment.bottomCenter,
                                   heightFactor: 5,
                                   child: Text('Home', textAlign: TextAlign.center, style: TextStyle(
-                                      color: _selectedIndex == 0
+                                      color: widget.selectedIndex == 0
                                           ? const Color.fromRGBO(94, 97, 115, 1)
                                           : const Color.fromRGBO(94, 97, 115, 0.5),
                                       fontFamily: 'Inter',
