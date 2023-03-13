@@ -10,9 +10,9 @@ You can find here details about the product (or mini-app or module), from a high
 * [Requirements](docs/Requirements.md)
   * [Domain model](docs/Requirements.md#Domain-model)
 * [Architecture and Design](docs/ArchitectureAndDesign.md)
-  * [Logical architecture]
-  * [Physical architecture]
-  * [Vertical prototype]
+  * [Logical architecture](docs/ArchitectureAndDesign.md#Logical-architecture)
+  * [Physical architecture](docs/ArchitectureAndDesign.md#Physical-architecture)
+  * [Vertical prototype](docs/ArchitectureAndDesign.md#Vertical-prototype)
 * [Implementation]
 * [Test]
 * [Configuration and change management]
