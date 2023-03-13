@@ -7,8 +7,8 @@ You can find here details about the product (or mini-app or module), from a high
 * Business modeling 
   * [Product Vision](docs/ProductVision.md)
   * [Elevator Pitch](docs/ElevatorPitch.md)
-* [Requirements](docs/requirements.md)
-  * [Domain model](docs/requirements.md#Domain-model)
+* [Requirements](docs/Requirements.md)
+  * [Domain model](docs/Requirements.md#Domain-model)
 * [Architecture and Design](docs/ArchitectureAndDesign.md)
   * [Logical architecture]
   * [Physical architecture]
