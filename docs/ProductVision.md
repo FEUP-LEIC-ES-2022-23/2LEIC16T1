@@ -18,5 +18,5 @@ SportSpotter empowers sports enthusiasts to effortlessly discover and access the
 
 - Internet connection
 - Location (optional)
-- Google API
+- Google Maps API
 - SportSpotter's Database (Firebase)
