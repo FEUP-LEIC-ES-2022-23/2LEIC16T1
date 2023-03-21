@@ -2,16 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sportspotter/navigation.dart';
 
-class Facility extends StatefulWidget {
-  const Facility({Key? key}) : super(key: key);
+import 'models/facility.dart';
+
+class FacilityPage extends StatefulWidget {
+  final Facility facility;
+
+  const FacilityPage({Key? key, required this.facility}) : super(key: key);
 
   @override
-  _FacilityState createState() => _FacilityState();
+  _FacilityPageState createState() => _FacilityPageState();
 }
 
-class _FacilityState extends State<Facility> {
+class _FacilityPageState extends State<FacilityPage> {
   @override
   Widget build(BuildContext context) {
+    final double averageRating = getAverageRating();
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
@@ -38,14 +44,14 @@ class _FacilityState extends State<Facility> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.asset(
-                  'assets/images/ginasio.jpg',
+                  widget.facility.image,
                   width: MediaQuery.of(context).size.width,
                   height: 200,
                   fit: BoxFit.cover,
                 ),
-                const Text(
-                  "Ginásio de Paranhos",
-                  style: TextStyle(
+                Text(
+                  widget.facility.name,
+                  style: const TextStyle(
                     color: Color.fromRGBO(94, 97, 115, 1),
                     fontSize: 35
                   ),
@@ -54,19 +60,19 @@ class _FacilityState extends State<Facility> {
                 Container(
                   padding: const EdgeInsets.only(left: 5),
                   child: Row(
-                    children: const [
+                    children: [
                       Text(
-                        "4,4",
-                        style: TextStyle(
+                        averageRating == -1 ? "No Reviews" : averageRating.toStringAsFixed(1),
+                        style: const TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold
                         ),
                       ),
-                      Icon(Icons.star),
-                      Icon(Icons.star),
-                      Icon(Icons.star),
-                      Icon(Icons.star),
-                      Icon(Icons.star_outline),
+                      if (averageRating != -1)
+                        for (int i = 1; i <= averageRating.round(); i++)
+                          const Icon(Icons.star),
+                        for (int i = 5; i > averageRating.round(); i--)
+                          const Icon(Icons.star_outline),
                     ],
                   ),
                 ),
@@ -77,7 +83,7 @@ class _FacilityState extends State<Facility> {
                         children: [
                           Wrap(
                               children: [
-                                for (int i = 0; i < 5; i++)
+                                for (int i = 0; i < widget.facility.tags.length; i++)
                                   Container(
                                       width: 90,
                                       height: 22,
@@ -87,9 +93,9 @@ class _FacilityState extends State<Facility> {
                                         color : Color.fromRGBO(217, 217, 217, 1),
                                       ),
                                       alignment: Alignment.center,
-                                      child: const Text(
-                                        "Football",
-                                        style: TextStyle(fontSize: 12),
+                                      child: Text(
+                                        widget.facility.tags[i].name,
+                                        style: const TextStyle(fontSize: 12),
                                       )
                                   ),
                               ]
@@ -176,5 +182,16 @@ class _FacilityState extends State<Facility> {
         ]
       )
     );
+  }
+
+  double getAverageRating(){
+    if (widget.facility.ratings.isEmpty) {
+      return -1;
+    }
+    double sum = 0;
+    for (double rating in widget.facility.ratings) {
+      sum += rating;
+    }
+    return sum / widget.facility.ratings.length;
   }
 }
