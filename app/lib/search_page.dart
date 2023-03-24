@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sportspotter/navigation.dart';
+import 'package:sportspotter/google_maps.dart';
 
 
 class SearchScreen extends StatelessWidget {
   final String customMapStyle =
       '[ { "featureType": "water", "elementType": "geometry.fill", "stylers": [ { "color": "#0099dd" } ] } ]';
 
+  static const List<String> test = ['R. Dr. Roberto Frias, 4200-465 Porto', 'Rua do Paço, 4425-158 Maia'];
   const SearchScreen({Key? key}) : super(key: key);
 
   @override
@@ -38,7 +40,12 @@ class SearchScreen extends StatelessWidget {
           children: [
             Center(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  List<Map<String, double>> coordinates = await getCoordinates(test);
+                  print("I'm going to print the coordinates");
+                  for (var item in coordinates) {
+                    print(item);
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -129,6 +136,7 @@ class CustomSearch extends SearchDelegate {
 class MapScreen extends StatelessWidget {
   final String customMapStyle =
       '[ { "featureType": "water", "elementType": "geometry.fill", "stylers": [ { "color": "#0099dd" } ] } ]';
+  
 
   const MapScreen({Key? key, required bool showMap}) : super(key: key);
 
