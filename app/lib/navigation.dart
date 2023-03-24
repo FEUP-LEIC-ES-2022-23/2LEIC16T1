@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sportspotter/facility_page.dart';
 import 'package:sportspotter/favourites.dart';
 import 'package:sportspotter/main.dart';
+import 'package:sportspotter/models/data_service.dart';
 import 'package:sportspotter/models/facility.dart';
 import 'package:sportspotter/models/review.dart';
 import 'package:sportspotter/models/tag.dart';
@@ -86,22 +89,18 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                   child: GestureDetector(
                       onTap: () {
                         if (widget.selectedIndex != 2) {
-                          Navigator.push(context, PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) => FacilityPage(
-                                facility: Facility(
-                                  address: "Rua",
-                                  email: "a@gmail.com",
-                                  image: "assets/images/ginasio.jpg",
-                                  name: "Ginásio de Paranhos",
-                                  phoneNumber: "123456789",
-                                  ratings: [1, 2, 5],
-                                  reviews: [Review("muito bom", DateTime.now())],
-                                  tags: [Tag("football", 10), Tag("football", 10),
-                                    Tag("football", 10), Tag("football", 10), Tag("football", 10)]
+                          Stream<List<Facility>> facilitiesStream = DataService.readFacilities();
+                          Facility selectedFacility;
+                          facilitiesStream.listen((facilities) {
+                            selectedFacility = facilities.first;
+
+                            Navigator.push(context, PageRouteBuilder(
+                                pageBuilder: (context, animation1, animation2) => FacilityPage(
+                                    facility: selectedFacility
                                 ),
-                              ),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero));
+                                transitionDuration: Duration.zero,
+                                reverseTransitionDuration: Duration.zero));
+                          });
                         }
                       },
                       child: SizedBox(

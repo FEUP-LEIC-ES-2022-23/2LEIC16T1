@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sportspotter/navigation.dart';
 
@@ -16,7 +15,7 @@ class FacilityPage extends StatefulWidget {
 class _FacilityPageState extends State<FacilityPage> {
   @override
   Widget build(BuildContext context) {
-    final double averageRating = getAverageRating();
+    //final double averageRating = getAverageRating();
 
     return Scaffold(
       appBar: AppBar(
@@ -43,11 +42,21 @@ class _FacilityPageState extends State<FacilityPage> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
-                  widget.facility.image,
-                  width: MediaQuery.of(context).size.width,
-                  height: 200,
-                  fit: BoxFit.cover,
+                FutureBuilder(
+                  future: widget.facility.photo,
+                  builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasData){
+                      return Image.network(
+                        snapshot.data!,
+                        width: MediaQuery.of(context).size.width,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      );
+                    }
+                    else {
+                      return const CircularProgressIndicator();
+                    }
+                  }
                 ),
                 Text(
                   widget.facility.name,
@@ -59,7 +68,7 @@ class _FacilityPageState extends State<FacilityPage> {
                 ),
                 Container(
                   padding: const EdgeInsets.only(left: 5),
-                  child: Row(
+                  /*child: Row(
                     children: [
                       Text(
                         averageRating == -1 ? "No Reviews" : averageRating.toStringAsFixed(1),
@@ -74,7 +83,7 @@ class _FacilityPageState extends State<FacilityPage> {
                         for (int i = 5; i > averageRating.round(); i--)
                           const Icon(Icons.star_outline),
                     ],
-                  ),
+                  ),*/
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -82,7 +91,7 @@ class _FacilityPageState extends State<FacilityPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Wrap(
-                              children: [
+                              /*children: [
                                 for (int i = 0; i < widget.facility.tags.length; i++)
                                   Container(
                                       width: 90,
@@ -98,7 +107,7 @@ class _FacilityPageState extends State<FacilityPage> {
                                         style: const TextStyle(fontSize: 12),
                                       )
                                   ),
-                              ]
+                              ]*/
                           ),
                           Row(
                             children: [
@@ -183,7 +192,7 @@ class _FacilityPageState extends State<FacilityPage> {
       )
     );
   }
-
+/*
   double getAverageRating(){
     if (widget.facility.ratings.isEmpty) {
       return -1;
@@ -193,5 +202,5 @@ class _FacilityPageState extends State<FacilityPage> {
       sum += rating;
     }
     return sum / widget.facility.ratings.length;
-  }
+  }*/
 }
