@@ -14,7 +14,10 @@ Future<List<Map<String, double>>> getCoordinates(List<String> addresses) async {
 
     final response = await http.get(Uri.parse(apiUrl));
     final data = json.decode(response.body);
-
+    if(data['results'].length == 0){
+      print('No data found for address $address');
+      continue;
+    }
     final lat = data['results'][0]['geometry']['location']['lat'];
     final lng = data['results'][0]['geometry']['location']['lng'];
 

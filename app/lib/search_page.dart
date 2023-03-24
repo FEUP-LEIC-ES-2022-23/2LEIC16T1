@@ -8,7 +8,7 @@ class SearchScreen extends StatelessWidget {
   final String customMapStyle =
       '[ { "featureType": "water", "elementType": "geometry.fill", "stylers": [ { "color": "#0099dd" } ] } ]';
 
-  static const List<String> test = ['R. Dr. Roberto Frias, 4200-465 Porto', 'Rua do Paço, 4425-158 Maia'];
+  static const List<String> test = ['R. Dr. Roberto Frias, 4200-465 Porto', 'Rua do Paço, 4425-158 Maia', 'ahhhhhhh'];
   const SearchScreen({Key? key}) : super(key: key);
 
   @override
@@ -42,14 +42,10 @@ class SearchScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   List<Map<String, double>> coordinates = await getCoordinates(test);
-                  print("I'm going to print the coordinates");
-                  for (var item in coordinates) {
-                    print(item);
-                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MapScreen(showMap: true),
+                      builder: (context) => MapScreen(showMap: true, coordinates: coordinates),
                     ),
                   );
                 },
@@ -136,9 +132,20 @@ class CustomSearch extends SearchDelegate {
 class MapScreen extends StatelessWidget {
   final String customMapStyle =
       '[ { "featureType": "water", "elementType": "geometry.fill", "stylers": [ { "color": "#0099dd" } ] } ]';
-  
 
-  const MapScreen({Key? key, required bool showMap}) : super(key: key);
+  final Set<Marker> markers = {};
+
+
+  MapScreen({Key? key, required bool showMap, List<Map<String, double>>? coordinates})  :super(key: key) {
+    if (showMap) {
+      for (var item in coordinates!) {
+        markers.add(Marker(
+          markerId: MarkerId(item.toString()),
+          position: LatLng(item['lat']!, item['lng']!),
+        ));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,16 +159,7 @@ class MapScreen extends StatelessWidget {
           target: LatLng(41.179722, -8.616389),
           zoom: 12,
         ),
-        markers: <Marker>{
-          const Marker(
-            markerId: MarkerId('marker_1'),
-            position: LatLng(41.179722, -8.616389),
-            infoWindow: InfoWindow(
-              title: 'Paranhos',
-              snippet: 'Welcome to Paranhos',
-            ),
-          ),
-        },
+        markers: markers,
         onMapCreated: (GoogleMapController controller) {
           // Set the custom map style here
           controller.setMapStyle(customMapStyle);
