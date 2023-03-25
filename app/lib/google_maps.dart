@@ -1,29 +1,77 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:google_maps_webservice_ex/places.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter/material.dart';
 
-Future<List<Map<String, double>>> getCoordinates(List<String> addresses) async {
-  const apiKey = 'AIzaSyAJTKPI8KJ_ulnXi-EuQN_5yrJbn5-cHP8';
-  List<Map<String, double>> coordinates = [];
+const apiKey = "AIzaSyAJTKPI8KJ_ulnXi-EuQN_5yrJbn5-cHP8";
 
-  for(String address in addresses){
-    address = address.replaceAll(' ', '+');
+class Pair<A, B> {
+  final A first;
+  final B second;
+
+  Pair(this.first, this.second);
+
+  @override
+  String toString() => '($first, $second)';
+}
+
+Future<Pair<String, LatLng>> getCoordinates(String address) async {
+  //address = address.replaceAll(' ', '+');
+  final apiUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$apiKey';
+
+  final response = await http.get(Uri.parse(apiUrl));
+  final data = json.decode(response.body);
+
+  if(data['results'].length == 0){
+    print('No data found for address $address');
+    throw Exception('No data found for address $address');
   }
+  final lat = data['results'][0]['geometry']['location']['lat'];
+  final lng = data['results'][0]['geometry']['location']['lng'];
+  final latLng = LatLng(lat, lng);
+  return Pair(address, latLng);
+}
+
+Future<List<Pair<String, LatLng>>> buildCoordinates(List<String> addresses) async {
+
+  List<Pair<String, LatLng>> coordinates = [];
   //ask for the coordinates of the addresses
   for(String address in addresses){
-    final apiUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$apiKey';
-
-    final response = await http.get(Uri.parse(apiUrl));
-    final data = json.decode(response.body);
-    if(data['results'].length == 0){
-      print('No data found for address $address');
-      continue;
+    try{
+      coordinates.add(await getCoordinates(address));
+    }catch(e){
+      print(e);
     }
-    final lat = data['results'][0]['geometry']['location']['lat'];
-    final lng = data['results'][0]['geometry']['location']['lng'];
-
-    coordinates.add({'lat': lat, 'lng': lng});
-
   }
 
   return coordinates;
+}
+
+Marker buildMarker(Pair<String, LatLng> coordinates, BitmapDescriptor icon, double zIndex){
+    Marker marker = Marker(
+      markerId: MarkerId(coordinates.first),
+      position: coordinates.second,
+      icon: icon,
+      zIndex: zIndex,
+      infoWindow: InfoWindow(
+        title: coordinates.first,
+      ),
+    );
+
+  return marker;
+}
+
+Future<List<Pair<String, LatLng>>> findPlaces(LatLng source) async {
+  final places = GoogleMapsPlaces(apiKey: apiKey);
+  final response = await places.searchNearbyWithRadius(
+    Location(lat: source.latitude, lng: source.longitude),
+    10000,
+    type: 'gym',
+  );
+  List<Pair<String, LatLng>> facilities = [];
+  for(PlacesSearchResult place in response.results){
+    facilities.add(Pair(place.name, LatLng(place.geometry!.location.lat, place.geometry!.location.lng)));
+  }
+  return facilities;
 }
