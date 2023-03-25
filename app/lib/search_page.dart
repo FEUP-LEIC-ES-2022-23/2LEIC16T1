@@ -104,7 +104,10 @@ class CustomSearch extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    final coordinates = getCoordinates(query).then((value) => findPlaces(value.second));
+    final coordinates = getCoordinates(query).then((value){
+      final places = findPlaces(value.second);
+      return places.then((locations) => [value] + locations);
+    });
 
     return StatefulBuilder(builder: (context, setState) {
       return FutureBuilder(
@@ -124,10 +127,13 @@ class CustomSearch extends SearchDelegate {
                   child: ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return Container();
+                      }
                       var facility = snapshot.data[index].first;
-                      return ListTile(
-                        title: Text(facility),
-                      );
+                        return ListTile(
+                          title: Text(facility),
+                        );
                     },
                   ),
                 ),
