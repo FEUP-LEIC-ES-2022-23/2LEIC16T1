@@ -62,10 +62,6 @@ class CustomSearch extends SearchDelegate {
     'Ginásio de Paranhos 2',
     'Ginásio de Paranhos 3'
   ];
-  late Pair<String, LatLng> sourceCoordinates;
-  late List<Pair<String, LatLng>> coordinates;
-  bool isDone = false;
-  List matchQuery = [];
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -108,36 +104,42 @@ class CustomSearch extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    if(!isDone){
-      getCoordinates(query).then((value) => {
-        sourceCoordinates = value,
-        findPlaces(sourceCoordinates.second).then((value) => {
-          coordinates = value,
-          for (var i = 0; i < coordinates.length; i++)
-            matchQuery.add(coordinates[i].first),
-          coordinates.insert(0, sourceCoordinates),
-          isDone = true,
-        })
-      });
-    }
+    final coordinates = getCoordinates(query).then((value) => findPlaces(value.second));
 
-      return StatefulBuilder(builder: (context, setState){
-        return Column(children: [
-          Expanded(child: MapScreen(showMap: true, coordinates: coordinates)),
-          Expanded(
-            child: ListView.builder(
-                itemCount: coordinates.length,
-                itemBuilder: (context, index) {
-                  var result = matchQuery[index];
-                  return ListTile(
-                    title: Text(result),
-                  );
-                }),
-          ),
-          const NavigationWidget(selectedIndex: 1)
-        ]);
-      });
+    return StatefulBuilder(builder: (context, setState) {
+      return FutureBuilder(
+        future: coordinates,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text(snapshot.error.toString()));
+          } else {
+            return Column(
+              children: [
+                Expanded(
+                  child: MapScreen(showMap: true, coordinates: snapshot.data),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      var facility = snapshot.data[index].first;
+                      return ListTile(
+                        title: Text(facility),
+                      );
+                    },
+                  ),
+                ),
+                const NavigationWidget(selectedIndex: 1),
+              ],
+            );
+          }
+        },
+      );
+    });
   }
+
 }
 
 class MapScreen extends StatelessWidget {

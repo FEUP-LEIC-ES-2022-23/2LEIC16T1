@@ -25,7 +25,7 @@ Future<Pair<String, LatLng>> getCoordinates(String address) async {
 
   if(data['results'].length == 0){
     print('No data found for address $address');
-    throw Exception('No data found for address $address');
+    throw ('No data found for address $address');
   }
   final lat = data['results'][0]['geometry']['location']['lat'];
   final lng = data['results'][0]['geometry']['location']['lng'];
