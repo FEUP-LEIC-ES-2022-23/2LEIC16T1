@@ -2,7 +2,7 @@
 
 ### Vision Statement
 
-SportSpotter empowers sports enthusiasts to effortlessly discover and access the best facilities, providing a seamless and user-friendly experience that saves time and enables users to pursue their passion with ease.
+SportSpotter empowers sports enthusiasts to effortlessly discover and access the best rated facilities, providing a seamless and user-friendly experience that saves time and enables users to pursue their passion with ease.
 
 
 ### Main Features

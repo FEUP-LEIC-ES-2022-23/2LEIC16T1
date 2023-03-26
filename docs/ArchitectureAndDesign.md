@@ -15,7 +15,7 @@ In order to provide maintenance of the code and a good organization, our project
 
 - `External SportSpotter Services`: This package represents the top-level package for the external services to the smartphone. It contains the other SportSpotter services that make up the system.
 
-- `SportSpotter Database API`: This package contains the backend logic for the application, including database access and business rules.
+- `SportSpotter API`: This package contains the backend logic for the application, including database access and business rules.
 
 - `External Services`: This package represents the top-level package for external services application depends on. It contains other logical packages that make up the system.
 
