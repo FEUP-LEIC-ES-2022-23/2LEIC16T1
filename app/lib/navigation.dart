@@ -1,6 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:sportspotter/facility_page.dart';
 import 'package:sportspotter/favourites.dart';
 import 'package:sportspotter/main.dart';
+import 'package:sportspotter/models/data_service.dart';
+import 'package:sportspotter/models/facility.dart';
+import 'package:sportspotter/models/review.dart';
+import 'package:sportspotter/models/tag.dart';
 import 'package:sportspotter/profile.dart';
 import 'package:sportspotter/search_page.dart';
 
@@ -18,7 +25,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: 85,
 
@@ -40,12 +47,12 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                       onTap: () {
                         if (widget.selectedIndex != 3) {
                           Navigator.push(context, PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) => ProfileScreen(),
+                              pageBuilder: (context, animation1, animation2) => const ProfileScreen(),
                               transitionDuration: Duration.zero,
                               reverseTransitionDuration: Duration.zero));
                         }
                       },
-                      child: Container(
+                      child: SizedBox(
                           width: MediaQuery.of(context).size.width / 4,
                           height: 85,
                           child: Stack(
@@ -82,13 +89,21 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                   child: GestureDetector(
                       onTap: () {
                         if (widget.selectedIndex != 2) {
-                          Navigator.push(context, PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) => FavouritesScreen(),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero));
+                          Stream<List<Facility>> facilitiesStream = DataService.readFacilities();
+                          Facility selectedFacility;
+                          facilitiesStream.listen((facilities) {
+                            selectedFacility = facilities.first;
+
+                            Navigator.push(context, PageRouteBuilder(
+                                pageBuilder: (context, animation1, animation2) => FacilityPage(
+                                    facility: selectedFacility
+                                ),
+                                transitionDuration: Duration.zero,
+                                reverseTransitionDuration: Duration.zero));
+                          });
                         }
                       },
-                      child: Container(
+                      child: SizedBox(
                           width: MediaQuery.of(context).size.width / 4,
                           height: 85,
                           child: Stack(
@@ -126,12 +141,12 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                       onTap: () {
                         if (widget.selectedIndex != 1) {
                           Navigator.push(context, PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) => SearchScreen(),
+                              pageBuilder: (context, animation1, animation2) => const SearchScreen(),
                               transitionDuration: Duration.zero,
                               reverseTransitionDuration: Duration.zero));
                         }
                       },
-                      child: Container(
+                      child: SizedBox(
                           width: MediaQuery.of(context).size.width / 4,
                           height: 85,
                           child: Stack(
@@ -169,12 +184,12 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                     onTap: () {
                       if (widget.selectedIndex != 0) {
                         Navigator.push(context, PageRouteBuilder(
-                            pageBuilder: (context, animation1, animation2) => MyHomePage(),
+                            pageBuilder: (context, animation1, animation2) => const MyHomePage(),
                             transitionDuration: Duration.zero,
                             reverseTransitionDuration: Duration.zero));
                       }
                     },
-                    child: Container(
+                    child: SizedBox(
                         width: MediaQuery.of(context).size.width / 4,
                         height: 85,
                         child: Stack(
