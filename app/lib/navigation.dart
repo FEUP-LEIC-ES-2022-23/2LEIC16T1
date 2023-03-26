@@ -89,19 +89,11 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                   child: GestureDetector(
                       onTap: () {
                         if (widget.selectedIndex != 2) {
-                          Stream<List<Facility>> facilitiesStream = DataService.readFacilities();
-                          Facility selectedFacility;
-                          facilitiesStream.listen((facilities) {
-                            selectedFacility = facilities.first;
-
                             Navigator.push(context, PageRouteBuilder(
-                                pageBuilder: (context, animation1, animation2) => FacilityPage(
-                                    facility: selectedFacility
-                                ),
+                                pageBuilder: (context, animation1, animation2) => const FavouritesScreen(),
                                 transitionDuration: Duration.zero,
                                 reverseTransitionDuration: Duration.zero));
-                          });
-                        }
+                          }
                       },
                       child: SizedBox(
                           width: MediaQuery.of(context).size.width / 4,

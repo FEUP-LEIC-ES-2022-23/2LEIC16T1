@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:sportspotter/models/facility.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:sportspotter/google_maps.dart';
+
+import 'facility_page.dart';
 
 class SearchScreen extends StatelessWidget {
   final String customMapStyle =
@@ -57,11 +60,12 @@ class SearchScreen extends StatelessWidget {
 }
 
 class CustomSearch extends SearchDelegate {
-  List<String> data = [
+  /*List<String> data = [
     'Ginásio de Paranhos',
     'Ginásio de Paranhos 2',
     'Ginásio de Paranhos 3'
-  ];
+  ];*/
+  List<String> data = [];
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -130,10 +134,20 @@ class CustomSearch extends SearchDelegate {
                       if (index == 0) {
                         return Container();
                       }
-                      var facility = snapshot.data[index].first;
-                        return ListTile(
-                          title: Text(facility),
+
+                      var facilityName = snapshot.data[index].first;
+                        var listTile = ListTile(
+                          title: Text(facilityName),
+                          onTap: () {
+                            Navigator.push(context, PageRouteBuilder(
+                                pageBuilder: (context, animation1, animation2) => FacilityPage(
+                                    facility: Facility(name: facilityName, photo: "error-image-generic.png", phoneNumber: "912345678", address: "Rio Tinto", email: "ginasio@gmail.com"),
+                                ),
+                                transitionDuration: Duration.zero,
+                                reverseTransitionDuration: Duration.zero));
+                          },
                         );
+                        return listTile;
                     },
                   ),
                 ),

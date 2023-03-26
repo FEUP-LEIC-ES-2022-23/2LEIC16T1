@@ -42,6 +42,20 @@ class _FacilityPageState extends State<FacilityPage> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Positioned(
+                  top: 20,
+                  left: 20,
+                  width: 100,
+                  height: 100,
+                  child: Image.asset(
+                    'assets/images/error-image-generic.png',
+                    fit: BoxFit.cover,
+                    width: MediaQuery.of(context).size.width,
+                    height: 200
+                  ),
+                ),
+                // colocar imagem aqui
+                /*
                 FutureBuilder(
                   future: widget.facility.photo,
                   builder: (BuildContext context, AsyncSnapshot<String> snapshot){
@@ -57,14 +71,15 @@ class _FacilityPageState extends State<FacilityPage> {
                       return const CircularProgressIndicator();
                     }
                   }
-                ),
+                ),*/
                 Text(
                   widget.facility.name,
                   style: const TextStyle(
                     color: Color.fromRGBO(94, 97, 115, 1),
                     fontSize: 35
                   ),
-                  maxLines: 1,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis
                 ),
                 Container(
                   padding: const EdgeInsets.only(left: 5),
@@ -142,7 +157,7 @@ class _FacilityPageState extends State<FacilityPage> {
                               ),
                             ],
                           ),
-                          Container(
+                          /*Container(
                             margin: const EdgeInsets.all(7),
                             child: const Text(
                               "Reviews:",
@@ -175,7 +190,7 @@ class _FacilityPageState extends State<FacilityPage> {
                                 )
                               ],
                             ),
-                          ),
+                          ),*/
                           const SizedBox(height: 100)
                         ],
                       )
