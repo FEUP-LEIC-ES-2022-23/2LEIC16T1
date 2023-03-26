@@ -8,7 +8,8 @@ import 'package:sportspotter/models/tag.dart';
 
 class Facility {
   final String name;
-  final Future<String> photo;
+  //final Future<String> photo;
+  final String photo;
   final String phoneNumber;
   final String email;
   final String address;
@@ -32,10 +33,11 @@ class Facility {
   static Facility fromJson(Map<String, dynamic> json){
     //do this or just store in firebase as reference 'facility/facility_name.jpg'
     //and use .ref() instead of .refFromURL()
-    final photoRef = FirebaseStorage.instance.refFromURL('gs:/' + json['photo'].path.substring('gs:'.length));
+    //final photoRef = FirebaseStorage.instance.refFromURL('gs:/' + json['photo'].path.substring('gs:'.length));
     return Facility(
         name: json['name'],
-        photo: photoRef.getDownloadURL().then((url) => url),
+        photo: json['photo'],
+        //photo: photoRef.getDownloadURL().then((url) => url),
         phoneNumber: json['phoneNumber'],
         email: json['email'],
         address: json['address'],
