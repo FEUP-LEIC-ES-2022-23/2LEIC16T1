@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_webservice_ex/places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutter/material.dart';
 
 const apiKey = "AIzaSyAJTKPI8KJ_ulnXi-EuQN_5yrJbn5-cHP8";
 
@@ -17,7 +16,6 @@ class Pair<A, B> {
 }
 
 Future<Pair<String, LatLng>> getCoordinates(String address) async {
-  //address = address.replaceAll(' ', '+');
   final apiUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$apiKey';
 
   final response = await http.get(Uri.parse(apiUrl));

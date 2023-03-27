@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sportspotter/models/facility.dart';
@@ -35,36 +33,12 @@ class SearchScreen extends StatelessWidget {
           child: const Text('Enter a location'),
         ),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            Pair<String, LatLng> sourceCoordinates = await getCoordinates(test);
-            List<Pair<String, LatLng>> coordinates =
-                await findPlaces(sourceCoordinates.second);
-            coordinates.insert(0, sourceCoordinates);
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    MapScreen(showMap: true, coordinates: coordinates),
-              ),
-            );
-          },
-          child: const Text('Show Map'),
-        ),
-      ),
       bottomNavigationBar: const NavigationWidget(selectedIndex: 1),
     );
   }
 }
 
 class CustomSearch extends SearchDelegate {
-  /*List<String> data = [
-    'Ginásio de Paranhos',
-    'Ginásio de Paranhos 2',
-    'Ginásio de Paranhos 3'
-  ];*/
   List<String> data = [];
 
   @override
