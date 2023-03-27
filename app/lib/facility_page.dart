@@ -42,18 +42,12 @@ class _FacilityPageState extends State<FacilityPage> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Positioned(
-                  top: 20,
-                  left: 20,
-                  width: 100,
-                  height: 100,
-                  child: Image.asset(
+                  Image.asset(
                     'assets/images/error-image-generic.png',
                     fit: BoxFit.cover,
                     width: MediaQuery.of(context).size.width,
                     height: 200
                   ),
-                ),
                 // colocar imagem aqui
                 /*
                 FutureBuilder(
