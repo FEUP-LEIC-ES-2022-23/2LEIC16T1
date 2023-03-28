@@ -25,7 +25,7 @@ class _FacilityPageState extends State<FacilityPage> {
         ),
         backgroundColor: const Color(0x00fdfdfd),
         elevation: 0,
-        actions: [
+        /*actions: [
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             icon: const Icon(
@@ -35,7 +35,7 @@ class _FacilityPageState extends State<FacilityPage> {
 
             },
           )
-        ],
+        ],*/
       ),
       body: Stack(
         children: [
@@ -118,7 +118,7 @@ class _FacilityPageState extends State<FacilityPage> {
                                   ),
                               ]*/
                           ),
-                          Row(
+                          /*Row(
                             children: [
                               for (int i = 0; i < 5; i++)
                                 Container(
@@ -151,7 +151,7 @@ class _FacilityPageState extends State<FacilityPage> {
                               ),
                             ],
                           ),
-                          /*Container(
+                          Container(
                             margin: const EdgeInsets.all(7),
                             child: const Text(
                               "Reviews:",
