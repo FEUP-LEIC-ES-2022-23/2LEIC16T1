@@ -7,6 +7,12 @@ You can find below information and references related with the project managemen
 * Iteration planning and retrospectives: 
   * ### Iteration 1
      Start of Iteration
-![board_start_iteration1](https://user-images.githubusercontent.com/93835403/227790751-784b5613-97f4-40e3-b82c-4cb8d189c2ed.png)
+![board_start_iteration1](../images/productmanagement/iteration%231-start.png)
      End of Iteration
-![board_end_iteration1](https://user-images.githubusercontent.com/93835403/227790753-b30e089e-490a-4d26-be25-a7156005b7dd.png)
+![board_end_iteration1](../images/productmanagement/iteration%231-end.png)
+
+* ### Retrospective
+
+**What went well?** - Activating the API key for Google Maps, working with the map and its features and the UI of the search page.<br>
+**What went bad?** - Working with Google Maps' API to find the coordinates of a certain sports facility and with the interface while dealing with asynchronous programming in Flutter/Dart.<br>
+**What problems are still to be fixed?** - Autocomplete/suggestions when inputting a location in the search bar, the facility page is not done and the database is still being populated.<br>

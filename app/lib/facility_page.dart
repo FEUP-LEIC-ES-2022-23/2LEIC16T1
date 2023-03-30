@@ -129,6 +129,7 @@ class _FacilityPageState extends State<FacilityPage> {
                                     size: 40,
                                   ),
                                 ),
+                              /*
                               Container(
                                   width: 130,
                                   height: 40,
@@ -148,7 +149,7 @@ class _FacilityPageState extends State<FacilityPage> {
                                         fontWeight: FontWeight.bold
                                     ),
                                   )
-                              ),
+                              ),*/
                             ],
                           ),
                           /*Container(
