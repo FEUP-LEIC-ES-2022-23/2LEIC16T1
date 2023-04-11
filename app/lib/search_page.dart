@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:sportspotter/models/facility.dart';
 import 'package:sportspotter/navigation.dart';
-import 'package:sportspotter/google_maps.dart';
+import 'package:sportspotter/google_maps/google_maps.dart';
+import 'package:sportspotter/tools/location.dart';
+import 'package:sportspotter/tools/geocoding.dart';
 
 import 'facility_page.dart';
 
@@ -41,6 +44,18 @@ class SearchScreen extends StatelessWidget {
 class CustomSearch extends SearchDelegate {
   List<String> data = [];
 
+  Future<void> getSelfCoordinates() async {
+    LocationData? locationData = await getLocation();
+    if (locationData != null) {
+      String? address = await getAddressFromCoordinates(locationData.latitude!, locationData.longitude!);
+      if(address == null) {
+        return;
+      }
+      query = address;
+    }
+
+  }
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -70,14 +85,26 @@ class CustomSearch extends SearchDelegate {
         matchQuery.add(item);
       }
     }
+
     return ListView.builder(
-        itemCount: matchQuery.length,
-        itemBuilder: (context, index) {
-          var result = matchQuery[index];
+      itemCount: matchQuery.length + 1, // Add one for the button
+      itemBuilder: (context, index) {
+        if (index == 0) { // The first item is the button
+          return ListTile(
+            leading: Icon(Icons.location_on),
+            title: Text('Get Location'),
+            onTap: () async {
+              await getSelfCoordinates();
+            },
+          );
+        } else { // The rest of the items are the suggestions
+          var result = matchQuery[index - 1];
           return ListTile(
             title: Text(result),
           );
-        });
+        }
+      },
+    );
   }
 
   @override
