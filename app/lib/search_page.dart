@@ -5,6 +5,7 @@ import 'package:sportspotter/navigation.dart';
 import 'package:sportspotter/google_maps.dart';
 
 import 'facility_page.dart';
+import 'models/data_service.dart';
 
 class SearchScreen extends StatelessWidget {
   final String customMapStyle =
@@ -113,13 +114,18 @@ class CustomSearch extends SearchDelegate {
                         var listTile = ListTile(
                           title: Text(facilityName),
                           onTap: () {
-                            Navigator.push(context, PageRouteBuilder(
-                                pageBuilder: (context, animation1, animation2) => FacilityPage(
-                                    facility: Facility(name: facilityName, photo: "error-image-generic.png", phoneNumber: "912345678", address: "Rio Tinto", email: "ginasio@gmail.com"),
-                                ),
-                                transitionDuration: Duration.zero,
-                                reverseTransitionDuration: Duration.zero));
-                          },
+                            Stream<List<Future<Facility>>> facilitiesStream = DataService.readFacilities();
+                            Facility selectedFacility;
+                            facilitiesStream.listen((facilities) async {
+                              selectedFacility = await facilities.first;
+
+                              Navigator.push(context, PageRouteBuilder(
+                                  pageBuilder: (context, animation1, animation2) => FacilityPage(facility: selectedFacility),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero
+                              ));
+                            });
+                          }
                         );
                         return listTile;
                     },
