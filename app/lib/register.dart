@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -9,6 +11,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
   late String _username;
   late String _password;
+  final databaseReference = FirebaseDatabase.instance.reference();
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +63,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
+                    // Save user information to Firebase Realtime Database
+                    databaseReference.child("user").push().set({
+                      'email': _username,
+                      'password': _password
+                    });
                   }
                 },
                 child: const Text('Register'),
