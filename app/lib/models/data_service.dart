@@ -10,4 +10,14 @@ class DataService {
       .map((snapshot) =>
           snapshot.docs.map((doc) => Facility.fromJson(doc.id, doc.data())).toList().toList());
 
+  static Future<Facility> fetchFacility(String id) => FirebaseFirestore.instance
+      .collection('facility')
+      .doc(id).get().then((doc) {
+        if (!doc.exists) {
+          throw ("Facility not found");
+        } else {
+          return Facility.fromJson(id, doc.data()!);
+        }
+      });
+
 }

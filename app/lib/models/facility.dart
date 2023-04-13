@@ -27,8 +27,7 @@ class Facility {
   });
 
   static Future<Facility> fromJson(String id, Map<String, dynamic> json) async {
-    final apiUrl = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=${json['id']}&key=${DataService.apiKey}';
-    //final apiUrl = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=$id&key=${DataService.apiKey}';
+    final apiUrl = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=$id&key=${DataService.apiKey}';
 
     final response = await http.get(Uri.parse(apiUrl));
     final data = jsonDecode(response.body);

@@ -83,9 +83,10 @@ class CustomSearch extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
+    //List<Pair<Pair<"name","id">, LatLng>>
     final coordinates = getCoordinates(query).then((value){
       final places = findPlaces(value.second);
-      return places.then((locations) => [value] + locations);
+      return places.then((locations) => [Pair(Pair(value.first, ""), value.second)] + locations);
     });
 
     return StatefulBuilder(builder: (context, setState) {
@@ -110,15 +111,21 @@ class CustomSearch extends SearchDelegate {
                         return Container();
                       }
 
-                      var facilityName = snapshot.data[index].first;
                         var listTile = ListTile(
-                          title: Text(facilityName),
+                          title: Text(snapshot.data[index].first.first),
                           onTap: () {
-                            Stream<List<Future<Facility>>> facilitiesStream = DataService.readFacilities();
-                            Facility selectedFacility;
-                            facilitiesStream.listen((facilities) async {
-                              selectedFacility = await facilities.first;
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return const Center(
+                                  child: CircularProgressIndicator(color: Colors.white),
+                                );
+                              },
+                            );
 
+                            DataService.fetchFacility(snapshot.data[index].first.second).then((selectedFacility){
+                              Navigator.of(context).pop();
                               Navigator.push(context, PageRouteBuilder(
                                   pageBuilder: (context, animation1, animation2) => FacilityPage(facility: selectedFacility),
                                   transitionDuration: Duration.zero,
@@ -152,7 +159,7 @@ class MapScreen extends StatelessWidget {
   MapScreen(
       {Key? key,
       required bool showMap,
-      List<Pair<String, LatLng>>? coordinates})
+      List<Pair<Pair<String, String>, LatLng>>? coordinates})
       : super(key: key) {
     if (showMap) {
       cameraPosition = coordinates![0].second;
@@ -160,7 +167,7 @@ class MapScreen extends StatelessWidget {
     }
   }
 
-  Set<Marker> buildMarkers(List<Pair<String, LatLng>> coordinates) {
+  Set<Marker> buildMarkers(List<Pair<Pair<String, String>, LatLng>> coordinates) {
     Set<Marker> markers_ = {};
     BitmapDescriptor blueMarker =
         BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
