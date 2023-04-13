@@ -3,8 +3,6 @@ import 'navigation.dart';
 
 
 class ProfileScreen extends StatelessWidget {
-  final String customMapStyle =
-      '[ { "featureType": "water", "elementType": "geometry.fill", "stylers": [ { "color": "#0099dd" } ] } ]';
 
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -27,3 +25,4 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
+
