@@ -32,6 +32,42 @@ class Facility {
     final response = await http.get(Uri.parse(apiUrl));
     final data = jsonDecode(response.body);
 
+    String name;
+    try {
+      name = data['result']['name'];
+    } catch(e) {
+      name = id;
+    }
+
+    String photo;
+    try {
+      photo = "https://maps.googleapis.com/maps/api/place/photo?maxheight=200&photo_reference=${data['result']['photos'][0]['photo_reference']}&key=${DataService.apiKey}";
+    } catch(e) {
+      photo = "";
+    }
+
+    String phoneNumber;
+    try {
+      phoneNumber = data['result']['international_phone_number'];
+    } catch(e){
+      try {
+        phoneNumber = data['result']['formatted_phone_number'];
+      } catch(e){
+        phoneNumber = "";
+      }
+    }
+
+    String address;
+    try {
+      address = data['result']['vicinity'];
+    } catch(e) {
+      try {
+        address = data['result']['formatted_address'];
+      } catch(e){
+        address = "";
+      }
+    }
+
     List<Tag> tags = [];
     for (var reference in json['tags']){
       reference.get().then(
@@ -41,10 +77,10 @@ class Facility {
     }
 
     return Facility(
-        name: data['result']['name'],
-        photo: "https://maps.googleapis.com/maps/api/place/photo?maxheight=200&photo_reference=${data['result']['photos'][0]['photo_reference']}&key=${DataService.apiKey}",
-        phoneNumber: data['result']['international_phone_number'],
-        address: data['result']['vicinity'],
+        name: name,
+        photo: photo,
+        phoneNumber: phoneNumber,
+        address: address,
         tags: tags
         //reviews: json['reviews'],
         //ratings: json['ratings']

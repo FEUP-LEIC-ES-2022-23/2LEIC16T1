@@ -42,7 +42,13 @@ class _FacilityPageState extends State<FacilityPage> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.network(
+                (widget.facility.photo == "") ?
+                  Image.asset(
+                    'assets/images/error-image-generic.png',
+                    width: MediaQuery.of(context).size.width,
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ) : Image.network(
                   widget.facility.photo,
                   width: MediaQuery.of(context).size.width,
                   height: 200,
