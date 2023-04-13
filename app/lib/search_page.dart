@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -8,6 +9,7 @@ import 'package:sportspotter/tools/location.dart';
 import 'package:sportspotter/tools/geocoding.dart';
 
 import 'facility_page.dart';
+import 'models/data_service.dart';
 
 class SearchScreen extends StatelessWidget {
   final String customMapStyle =
@@ -109,9 +111,10 @@ class CustomSearch extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
+    //List<Pair<Pair<"name","id">, LatLng>>
     final coordinates = getCoordinates(query).then((value){
       final places = findPlaces(value.second);
-      return places.then((locations) => [value] + locations);
+      return places.then((locations) => [Pair(Pair(value.first, ""), value.second)] + locations);
     });
 
     return StatefulBuilder(builder: (context, setState) {
@@ -136,17 +139,28 @@ class CustomSearch extends SearchDelegate {
                         return Container();
                       }
 
-                      var facilityName = snapshot.data[index].first;
                         var listTile = ListTile(
-                          title: Text(facilityName),
+                          title: Text(snapshot.data[index].first.first),
                           onTap: () {
-                            Navigator.push(context, PageRouteBuilder(
-                                pageBuilder: (context, animation1, animation2) => FacilityPage(
-                                    facility: Facility(name: facilityName, photo: "error-image-generic.png", phoneNumber: "912345678", address: "Rio Tinto", email: "ginasio@gmail.com"),
-                                ),
-                                transitionDuration: Duration.zero,
-                                reverseTransitionDuration: Duration.zero));
-                          },
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return const Center(
+                                  child: CircularProgressIndicator(color: Colors.white),
+                                );
+                              },
+                            );
+
+                            DataService.fetchFacility(snapshot.data[index].first.second).then((selectedFacility){
+                              Navigator.of(context).pop();
+                              Navigator.push(context, PageRouteBuilder(
+                                  pageBuilder: (context, animation1, animation2) => FacilityPage(facility: selectedFacility),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero
+                              ));
+                            });
+                          }
                         );
                         return listTile;
                     },
@@ -173,7 +187,7 @@ class MapScreen extends StatelessWidget {
   MapScreen(
       {Key? key,
       required bool showMap,
-      List<Pair<String, LatLng>>? coordinates})
+      List<Pair<Pair<String, String>, LatLng>>? coordinates})
       : super(key: key) {
     if (showMap) {
       cameraPosition = coordinates![0].second;
@@ -181,7 +195,7 @@ class MapScreen extends StatelessWidget {
     }
   }
 
-  Set<Marker> buildMarkers(List<Pair<String, LatLng>> coordinates) {
+  Set<Marker> buildMarkers(List<Pair<Pair<String, String>, LatLng>> coordinates) {
     Set<Marker> markers_ = {};
     BitmapDescriptor blueMarker =
         BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);

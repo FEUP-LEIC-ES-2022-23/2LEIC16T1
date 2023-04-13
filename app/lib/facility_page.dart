@@ -42,30 +42,12 @@ class _FacilityPageState extends State<FacilityPage> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                  Image.asset(
-                    'assets/images/error-image-generic.png',
-                    fit: BoxFit.cover,
-                    width: MediaQuery.of(context).size.width,
-                    height: 200
-                  ),
-                // colocar imagem aqui
-                /*
-                FutureBuilder(
-                  future: widget.facility.photo,
-                  builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasData){
-                      return Image.network(
-                        snapshot.data!,
-                        width: MediaQuery.of(context).size.width,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      );
-                    }
-                    else {
-                      return const CircularProgressIndicator();
-                    }
-                  }
-                ),*/
+                Image.network(
+                  widget.facility.photo,
+                  width: MediaQuery.of(context).size.width,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
                 Text(
                   widget.facility.name,
                   style: const TextStyle(

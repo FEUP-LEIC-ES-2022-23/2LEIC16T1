@@ -1,20 +1,17 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:sportspotter/models/review.dart';
+import 'package:sportspotter/models/data_service.dart';
 import 'package:sportspotter/models/tag.dart';
+import 'package:http/http.dart' as http;
 
 class Facility {
   final String name;
-  //final Future<String> photo;
   final String photo;
   final String phoneNumber;
-  final String email;
   final String address;
 
-  //final List<Tag> tags;
+  final List<Tag> tags;
 
   //final List<Review> reviews;
   //final List<double> ratings;
@@ -23,25 +20,32 @@ class Facility {
     required this.name,
     required this.photo,
     required this.phoneNumber,
-    required this.email,
     required this.address,
-    //required this.tags,
+    required this.tags,
     //required this.reviews,
     //required this.ratings,
   });
 
-  static Facility fromJson(Map<String, dynamic> json){
-    //do this or just store in firebase as reference 'facility/facility_name.jpg'
-    //and use .ref() instead of .refFromURL()
-    //final photoRef = FirebaseStorage.instance.refFromURL('gs:/' + json['photo'].path.substring('gs:'.length));
+  static Future<Facility> fromJson(String id, Map<String, dynamic> json) async {
+    final apiUrl = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=$id&key=${DataService.apiKey}';
+
+    final response = await http.get(Uri.parse(apiUrl));
+    final data = jsonDecode(response.body);
+
+    List<Tag> tags = [];
+    for (var reference in json['tags']){
+      reference.get().then(
+          (DocumentSnapshot snapshot) =>
+              tags.add(Tag.fromJson(snapshot.data() as Map<String, dynamic>))
+      );
+    }
+
     return Facility(
-        name: json['name'],
-        photo: json['photo'],
-        //photo: photoRef.getDownloadURL().then((url) => url),
-        phoneNumber: json['phoneNumber'],
-        email: json['email'],
-        address: json['address'],
-        //tags: jsonDecode(json['tags']),
+        name: data['result']['name'],
+        photo: "https://maps.googleapis.com/maps/api/place/photo?maxheight=200&photo_reference=${data['result']['photos'][0]['photo_reference']}&key=${DataService.apiKey}",
+        phoneNumber: data['result']['international_phone_number'],
+        address: data['result']['vicinity'],
+        tags: tags
         //reviews: json['reviews'],
         //ratings: json['ratings']
     );

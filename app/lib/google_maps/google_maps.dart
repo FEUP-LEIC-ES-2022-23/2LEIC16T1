@@ -33,45 +33,30 @@ Future<Pair<String, LatLng>> getCoordinates(String address) async {
   return Pair(address, latLng);
 }
 
-Future<List<Pair<String, LatLng>>> buildCoordinates(List<String> addresses) async {
-
-  List<Pair<String, LatLng>> coordinates = [];
-  //ask for the coordinates of the addresses
-  for(String address in addresses){
-    try{
-      coordinates.add(await getCoordinates(address));
-    }catch(e){
-      print(e);
-    }
-  }
-
-  return coordinates;
-}
-
-Marker buildMarker(Pair<String, LatLng> coordinates, BitmapDescriptor icon, double zIndex){
+Marker buildMarker(Pair<Pair<String, String>, LatLng> coordinates, BitmapDescriptor icon, double zIndex){
     Marker marker = Marker(
-      markerId: MarkerId(coordinates.first),
+      markerId: MarkerId(coordinates.first.second),
       position: coordinates.second,
       icon: icon,
       zIndex: zIndex,
       infoWindow: InfoWindow(
-        title: coordinates.first,
+        title: coordinates.first.first,
       ),
     );
 
   return marker;
 }
 
-Future<List<Pair<String, LatLng>>> findPlaces(LatLng source) async {
+Future<List<Pair<Pair<String, String>, LatLng>>> findPlaces(LatLng source) async {
   final places = GoogleMapsPlaces(apiKey: apiKey);
   final response = await places.searchNearbyWithRadius(
     Location(lat: source.latitude, lng: source.longitude),
     10000,
     type: 'gym',
   );
-  List<Pair<String, LatLng>> facilities = [];
+  List<Pair<Pair<String, String>, LatLng>> facilities = [];
   for(PlacesSearchResult place in response.results){
-    facilities.add(Pair(place.name, LatLng(place.geometry!.location.lat, place.geometry!.location.lng)));
+    facilities.add(Pair(Pair(place.name, place.placeId), LatLng(place.geometry!.location.lat, place.geometry!.location.lng)));
   }
   return facilities;
 }
