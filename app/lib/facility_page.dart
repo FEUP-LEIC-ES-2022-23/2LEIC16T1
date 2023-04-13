@@ -25,7 +25,7 @@ class _FacilityPageState extends State<FacilityPage> {
         ),
         backgroundColor: const Color(0x00fdfdfd),
         elevation: 0,
-        actions: [
+        /*actions: [
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             icon: const Icon(
@@ -35,25 +35,19 @@ class _FacilityPageState extends State<FacilityPage> {
 
             },
           )
-        ],
+        ],*/
       ),
       body: Stack(
         children: [
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Positioned(
-                  top: 20,
-                  left: 20,
-                  width: 100,
-                  height: 100,
-                  child: Image.asset(
+                  Image.asset(
                     'assets/images/error-image-generic.png',
                     fit: BoxFit.cover,
                     width: MediaQuery.of(context).size.width,
                     height: 200
                   ),
-                ),
                 // colocar imagem aqui
                 /*
                 FutureBuilder(
@@ -124,7 +118,7 @@ class _FacilityPageState extends State<FacilityPage> {
                                   ),
                               ]*/
                           ),
-                          Row(
+                          /*Row(
                             children: [
                               for (int i = 0; i < 5; i++)
                                 Container(
@@ -135,6 +129,7 @@ class _FacilityPageState extends State<FacilityPage> {
                                     size: 40,
                                   ),
                                 ),
+                              /*
                               Container(
                                   width: 130,
                                   height: 40,
@@ -154,10 +149,10 @@ class _FacilityPageState extends State<FacilityPage> {
                                         fontWeight: FontWeight.bold
                                     ),
                                   )
-                              ),
+                              ),*/
                             ],
                           ),
-                          /*Container(
+                          Container(
                             margin: const EdgeInsets.all(7),
                             child: const Text(
                               "Reviews:",
