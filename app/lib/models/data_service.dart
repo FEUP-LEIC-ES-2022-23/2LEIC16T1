@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:sportspotter/models/facility.dart';
 
 class DataService {
@@ -12,9 +13,15 @@ class DataService {
 
   static Future<Facility> fetchFacility(String id) => FirebaseFirestore.instance
       .collection('facility')
-      .doc(id).get().then((doc) {
+      .doc(id).get().then((doc){
         if (!doc.exists) {
-          throw ("Facility not found");
+          final json = {
+            'tags' : []
+          };
+
+          doc.reference.set(json);
+
+          return Facility.fromJson(id, json);
         } else {
           return Facility.fromJson(id, doc.data()!);
         }
