@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'navigation.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 
@@ -73,6 +74,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 child: const Text('Register'),
               ),
             ),
+            const Positioned(
+                bottom: 0,
+                left: 0,
+                child: NavigationWidget(selectedIndex: 3)
+            )
           ],
         ),
       ),
