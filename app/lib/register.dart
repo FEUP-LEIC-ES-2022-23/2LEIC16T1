@@ -7,7 +7,7 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
-  late String _email;
+  late String _username;
   late String _password;
 
   @override
@@ -24,17 +24,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
             const SizedBox(height: 16.0),
             TextFormField(
               decoration: const InputDecoration(
-                labelText: 'Email',
+                labelText: 'Username',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value!.isEmpty) {
-                  return 'Please enter your email address';
+                  return 'Please enter a username';
                 }
                 return null;
               },
               onSaved: (value) {
-                _email = value!;
+                _username = value!;
               },
             ),
             const SizedBox(height: 16.0),
@@ -60,7 +60,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    // TODO: call the registration API with email and password
                   }
                 },
                 child: const Text('Register'),
