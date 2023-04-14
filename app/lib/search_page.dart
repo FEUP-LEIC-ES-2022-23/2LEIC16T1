@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:sportspotter/models/facility.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:sportspotter/google_maps/google_maps.dart';
 import 'package:sportspotter/tools/location.dart';
@@ -113,8 +111,14 @@ class CustomSearch extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     //List<Pair<Pair<"name","id">, LatLng>>
     final coordinates = getCoordinates(query).then((value){
-      final places = findPlaces(value.second);
-      return places.then((locations) => [Pair(Pair(value.first, ""), value.second)] + locations);
+      final places = findPlaces(value);
+      return places.then((locations) {
+        if (value.first == query) {
+          return [Pair(Pair(value.first, ""), value.second)] + locations;
+        } else {
+          return locations;
+        }
+      });
     });
 
     return StatefulBuilder(builder: (context, setState) {
@@ -129,7 +133,7 @@ class CustomSearch extends SearchDelegate {
             return Column(
               children: [
                 Expanded(
-                  child: MapScreen(showMap: true, coordinates: snapshot.data),
+                  child: MapScreen(showMap: true, coordinates: snapshot.data, context: context),
                 ),
                 Expanded(
                   child: ListView.builder(
@@ -187,23 +191,24 @@ class MapScreen extends StatelessWidget {
   MapScreen(
       {Key? key,
       required bool showMap,
-      List<Pair<Pair<String, String>, LatLng>>? coordinates})
+      List<Pair<Pair<String, String>, LatLng>>? coordinates,
+      required BuildContext context})
       : super(key: key) {
     if (showMap) {
       cameraPosition = coordinates![0].second;
-      markers = buildMarkers(coordinates);
+      markers = buildMarkers(coordinates, context);
     }
   }
 
-  Set<Marker> buildMarkers(List<Pair<Pair<String, String>, LatLng>> coordinates) {
+  Set<Marker> buildMarkers(List<Pair<Pair<String, String>, LatLng>> coordinates, BuildContext context) {
     Set<Marker> markers_ = {};
     BitmapDescriptor blueMarker =
         BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
     BitmapDescriptor redMarker =
         BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
-    markers_.add(buildMarker(coordinates[0], blueMarker, 2));
+    markers_.add(buildMarker(coordinates[0], blueMarker, 2, context));
     for (int i = 1; i < coordinates.length; i++) {
-      markers_.add(buildMarker(coordinates[i], redMarker, 1));
+      markers_.add(buildMarker(coordinates[i], redMarker, 1, context));
     }
     return markers_;
   }

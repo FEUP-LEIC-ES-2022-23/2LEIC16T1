@@ -7,8 +7,8 @@ class Tag {
     required this.weight
   });
 
-  static Tag fromJson(Map<String, dynamic> json) => Tag(
-    name: json['name'],
+  static Tag fromJson(String name, Map<String, dynamic> json) => Tag(
+    name: name,
     weight: json['weight']
   );
 }

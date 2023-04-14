@@ -70,10 +70,8 @@ class Facility {
 
     List<Tag> tags = [];
     for (var reference in json['tags']){
-      reference.get().then(
-          (DocumentSnapshot snapshot) =>
-              tags.add(Tag.fromJson(snapshot.data() as Map<String, dynamic>))
-      );
+      final snapshot = await reference.get();
+      tags.add(Tag.fromJson(snapshot.id, snapshot.data() as Map<String, dynamic>));
     }
 
     return Facility(
