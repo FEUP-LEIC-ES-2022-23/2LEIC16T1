@@ -42,7 +42,13 @@ class _FacilityPageState extends State<FacilityPage> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.network(
+                (widget.facility.photo == "") ?
+                  Image.asset(
+                    'assets/images/error-image-generic.png',
+                    width: MediaQuery.of(context).size.width,
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ) : Image.network(
                   widget.facility.photo,
                   width: MediaQuery.of(context).size.width,
                   height: 200,
@@ -82,7 +88,7 @@ class _FacilityPageState extends State<FacilityPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Wrap(
-                              /*children: [
+                              children: [
                                 for (int i = 0; i < widget.facility.tags.length; i++)
                                   Container(
                                       width: 90,
@@ -95,10 +101,11 @@ class _FacilityPageState extends State<FacilityPage> {
                                       alignment: Alignment.center,
                                       child: Text(
                                         widget.facility.tags[i].name,
-                                        style: const TextStyle(fontSize: 12),
+                                        style: const TextStyle(fontSize: 13),
+                                        overflow: TextOverflow.ellipsis,
                                       )
                                   ),
-                              ]*/
+                              ]
                           ),
                           /*Row(
                             children: [

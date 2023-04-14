@@ -26,5 +26,9 @@ class DataService {
           return Facility.fromJson(id, doc.data()!);
         }
       });
+  
+  static Future<List<String>> getTags() => FirebaseFirestore.instance
+      .collection('tag').get()
+      .then((snapshot) => snapshot.docs.map((doc) => doc.id).toList());
 
 }
