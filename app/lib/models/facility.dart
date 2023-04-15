@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sportspotter/models/data_service.dart';
 import 'package:sportspotter/models/tag.dart';
 import 'package:http/http.dart' as http;
 
 class Facility {
+  final String id;
   final String name;
   final String photo;
   final String phoneNumber;
@@ -17,6 +17,7 @@ class Facility {
   //final List<double> ratings;
 
   Facility({
+    required this.id,
     required this.name,
     required this.photo,
     required this.phoneNumber,
@@ -75,6 +76,7 @@ class Facility {
     }
 
     return Facility(
+        id: id,
         name: name,
         photo: photo,
         phoneNumber: phoneNumber,
