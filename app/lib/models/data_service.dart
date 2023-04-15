@@ -5,6 +5,8 @@ import 'package:sportspotter/models/facility.dart';
 class DataService {
   static const apiKey = "AIzaSyAJTKPI8KJ_ulnXi-EuQN_5yrJbn5-cHP8";
 
+  static late final List<String> availableTags;
+
   static Stream<List<Future<Facility>>> readFacilities() => FirebaseFirestore.instance
       .collection('facility')
       .snapshots()
@@ -27,7 +29,7 @@ class DataService {
         }
       });
   
-  static Future<List<String>> getTags() => FirebaseFirestore.instance
+  static getTags() async => availableTags = await FirebaseFirestore.instance
       .collection('tag').get()
       .then((snapshot) => snapshot.docs.map((doc) => doc.id).toList());
 
