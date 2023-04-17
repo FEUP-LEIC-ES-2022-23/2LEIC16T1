@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:sportspotter/utils.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: Utils.messengerKey,
       debugShowCheckedModeBanner: false,
       title: 'SportSpotter',
       theme: ThemeData(primarySwatch: Colors.blueGrey),

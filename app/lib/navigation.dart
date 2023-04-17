@@ -9,7 +9,7 @@ import 'package:sportspotter/models/facility.dart';
 import 'package:sportspotter/models/review.dart';
 import 'package:sportspotter/models/tag.dart';
 import 'package:sportspotter/profile_page.dart';
-import 'package:sportspotter/register.dart';
+import 'package:sportspotter/widgets/register_widget.dart';
 import 'package:sportspotter/search_page.dart';
 
 
@@ -48,7 +48,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                       onTap: () {
                         if (widget.selectedIndex != 3) {
                           Navigator.push(context, PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) => RegistrationPage(),
+                              pageBuilder: (context, animation1, animation2) => const ProfileScreen(),
                               transitionDuration: Duration.zero,
                               reverseTransitionDuration: Duration.zero));
                         }

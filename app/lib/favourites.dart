@@ -11,7 +11,7 @@ class FavouritesScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text('Favourites Screen'),
+          title: const Text('Favourites'),
         ),
         body: Stack(
           children: const [
