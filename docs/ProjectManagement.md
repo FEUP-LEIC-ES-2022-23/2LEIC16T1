@@ -3,7 +3,7 @@
 You can find below information and references related with the project management in our team: 
 
 * Backlog management: Product backlog and Iteration backlog in a [Github Projects board](https://github.com/orgs/FEUP-LEIC-ES-2022-23/projects/26);
-* Release management: [v0](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.1), [v1](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.2), v2, v3, v...;
+* Release management: [v0](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.1), [v1](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.2), [v2](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.3), v3, v...;
 * Iteration planning and retrospectives: 
   * ### Iteration 1
      Start of Iteration
