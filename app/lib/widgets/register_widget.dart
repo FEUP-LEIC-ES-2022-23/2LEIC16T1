@@ -3,7 +3,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 import '../utils.dart';
 
@@ -27,7 +26,6 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   final lastNameController = TextEditingController();
   final usernameController = TextEditingController();
   final birthdateController = TextEditingController();
-  final databaseReference = FirebaseDatabase.instance.ref();
 
   @override
   void dispose() {
@@ -148,17 +146,9 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     );
   }
 
-  Future<void> register() async {
+  Future register() async {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
 
     try {
       // Create the user in Firebase Authentication
@@ -183,6 +173,5 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       Utils.showErrorBar(e.message);
     }
 
-    Navigator.of(context, rootNavigator: true).pop();
   }
 }
