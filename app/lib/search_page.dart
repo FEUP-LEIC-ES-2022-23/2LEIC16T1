@@ -45,7 +45,7 @@ class CustomSearch extends SearchDelegate {
   List<String> data = [];
 
   Future<void> getSelfCoordinates() async {
-    LocationData? locationData = await getLocation();
+    LocationData? locationData = await getLocation(Location());
     if (locationData != null) {
       String? address = await getAddressFromCoordinates(locationData.latitude!, locationData.longitude!);
       if(address == null) {
