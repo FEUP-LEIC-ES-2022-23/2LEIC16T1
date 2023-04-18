@@ -41,8 +41,9 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   google_maps_flutter: ^2.2.5
   dropdown_search: ^5.0.6
-  mockito: ^5.0.0
   glob: ^2.1.1
+  mockito: ^5.4.0
+
   # import google maps webservice
   google_maps_webservice_ex: ^0.0.1+2
 
