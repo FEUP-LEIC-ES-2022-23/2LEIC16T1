@@ -4,7 +4,9 @@ import 'package:sportspotter/main.dart';
 
 
 void main() {
-  testWidgets('Display search bar when I click on the search page button', (WidgetTester tester) async {
+  group('Search Page', () {
+  testWidgets('Display search bar when I click on the search page button', (
+      WidgetTester tester) async {
     await tester.pumpWidget(MyApp());
     final searchButton = find.text('Search');
     expect(searchButton, findsOneWidget);
@@ -15,7 +17,8 @@ void main() {
     expect(searchBar, findsOneWidget);
   });
 
-  testWidgets('I can search information on the search bar', (WidgetTester tester) async {
+  testWidgets('I can search information on the search bar', (
+      WidgetTester tester) async {
     await tester.pumpWidget(MyApp());
 
     final searchButton = find.text('Search');
@@ -40,4 +43,5 @@ void main() {
     final Finder locationListFinder = find.byIcon(Icons.search);
     expect(locationListFinder, findsNothing); // this means we pressed enter
   });
+});
 }
