@@ -80,8 +80,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          _buildProfileInfoItem('Full Name',
-                              '${userData?['firstName']} ${userData?['lastName']}'),
                           _buildProfileInfoItem(
                               'Email Address', userData?['email'] ?? ''),
                           const SizedBox(height: 20),

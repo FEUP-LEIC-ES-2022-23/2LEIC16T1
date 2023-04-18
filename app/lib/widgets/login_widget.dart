@@ -89,12 +89,6 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
   Future logIn() async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) => const Center(child: CircularProgressIndicator())
-    );
-
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text.trim(),
@@ -104,6 +98,5 @@ class _LoginWidgetState extends State<LoginWidget> {
       Utils.showErrorBar(e.message);
     }
 
-    Navigator.of(context, rootNavigator: true).pop();
   }
 }
