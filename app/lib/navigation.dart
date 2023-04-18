@@ -8,7 +8,8 @@ import 'package:sportspotter/models/data_service.dart';
 import 'package:sportspotter/models/facility.dart';
 import 'package:sportspotter/models/review.dart';
 import 'package:sportspotter/models/tag.dart';
-import 'package:sportspotter/profile.dart';
+import 'package:sportspotter/profile_page.dart';
+import 'package:sportspotter/widgets/register_widget.dart';
 import 'package:sportspotter/search_page.dart';
 
 
