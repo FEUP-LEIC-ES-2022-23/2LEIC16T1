@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:sportspotter/models/facility.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:sportspotter/google_maps/google_maps.dart';
 import 'package:sportspotter/tools/location.dart';
 import 'package:sportspotter/tools/geocoding.dart';
 
 import 'facility_page.dart';
+import 'models/data_service.dart';
 
 class SearchScreen extends StatelessWidget {
   final String customMapStyle =
@@ -27,6 +27,7 @@ class SearchScreen extends StatelessWidget {
               showSearch(context: context, delegate: CustomSearch());
             }),
         title: GestureDetector(
+          key: Key("search bar"),
           onTap: () {
             showSearch(
               context: context,
@@ -45,7 +46,7 @@ class CustomSearch extends SearchDelegate {
   List<String> data = [];
 
   Future<void> getSelfCoordinates() async {
-    LocationData? locationData = await getLocation();
+    LocationData? locationData = await getLocation(Location());
     if (locationData != null) {
       String? address = await getAddressFromCoordinates(locationData.latitude!, locationData.longitude!);
       if(address == null) {
@@ -60,10 +61,23 @@ class CustomSearch extends SearchDelegate {
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-          onPressed: () {
-            query = '';
-          },
-          icon: const Icon(Icons.clear))
+        onPressed: () {
+          query = '';
+        },
+        icon: const Icon(Icons.clear),
+      ),
+      TextButton(
+        onPressed: () {
+          showResults(context);
+        },
+        child: IconButton(
+            key: Key('search-icon'), // set the key property
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              showResults(context);
+            }
+        ),
+      ),
     ];
   }
 
@@ -109,9 +123,16 @@ class CustomSearch extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
+    //List<Pair<Pair<"name","id">, LatLng>>
     final coordinates = getCoordinates(query).then((value){
-      final places = findPlaces(value.second);
-      return places.then((locations) => [value] + locations);
+      final places = findPlaces(value);
+      return places.then((locations) {
+        if (value.first == query) {
+          return [Pair(Pair(value.first, ""), value.second)] + locations;
+        } else {
+          return locations;
+        }
+      });
     });
 
     return StatefulBuilder(builder: (context, setState) {
@@ -126,7 +147,8 @@ class CustomSearch extends SearchDelegate {
             return Column(
               children: [
                 Expanded(
-                  child: MapScreen(showMap: true, coordinates: snapshot.data),
+                  key: Key("results-map"),
+                  child: MapScreen(showMap: true, coordinates: snapshot.data, context: context),
                 ),
                 Expanded(
                   child: ListView.builder(
@@ -136,17 +158,29 @@ class CustomSearch extends SearchDelegate {
                         return Container();
                       }
 
-                      var facilityName = snapshot.data[index].first;
                         var listTile = ListTile(
-                          title: Text(facilityName),
+                          key: Key("results-list"),
+                          title: Text(snapshot.data[index].first.first),
                           onTap: () {
-                            Navigator.push(context, PageRouteBuilder(
-                                pageBuilder: (context, animation1, animation2) => FacilityPage(
-                                    facility: Facility(name: facilityName, photo: "error-image-generic.png", phoneNumber: "912345678", address: "Rio Tinto", email: "ginasio@gmail.com"),
-                                ),
-                                transitionDuration: Duration.zero,
-                                reverseTransitionDuration: Duration.zero));
-                          },
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return const Center(
+                                  child: CircularProgressIndicator(color: Colors.white),
+                                );
+                              },
+                            );
+
+                            DataService.fetchFacility(snapshot.data[index].first.second).then((selectedFacility){
+                              Navigator.of(context).pop();
+                              Navigator.push(context, PageRouteBuilder(
+                                  pageBuilder: (context, animation1, animation2) => FacilityPage(facility: selectedFacility),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero
+                              ));
+                            });
+                          }
                         );
                         return listTile;
                     },
@@ -173,23 +207,24 @@ class MapScreen extends StatelessWidget {
   MapScreen(
       {Key? key,
       required bool showMap,
-      List<Pair<String, LatLng>>? coordinates})
+      List<Pair<Pair<String, String>, LatLng>>? coordinates,
+      required BuildContext context})
       : super(key: key) {
     if (showMap) {
       cameraPosition = coordinates![0].second;
-      markers = buildMarkers(coordinates);
+      markers = buildMarkers(coordinates, context);
     }
   }
 
-  Set<Marker> buildMarkers(List<Pair<String, LatLng>> coordinates) {
+  Set<Marker> buildMarkers(List<Pair<Pair<String, String>, LatLng>> coordinates, BuildContext context) {
     Set<Marker> markers_ = {};
     BitmapDescriptor blueMarker =
         BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
     BitmapDescriptor redMarker =
         BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
-    markers_.add(buildMarker(coordinates[0], blueMarker, 2));
+    markers_.add(buildMarker(coordinates[0], blueMarker, 2, context));
     for (int i = 1; i < coordinates.length; i++) {
-      markers_.add(buildMarker(coordinates[i], redMarker, 1));
+      markers_.add(buildMarker(coordinates[i], redMarker, 1, context));
     }
     return markers_;
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sportspotter/models/data_service.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sportspotter/utils.dart';
@@ -9,6 +10,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  DataService.getTags();
   runApp(const MyApp());
 }
 

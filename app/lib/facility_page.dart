@@ -1,4 +1,9 @@
+import 'dart:ui';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:sportspotter/models/data_service.dart';
 import 'package:sportspotter/navigation.dart';
 
 import 'models/facility.dart';
@@ -42,30 +47,18 @@ class _FacilityPageState extends State<FacilityPage> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                (widget.facility.photo == "") ?
                   Image.asset(
                     'assets/images/error-image-generic.png',
-                    fit: BoxFit.cover,
                     width: MediaQuery.of(context).size.width,
-                    height: 200
-                  ),
-                // colocar imagem aqui
-                /*
-                FutureBuilder(
-                  future: widget.facility.photo,
-                  builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasData){
-                      return Image.network(
-                        snapshot.data!,
-                        width: MediaQuery.of(context).size.width,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      );
-                    }
-                    else {
-                      return const CircularProgressIndicator();
-                    }
-                  }
-                ),*/
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ) : Image.network(
+                  widget.facility.photo,
+                  width: MediaQuery.of(context).size.width,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
                 Text(
                   widget.facility.name,
                   style: const TextStyle(
@@ -99,8 +92,82 @@ class _FacilityPageState extends State<FacilityPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Wrap(
-                              /*children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(7),
+                                child: const Icon(
+                                  Icons.house_sharp,
+                                  color: Color.fromRGBO(94, 97, 115, 1),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  widget.facility.address,
+                                  style: const TextStyle(
+                                    color: Color.fromRGBO(94, 97, 115, 1),
+                                    fontSize: 17,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(7),
+                                child: const Icon(
+                                  Icons.phone,
+                                  color: Color.fromRGBO(94, 97, 115, 1),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  widget.facility.phoneNumber,
+                                  style: const TextStyle(
+                                    color: Color.fromRGBO(94, 97, 115, 1),
+                                    fontSize: 17,
+                                  ),
+                                  overflow: TextOverflow.clip,
+                                  maxLines: 1,
+                                ),
+                              )
+                            ],
+                          ),
+                          DropdownSearch<String>.multiSelection(
+                            popupProps: const PopupPropsMultiSelection.dialog(
+                              showSearchBox: true,
+                              searchDelay: Duration(seconds: 0),
+                              searchFieldProps: TextFieldProps(
+                                autofocus: true,
+                              ),
+                            ),
+                            dropdownDecoratorProps: const DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                labelText: "Add or remove tags for this facility",
+                                contentPadding: EdgeInsets.all(5),
+                                border: InputBorder.none,
+                              )
+                            ),
+                            dropdownButtonProps: const DropdownButtonProps(
+                              icon: Icon(
+                                Icons.add_box,
+                                size: 30,
+                              )
+                            ),
+                            items: DataService.availableTags,
+                            selectedItems: widget.facility.tags.map((tag) => tag.name).toList(),
+                            onChanged: (List<String>? selectedTags) {
+                              final ref = FirebaseFirestore.instance.collection('facility').doc(widget.facility.id);
+
+                              ref.update({'tags': selectedTags?.map((tag) =>
+                                FirebaseFirestore.instance.collection('tags').doc(tag)).toList()});
+                            },
+                          ),
+                          /*Wrap(
+                              children: [
                                 for (int i = 0; i < widget.facility.tags.length; i++)
                                   Container(
                                       width: 90,
@@ -113,11 +180,12 @@ class _FacilityPageState extends State<FacilityPage> {
                                       alignment: Alignment.center,
                                       child: Text(
                                         widget.facility.tags[i].name,
-                                        style: const TextStyle(fontSize: 12),
+                                        style: const TextStyle(fontSize: 13),
+                                        overflow: TextOverflow.ellipsis,
                                       )
                                   ),
-                              ]*/
-                          ),
+                              ]
+                          ),*/
                           /*Row(
                             children: [
                               for (int i = 0; i < 5; i++)

@@ -5,6 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:google_maps_webservice_ex/places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../facility_page.dart';
+import '../models/data_service.dart';
+
 const apiKey = "AIzaSyAJTKPI8KJ_ulnXi-EuQN_5yrJbn5-cHP8";
 
 class Pair<A, B> {
@@ -30,48 +33,65 @@ Future<Pair<String, LatLng>> getCoordinates(String address) async {
   final lat = data['results'][0]['geometry']['location']['lat'];
   final lng = data['results'][0]['geometry']['location']['lng'];
   final latLng = LatLng(lat, lng);
+
+  if (data['results'][0]['geometry']['location_type'] == 'ROOFTOP'){
+    address = data['results'][0]['place_id'];
+  }
+
   return Pair(address, latLng);
 }
 
-Future<List<Pair<String, LatLng>>> buildCoordinates(List<String> addresses) async {
-
-  List<Pair<String, LatLng>> coordinates = [];
-  //ask for the coordinates of the addresses
-  for(String address in addresses){
-    try{
-      coordinates.add(await getCoordinates(address));
-    }catch(e){
-      print(e);
-    }
-  }
-
-  return coordinates;
-}
-
-Marker buildMarker(Pair<String, LatLng> coordinates, BitmapDescriptor icon, double zIndex){
+Marker buildMarker(Pair<Pair<String, String>, LatLng> coordinates, BitmapDescriptor icon, double zIndex, BuildContext context){
     Marker marker = Marker(
-      markerId: MarkerId(coordinates.first),
+      markerId: MarkerId(coordinates.first.second),
       position: coordinates.second,
       icon: icon,
       zIndex: zIndex,
       infoWindow: InfoWindow(
-        title: coordinates.first,
+        title: coordinates.first.first,
+        onTap: () {
+          if (coordinates.first.second == "") return;
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              );
+            },
+          );
+
+          DataService.fetchFacility(coordinates.first.second).then((selectedFacility){
+            Navigator.of(context).pop();
+            Navigator.push(context, PageRouteBuilder(
+                pageBuilder: (context, animation1, animation2) => FacilityPage(facility: selectedFacility),
+                transitionDuration: Duration.zero,
+                reverseTransitionDuration: Duration.zero
+            ));
+          });
+        }
       ),
     );
 
   return marker;
 }
 
-Future<List<Pair<String, LatLng>>> findPlaces(LatLng source) async {
+Future<List<Pair<Pair<String, String>, LatLng>>> findPlaces(Pair<String,LatLng> source) async {
   final places = GoogleMapsPlaces(apiKey: apiKey);
   final response = await places.searchNearbyWithRadius(
-    Location(lat: source.latitude, lng: source.longitude),
+    Location(lat: source.second.latitude, lng: source.second.longitude),
     10000,
     type: 'gym',
   );
-  List<Pair<String, LatLng>> facilities = [];
+  List<Pair<Pair<String, String>, LatLng>> facilities = [];
   for(PlacesSearchResult place in response.results){
-    facilities.add(Pair(place.name, LatLng(place.geometry!.location.lat, place.geometry!.location.lng)));
+    if (place.placeId == source.first){
+      facilities.insert(0, Pair(Pair(place.name, place.placeId),
+          LatLng(place.geometry!.location.lat, place.geometry!.location.lng)));
+    } else {
+      facilities.add(Pair(Pair(place.name, place.placeId),
+          LatLng(place.geometry!.location.lat, place.geometry!.location.lng)));
+    }
   }
   return facilities;
 }
