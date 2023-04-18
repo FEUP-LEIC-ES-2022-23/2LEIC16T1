@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -22,12 +23,20 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final usernameController = TextEditingController();
+  final birthdateController = TextEditingController();
   final databaseReference = FirebaseDatabase.instance.ref();
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    usernameController.dispose();
+    birthdateController.dispose();
 
     super.dispose();
   }
@@ -35,9 +44,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Form(
+      body: SingleChildScrollView(
+        child: Form(
             key: formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,7 +73,47 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                   obscureText: true,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) => value != null && value.length < 6
-                      ? "Password needs to be atleast 6 characters"
+                      ? "Password needs to be at least 6 characters"
+                      : null,
+                ),
+                const SizedBox(height: 4),
+                TextFormField(
+                  controller: firstNameController,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(labelText: "FIRST NAME"),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => value != null && value.isEmpty
+                      ? "Please enter your first name"
+                      : null,
+                ),
+                const SizedBox(height: 4),
+                TextFormField(
+                  controller: lastNameController,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(labelText: "LAST NAME"),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => value != null && value.isEmpty
+                      ? "Please enter your last name"
+                      : null,
+                ),
+                const SizedBox(height: 4),
+                TextFormField(
+                  controller: usernameController,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(labelText: "USERNAME"),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => value != null && value.isEmpty
+                      ? "Please enter your username"
+                      : null,
+                ),
+                const SizedBox(height: 4),
+                TextFormField(
+                  controller: birthdateController,
+                  textInputAction: TextInputAction.done,
+                  decoration: const InputDecoration(labelText: "BIRTHDATE"),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => value != null && value.isEmpty
+                      ? "Please enter your birthdate"
                       : null,
                 ),
                 const SizedBox(height: 20),
@@ -96,26 +144,41 @@ class _RegisterWidgetState extends State<RegisterWidget> {
               ],
             ),
           ),
-        ],
       ),
     );
   }
 
-  Future register() async {
+  Future<void> register() async {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
 
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) =>
-            const Center(child: CircularProgressIndicator()));
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
 
     try {
+      // Create the user in Firebase Authentication
+      final userCredential =
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+
+      // Add the additional user data to the Firebase Database
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(userCredential.user!.uid)
+          .set({
+        'email': emailController.text.trim(),
+        'firstName': firstNameController.text.trim(),
+        'lastName': lastNameController.text.trim(),
+        'username': usernameController.text.trim(),
+        'birthdate': birthdateController.text.trim(),
+      });
     } on FirebaseAuthException catch (e) {
       Utils.showErrorBar(e.message);
     }
