@@ -27,6 +27,7 @@ class SearchScreen extends StatelessWidget {
               showSearch(context: context, delegate: CustomSearch());
             }),
         title: GestureDetector(
+          key: Key("search bar"),
           onTap: () {
             showSearch(
               context: context,
@@ -60,10 +61,23 @@ class CustomSearch extends SearchDelegate {
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-          onPressed: () {
-            query = '';
-          },
-          icon: const Icon(Icons.clear))
+        onPressed: () {
+          query = '';
+        },
+        icon: const Icon(Icons.clear),
+      ),
+      TextButton(
+        onPressed: () {
+          showResults(context);
+        },
+        child: IconButton(
+            key: Key('search-icon'), // set the key property
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              showResults(context);
+            }
+        ),
+      ),
     ];
   }
 
@@ -133,6 +147,7 @@ class CustomSearch extends SearchDelegate {
             return Column(
               children: [
                 Expanded(
+                  key: Key("results-map"),
                   child: MapScreen(showMap: true, coordinates: snapshot.data, context: context),
                 ),
                 Expanded(
@@ -144,6 +159,7 @@ class CustomSearch extends SearchDelegate {
                       }
 
                         var listTile = ListTile(
+                          key: Key("results-list"),
                           title: Text(snapshot.data[index].first.first),
                           onTap: () {
                             showDialog(
