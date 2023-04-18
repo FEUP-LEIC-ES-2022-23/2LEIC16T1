@@ -3,8 +3,6 @@ import 'navigation.dart';
 
 
 class FavouritesScreen extends StatelessWidget {
-  final String customMapStyle =
-      '[ { "featureType": "water", "elementType": "geometry.fill", "stylers": [ { "color": "#0099dd" } ] } ]';
 
   const FavouritesScreen({Key? key}) : super(key: key);
 
@@ -13,7 +11,7 @@ class FavouritesScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text('Favourites Screen'),
+          title: const Text('Favourites'),
         ),
         body: Stack(
           children: const [
