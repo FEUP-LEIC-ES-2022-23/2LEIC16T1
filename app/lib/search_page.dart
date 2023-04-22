@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -5,6 +8,7 @@ import 'package:sportspotter/navigation.dart';
 import 'package:sportspotter/google_maps/google_maps.dart';
 import 'package:sportspotter/tools/location.dart';
 import 'package:sportspotter/tools/geocoding.dart';
+import 'package:sportspotter/widgets/search_dropdown.dart';
 
 import 'facility_page.dart';
 import 'models/data_service.dart';
@@ -44,6 +48,7 @@ class SearchScreen extends StatelessWidget {
 
 class CustomSearch extends SearchDelegate {
   List<String> data = [];
+  double radius = 10;
 
   Future<void> getSelfCoordinates() async {
     LocationData? locationData = await getLocation(Location());
@@ -65,6 +70,12 @@ class CustomSearch extends SearchDelegate {
           query = '';
         },
         icon: const Icon(Icons.clear),
+      ),
+      IconButton(
+        onPressed: () {
+          editSearchSettings(context);
+        },
+        icon: const Icon(Icons.filter_alt)
       ),
       TextButton(
         onPressed: () {
@@ -193,6 +204,94 @@ class CustomSearch extends SearchDelegate {
         },
       );
     });
+  }
+
+  editSearchSettings(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(25)
+          )
+        ),
+        isScrollControlled: true,
+        builder: (context) {
+          return DraggableScrollableSheet(
+              initialChildSize: 0.5,
+              minChildSize: 0.3,
+              maxChildSize: 0.75,
+              expand: false,
+            builder: (context, scrollController) {
+              return ListView(
+                controller: scrollController,
+                padding: const EdgeInsets.all(20),
+                children: [
+                  const Center(
+                    child: Text(
+                      "Options",
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromRGBO(94, 97, 115, 1)
+                      ),
+                    )
+                  ),
+                  Row(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(right: 20, top: 30, bottom: 30),
+                        child: Text(
+                          'Tag',
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Color.fromRGBO(94, 97, 115, 1)
+                          )
+                        ),
+                      ),
+                      Expanded(
+                          child: SearchDropdown(items: DataService.availableTags)
+                      ),
+                    ],
+                  ),
+                  StatefulBuilder(
+                    builder: (context, state) {
+                      return Row(
+                        children: [
+                          const Text("5"),
+                          Expanded(
+                            child: Slider(
+                              value: radius,
+                              divisions: 9,
+                              min: 5,
+                              max: 50,
+                              label: "${(radius.round()).toString()} km",
+                              onChanged: (value) {
+                                state(() {
+                                  radius = value;
+                                });
+                              },
+                            ),
+                          ),
+                          const Text("50")
+                        ]
+                      );
+                    }
+                  ),
+                  const Center(
+                    child: Text(
+                      "Search radius (km)",
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: Color.fromRGBO(94, 97, 115, 1)
+                      ),
+                    ),
+                  )
+                ],
+              );
+            }
+          );
+        }
+    );
   }
 
 }
