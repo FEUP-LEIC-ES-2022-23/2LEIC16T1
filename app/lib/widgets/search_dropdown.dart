@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SearchDropdown extends StatefulWidget {
@@ -106,7 +105,6 @@ class _SearchDropdownState extends State<SearchDropdown> {
                       setState(() {
                         _controller.text = item;
                         _controller.selection = TextSelection.fromPosition(TextPosition(offset: _controller.text.length));
-                        _filteredItems = widget.items;
                       });
                     },
                     child: Padding(
