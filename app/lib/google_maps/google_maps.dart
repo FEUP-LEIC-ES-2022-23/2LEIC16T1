@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../facility_page.dart';
 import '../models/data_service.dart';
+import '../models/tag.dart';
 
 const apiKey = "AIzaSyAJTKPI8KJ_ulnXi-EuQN_5yrJbn5-cHP8";
 
@@ -76,15 +77,17 @@ Marker buildMarker(Pair<Pair<String, String>, LatLng> coordinates, BitmapDescrip
   return marker;
 }
 
-Future<List<Pair<Pair<String, String>, LatLng>>> findPlaces(Pair<String,LatLng> source) async {
+Future<List<Pair<Pair<String, String>, LatLng>>> findPlaces(Pair<String,LatLng> source, int radius, List<String> filter) async {
   final places = GoogleMapsPlaces(apiKey: apiKey);
   final response = await places.searchNearbyWithRadius(
     Location(lat: source.second.latitude, lng: source.second.longitude),
-    10000,
+    radius,
     type: 'gym',
   );
   List<Pair<Pair<String, String>, LatLng>> facilities = [];
-  for(PlacesSearchResult place in response.results){
+  for(PlacesSearchResult place in response.results) {
+    List<Tag> tags = await DataService().fetchFacilityTags(place.placeId);
+    if (tags.isEmpty || tags[0].name  != "outdoor") continue;
     if (place.placeId == source.first){
       facilities.insert(0, Pair(Pair(place.name, place.placeId),
           LatLng(place.geometry!.location.lat, place.geometry!.location.lng)));

@@ -129,12 +129,12 @@ class CustomSearch extends SearchDelegate {
       },
     );
   }
-
   @override
   Widget buildResults(BuildContext context) {
     //List<Pair<Pair<"name","id">, LatLng>>
+    List<String> filters = ["outdoor"];
     final coordinates = getCoordinates(query).then((value){
-      final places = findPlaces(value);
+      final places = findPlaces(value, 10000, filters);
       return places.then((locations) {
         if (value.first == query) {
           return [Pair(Pair(value.first, ""), value.second)] + locations;

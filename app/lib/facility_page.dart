@@ -163,7 +163,7 @@ class _FacilityPageState extends State<FacilityPage> {
                               final ref = FirebaseFirestore.instance.collection('facility').doc(widget.facility.id);
 
                               ref.update({'tags': selectedTags?.map((tag) =>
-                                FirebaseFirestore.instance.collection('tags').doc(tag)).toList()});
+                                FirebaseFirestore.instance.collection('tag').doc(tag)).toList()});
                             },
                           ),
                           /*Wrap(
