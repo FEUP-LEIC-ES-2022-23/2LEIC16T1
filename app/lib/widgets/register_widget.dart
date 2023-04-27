@@ -224,7 +224,7 @@ class _DateFormFieldState extends State<DateFormField> {
           context: context,
           initialDate: _selectedDate ?? DateTime.now(),
           firstDate: DateTime(1920),
-          lastDate: DateTime.now(),
+          lastDate: DateTime.now()
         );
         if (picked != null) {
           setState(() {

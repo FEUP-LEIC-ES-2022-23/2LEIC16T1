@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sportspotter/models/data_service.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,6 +23,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       scaffoldMessengerKey: Utils.messengerKey,
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('pt', 'PT'),
+        Locale('en', 'US'),
+      ],
+      locale: const Locale('pt'),
       title: 'SportSpotter',
       theme: ThemeData(primarySwatch: Colors.blueGrey),
       home: const MyHomePage(),
