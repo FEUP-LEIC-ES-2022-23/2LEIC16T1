@@ -72,10 +72,14 @@ class _SearchDropdownState extends State<SearchDropdown> {
               _boxHeight = 200;
             },
             onTapOutside: (tap) {
-              inputFocus.unfocus();
-              _boxHeight = 0;
-              if (!_filteredItems.contains(_controller.text)) {
-                _controller.text = '';
+              if (inputFocus.hasFocus){
+                inputFocus.unfocus();
+                _boxHeight = 0;
+                if (!_filteredItems.contains(_controller.text)) {
+                  _controller.text = '';
+                } else if (widget.onChanged != null) {
+                  widget.onChanged!(_controller.text);
+                }
               }
             },
             onEditingComplete: () {

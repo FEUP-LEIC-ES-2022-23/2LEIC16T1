@@ -206,96 +206,98 @@ class CustomSearch extends SearchDelegate {
   }
 
   editSearchSettings(BuildContext context) {
-    return showModalBottomSheet(
+    return showDialog(
         context: context,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-                top: Radius.circular(25)
-            )
-        ),
-        isScrollControlled: true,
         builder: (context) {
           return StatefulBuilder(
               builder: (context, state) {
-                return ListView(
-                  padding: const EdgeInsets.all(20),
-                  children: [
-                    const Center(
-                        child: Text(
-                          "Options",
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromRGBO(94, 97, 115, 1)
-                          ),
-                        )
-                    ),
-                    for (int i = 1; i <= 5; i++)
-                    Row(
+                return AlertDialog(
+                    contentPadding: const EdgeInsets.only(top: 10.0),
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                  content: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.85,
+                    height: 550,
+                    child: ListView(
+                      padding: const EdgeInsets.all(20),
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              right: 20, top: 30, bottom: 20),
-                          child: Text(
-                              'Tag #$i',
-                              style: const TextStyle(
-                                  fontSize: 17,
+                        const Center(
+                            child: Text(
+                              "Options",
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
                                   color: Color.fromRGBO(94, 97, 115, 1)
-                              )
-                          ),
-                        ),
-                        Expanded(
-                            child: SearchDropdown(
-                              selectedItem: filters[i-1],
-                              items: DataService.availableTags,
-                              onChanged: (item) {
-                                filters[i-1] = item;
-                              },
+                              ),
                             )
                         ),
-                      ],
-                    ),
-                    Row(
-                        children: [
-                          const Text("5"),
-                          Expanded(
-                            child: Slider(
-                              value: radius,
-                              divisions: 9,
-                              min: 5,
-                              max: 50,
-                              label: "${(radius.round())
-                                  .toString()} km",
-                              onChanged: (value) {
-                                state(() {
-                                  radius = value;
-                                });
-                              },
+                        for (int i = 1; i <= 5; i++)
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 20, top: 30, bottom: 20),
+                              child: Text(
+                                  'Tag #$i',
+                                  style: const TextStyle(
+                                      fontSize: 17,
+                                      color: Color.fromRGBO(94, 97, 115, 1)
+                                  )
+                              ),
+                            ),
+                            Expanded(
+                                child: SearchDropdown(
+                                  selectedItem: filters[i-1],
+                                  items: DataService.availableTags,
+                                  onChanged: (item) {
+                                    filters[i-1] = item;
+                                  },
+                                )
+                            ),
+                          ],
+                        ),
+                        Row(
+                            children: [
+                              const Text("5"),
+                              Expanded(
+                                child: Slider(
+                                  value: radius,
+                                  divisions: 9,
+                                  min: 5,
+                                  max: 50,
+                                  label: "${(radius.round())
+                                      .toString()} km",
+                                  onChanged: (value) {
+                                    state(() {
+                                      radius = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                              const Text("50")
+                            ]
+                        ),
+                        const Center(
+                          child: Text(
+                            "Search radius (km)",
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: Color.fromRGBO(94, 97, 115, 1)
                             ),
                           ),
-                          const Text("50")
-                        ]
-                    ),
-                    const Center(
-                      child: Text(
-                        "Search radius (km)",
-                        style: TextStyle(
-                            fontSize: 17,
-                            color: Color.fromRGBO(94, 97, 115, 1)
                         ),
-                      ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text(
+                            "Save",
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: Colors.white
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text(
-                        "Save",
-                        style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.white
-                        ),
-                      ),
-                    )
-                  ],
+                  )
                 );
               }
           );
