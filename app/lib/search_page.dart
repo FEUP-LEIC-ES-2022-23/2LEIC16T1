@@ -132,7 +132,7 @@ class CustomSearch extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     //List<Pair<Pair<"name","id">, LatLng>>
-    List<String> filters = ["outdoor"];
+    List<String> filters = ["outdoor", "badminton"]; //"badminton", "outdoor"
     final coordinates = getCoordinates(query).then((value){
       final places = findPlaces(value, 10000, filters);
       return places.then((locations) {

@@ -30,16 +30,16 @@ class DataService {
         }
       });
 
-  Future<List<Tag>> fetchFacilityTags(String id) => FirebaseFirestore.instance
+  Future<List<String>> fetchFacilityTags(String id) => FirebaseFirestore.instance
       .collection('facility')
       .doc(id).get().then((doc) async {
     if (!doc.exists) {
       return [];
     } else {
-      List<Tag> tags = [];
+      List<String> tags = [];
       for (var reference in doc.data()!['tags']){
         final snapshot = await reference.get();
-        tags.add(Tag.fromJson(snapshot.id, snapshot.data() as Map<String, dynamic>));
+        tags.add(snapshot.id);
       }
       return tags;
     }

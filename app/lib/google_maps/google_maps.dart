@@ -78,6 +78,45 @@ Marker buildMarker(Pair<Pair<String, String>, LatLng> coordinates, BitmapDescrip
 }
 
 Future<List<Pair<Pair<String, String>, LatLng>>> findPlaces(Pair<String,LatLng> source, int radius, List<String> filter) async {
+  if (filter.isEmpty) return findPlacesWithoutFilters(source, radius);
+
+  final places = GoogleMapsPlaces(apiKey: apiKey);
+  final response = await places.searchNearbyWithRadius(
+    Location(lat: source.second.latitude, lng: source.second.longitude),
+    radius,
+    type: 'gym',
+  );
+
+  List<Pair<Pair<Pair<String, String>, LatLng>, int>> facilitiesWithWeight = [];
+  for(PlacesSearchResult place in response.results) {
+    List<String> tags = await DataService().fetchFacilityTags(place.placeId);
+    if (!tags.contains(filter[0])) continue; // this filter is mandatory
+    int weight = 0;
+    for (int i = 1; i < filter.length; i++) {
+      if (tags.contains(filter[i])) weight++;
+    }
+
+    if (place.placeId == source.first) {
+      facilitiesWithWeight.insert(0, Pair(Pair(Pair(place.name, place.placeId),
+          LatLng(place.geometry!.location.lat, place.geometry!.location.lng)),
+          weight));
+    } else {
+      facilitiesWithWeight.add(Pair(Pair(Pair(place.name, place.placeId),
+          LatLng(place.geometry!.location.lat, place.geometry!.location.lng)),
+          weight));
+    }
+  }
+
+  facilitiesWithWeight.sort((a, b) => b.second.compareTo(a.second)); // sort according to the weight of the facility
+  List<Pair<Pair<String, String>, LatLng>> facilities = [];
+  for (Pair<Pair<Pair<String, String>, LatLng>, int> p in facilitiesWithWeight) {
+    facilities.add(p.first);
+  }
+
+  return facilities;
+}
+
+Future<List<Pair<Pair<String, String>, LatLng>>> findPlacesWithoutFilters(Pair<String,LatLng> source, int radius) async {
   final places = GoogleMapsPlaces(apiKey: apiKey);
   final response = await places.searchNearbyWithRadius(
     Location(lat: source.second.latitude, lng: source.second.longitude),
@@ -86,8 +125,6 @@ Future<List<Pair<Pair<String, String>, LatLng>>> findPlaces(Pair<String,LatLng> 
   );
   List<Pair<Pair<String, String>, LatLng>> facilities = [];
   for(PlacesSearchResult place in response.results) {
-    List<Tag> tags = await DataService().fetchFacilityTags(place.placeId);
-    if (tags.isEmpty || tags[0].name  != "outdoor") continue;
     if (place.placeId == source.first){
       facilities.insert(0, Pair(Pair(place.name, place.placeId),
           LatLng(place.geometry!.location.lat, place.geometry!.location.lng)));
