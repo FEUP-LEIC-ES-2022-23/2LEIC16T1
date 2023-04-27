@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-
 import '../utils.dart';
 
 class RegisterWidget extends StatefulWidget {
@@ -45,118 +44,125 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 40),
-                const Text("REGISTER",
-                    style:
-                        TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 40),
-                TextFormField(
-                  controller: emailController,
-                  textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: "EMAIL"),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (email) =>
-                      email != null && !EmailValidator.validate(email)
-                          ? "Enter a valid email"
-                          : null,
-                ),
-                const SizedBox(height: 4),
-                TextFormField(
-                  controller: passwordController,
-                  textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: "PASSWORD"),
-                  obscureText: true,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => value != null && value.length < 6
-                      ? "Password needs to be at least 6 characters"
-                      : null,
-                ),
-                const SizedBox(height: 4),
-                TextFormField(
-                  controller: firstNameController,
-                  textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: "FIRST NAME"),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => value != null && value.isEmpty
-                      ? "Please enter your first name"
-                      : null,
-                ),
-                const SizedBox(height: 4),
-                TextFormField(
-                  controller: lastNameController,
-                  textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: "LAST NAME"),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => value != null && value.isEmpty
-                      ? "Please enter your last name"
-                      : null,
-                ),
-                const SizedBox(height: 4),
-                TextFormField(
-                  controller: usernameController,
-                  textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: "USERNAME"),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => value != null && value.isEmpty
-                      ? "Please enter your username"
-                      : null,
-                ),
-                const SizedBox(height: 4),
-                TextFormField(
-                  controller: birthdateController,
-                  textInputAction: TextInputAction.done,
-                  decoration: const InputDecoration(labelText: "BIRTHDATE"),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => value != null && value.isEmpty
-                      ? "Please enter your birthdate"
-                      : null,
-                ),
-                const SizedBox(height: 20),
-                RichText(
-                  text: TextSpan(
-                    style: const TextStyle(
-                      color: Colors.black,
-                    ),
-                    text: "Already have an account?  ",
-                    children: [
-                      TextSpan(
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = widget.onClickLogIn,
-                        text: 'Log In',
-                        style: const TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                    ],
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 40),
+              const Text("REGISTER",
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 40),
+              TextFormField(
+                controller: emailController,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(labelText: "EMAIL"),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (email) =>
+                    email != null && !EmailValidator.validate(email)
+                        ? "Enter a valid email"
+                        : null,
+              ),
+              const SizedBox(height: 4),
+              TextFormField(
+                controller: passwordController,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(labelText: "PASSWORD"),
+                obscureText: true,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => value != null && value.length < 6
+                    ? "Password needs to be at least 6 characters"
+                    : null,
+              ),
+              const SizedBox(height: 4),
+              TextFormField(
+                controller: firstNameController,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(labelText: "FIRST NAME"),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => value != null && value.isEmpty
+                    ? "Please enter your first name"
+                    : null,
+              ),
+              const SizedBox(height: 4),
+              TextFormField(
+                controller: lastNameController,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(labelText: "LAST NAME"),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => value != null && value.isEmpty
+                    ? "Please enter your last name"
+                    : null,
+              ),
+              const SizedBox(height: 4),
+              TextFormField(
+                controller: usernameController,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(labelText: "USERNAME"),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => value != null && value.isEmpty
+                    ? "Please enter your username"
+                    : null,
+              ),
+              const SizedBox(height: 4),
+              TextFormField(
+                controller: birthdateController,
+                textInputAction: TextInputAction.done,
+                decoration: const InputDecoration(labelText: "BIRTHDATE"),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => value != null && value.isEmpty
+                    ? "Please enter your birthdate"
+                    : null,
+              ),
+              const SizedBox(height: 20),
+              RichText(
+                text: TextSpan(
+                  style: const TextStyle(
+                    color: Colors.black,
                   ),
+                  text: "Already have an account?  ",
+                  children: [
+                    TextSpan(
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = widget.onClickLogIn,
+                      text: 'Log In',
+                      style: const TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: register,
-                  child: const Text('REGISTER'),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: register,
+                child: const Text('REGISTER'),
+              ),
+            ],
           ),
+        ),
       ),
     );
   }
 
-
   Future register() async {
-
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
+
+    BuildContext dialogContext = context;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        dialogContext = context;
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
 
     try {
       // Create the user in Firebase Authentication
       final userCredential =
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
@@ -172,7 +178,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
         'username': usernameController.text.trim(),
         'birthdate': birthdateController.text.trim(),
       });
+
+      Navigator.pop(dialogContext);
     } on FirebaseAuthException catch (e) {
+      Navigator.pop(dialogContext);
       Utils.showErrorBar(e.message);
     }
   }
