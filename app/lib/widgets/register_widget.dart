@@ -3,6 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../utils.dart';
 
@@ -105,15 +106,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       : null,
                 ),
                 const SizedBox(height: 4),
-                TextFormField(
-                  controller: birthdateController,
-                  textInputAction: TextInputAction.done,
-                  decoration: const InputDecoration(labelText: "BIRTHDATE"),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => value != null && value.isEmpty
-                      ? "Please enter your birthdate"
-                      : null,
-                ),
+                DateFormField(birthdateController: birthdateController),
                 const SizedBox(height: 20),
                 RichText(
                   text: TextSpan(
@@ -173,5 +166,51 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       Utils.showErrorBar(e.message);
     }
 
+  }
+}
+
+class DateFormField extends StatefulWidget {
+  const DateFormField({
+    super.key,
+    required this.birthdateController,
+  });
+
+  final TextEditingController birthdateController;
+
+  @override
+  State<DateFormField> createState() => _DateFormFieldState();
+}
+
+class _DateFormFieldState extends State<DateFormField> {
+  DateTime ? _selectedDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: widget.birthdateController,
+      decoration: const InputDecoration(
+        labelText: 'BIRTHDATE',
+      ),
+      readOnly: true, // Make the text field read-only
+      onTap: () async {
+        final DateTime? picked = await showDatePicker(
+          context: context,
+          initialDate: _selectedDate ?? DateTime.now(),
+          firstDate: DateTime(1920),
+          lastDate: DateTime.now(),
+        );
+        if (picked != null) {
+          setState(() {
+            _selectedDate = picked;
+            widget.birthdateController.text =
+                DateFormat('yyyy-MM-dd').format(_selectedDate!); // Set the text of the text field to the selected date
+          });
+        }
+      },
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) => value != null && value.isEmpty
+          ? 'Please enter your birthdate'
+          : null,
+    );
   }
 }
