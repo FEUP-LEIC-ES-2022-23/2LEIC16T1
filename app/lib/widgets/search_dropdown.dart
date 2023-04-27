@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SearchDropdown extends StatefulWidget {
+  final String selectedItem;
   final List<String> items;
   final Function(String)? onChanged;
 
   const SearchDropdown({
     Key? key,
+    required this.selectedItem,
     required this.items,
     this.onChanged,
   }) : super(key: key);
@@ -24,6 +26,7 @@ class _SearchDropdownState extends State<SearchDropdown> {
   void initState() {
     super.initState();
     _controller = TextEditingController();
+    _controller.text = widget.selectedItem;
     _filteredItems = widget.items;
   }
 
@@ -80,6 +83,8 @@ class _SearchDropdownState extends State<SearchDropdown> {
               _boxHeight = 0;
               if (!_filteredItems.contains(_controller.text)) {
                 _controller.text = '';
+              } else if (widget.onChanged != null) {
+                widget.onChanged!(_controller.text);
               }
             },
           ),

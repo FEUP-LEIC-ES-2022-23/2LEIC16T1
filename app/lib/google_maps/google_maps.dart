@@ -7,7 +7,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../facility_page.dart';
 import '../models/data_service.dart';
-import '../models/tag.dart';
 
 const apiKey = "AIzaSyAJTKPI8KJ_ulnXi-EuQN_5yrJbn5-cHP8";
 
@@ -78,7 +77,7 @@ Marker buildMarker(Pair<Pair<String, String>, LatLng> coordinates, BitmapDescrip
 }
 
 Future<List<Pair<Pair<String, String>, LatLng>>> findPlaces(Pair<String,LatLng> source, int radius, List<String> filter) async {
-  if (filter.isEmpty) return findPlacesWithoutFilters(source, radius);
+  if (filter.every((element) => element == '')) return findPlacesWithoutFilters(source, radius);
 
   final places = GoogleMapsPlaces(apiKey: apiKey);
   final response = await places.searchNearbyWithRadius(

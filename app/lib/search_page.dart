@@ -45,7 +45,7 @@ class SearchScreen extends StatelessWidget {
 
 class CustomSearch extends SearchDelegate {
   List<String> data = [];
-
+  List<String> filters = List<String>.filled(5, '');
   double radius = 10;
 
   Future<void> getSelfCoordinates() async {
@@ -132,9 +132,10 @@ class CustomSearch extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     //List<Pair<Pair<"name","id">, LatLng>>
-    List<String> filters = ["outdoor", "badminton"]; //"badminton", "outdoor"
     final coordinates = getCoordinates(query).then((value){
-      final places = findPlaces(value, 10000, filters);
+      print("AAAAAAAAAAAAAAA");
+      print(filters);
+      final places = findPlaces(value, radius.round() * 1000, filters);
       return places.then((locations) {
         if (value.first == query) {
           return [Pair(Pair(value.first, ""), value.second)] + locations;
@@ -245,7 +246,11 @@ class CustomSearch extends SearchDelegate {
                         ),
                         Expanded(
                             child: SearchDropdown(
+                              selectedItem: filters[i-1],
                               items: DataService.availableTags,
+                              onChanged: (item) {
+                                filters[i-1] = item;
+                              },
                             )
                         ),
                       ],
