@@ -47,13 +47,13 @@ class _LoginWidgetState extends State<LoginWidget> {
               TextField(
                 controller: emailController,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: "EMAIL"),
+                decoration: const InputDecoration(labelText: "Email"),
               ),
               const SizedBox(height: 4),
               TextField(
                 controller: passwordController,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: "PASSWORD"),
+                decoration: const InputDecoration(labelText: "Password"),
                 obscureText: true,
               ),
               const SizedBox(height: 20),
@@ -62,7 +62,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   style: const TextStyle(
                     color: Colors.black,
                   ),
-                  text: "Don't have an account?  ",
+                  text: "Don't have an account yet?  ",
                   children: [
                     TextSpan(
                       recognizer: TapGestureRecognizer()
@@ -79,7 +79,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: logIn,
-                child: const Text('LOGIN'),
+                child: const Text('Login'),
               ),
             ],
           ),
