@@ -46,14 +46,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 Text(
                   '${userData?['firstName']} ${userData?['lastName']}',
                   style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                Text(
-                  userData?['birthdate'] ?? '',
-                  style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 20,
                     color: Colors.grey[600],
                   ),
                 ),
@@ -82,6 +75,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                           const SizedBox(height: 20),
                           _buildProfileInfoItem(
                               'Email Address', userData?['email'] ?? ''),
+                          const SizedBox(height: 10),
+                          _buildProfileInfoItem('Birthdate', userData?['birthdate'] ?? ''),
                           const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: () => FirebaseAuth.instance.signOut(),

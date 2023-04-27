@@ -87,7 +87,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     if (!RegExp(r'^(?=.*?[0-9]).{8,}$').hasMatch(value)) {
                       return 'Password must contain at least one number';
                     }
-                    if (!RegExp(r'^(?=.*?[!@#\$&*~]).{8,}$').hasMatch(value)) {
+                    if (!RegExp(r'^(?=.*?[!@#/\$&*~?()]).{8,}$').hasMatch(value)) {
                       return 'Password must contain at least one special character';
                     }
                     return null;
