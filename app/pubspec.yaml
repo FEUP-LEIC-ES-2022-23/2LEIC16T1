@@ -61,6 +61,8 @@ dependencies:
 
   # Validate Emails
   email_validator:
+  firebase_core_platform_interface: ^4.6.0
+  flutter_rating_bar: ^4.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -75,10 +75,11 @@ Future<double?> getUserRating(String userID, String facilityID) async {
         .collection('user')
         .doc(userID)
         .collection('ratings')
-        .where('facilityID', isEqualTo: facilityID)
+        .doc(facilityID)
         .get();
+    if(!ratings.exists) return null;
     double rating = 0;
-    rating = ratings.docs[0].data()['rating'];
+    rating = ratings.data()!['rating'];
     return rating;
   } on FirebaseAuthException catch (e) {
     Utils.showErrorBar(e.message);
