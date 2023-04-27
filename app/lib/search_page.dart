@@ -133,8 +133,6 @@ class CustomSearch extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     //List<Pair<Pair<"name","id">, LatLng>>
     final coordinates = getCoordinates(query).then((value){
-      print("AAAAAAAAAAAAAAA");
-      print(filters);
       final places = findPlaces(value, radius.round() * 1000, filters);
       return places.then((locations) {
         if (value.first == query) {

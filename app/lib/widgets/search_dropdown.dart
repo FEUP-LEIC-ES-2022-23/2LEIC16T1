@@ -69,12 +69,16 @@ class _SearchDropdownState extends State<SearchDropdown> {
             ),
             onTap: () {
               inputFocus.requestFocus();
-              _boxHeight = 200;
+              setState(() {
+                _boxHeight = 200;
+              });
             },
             onTapOutside: (tap) {
               if (inputFocus.hasFocus){
                 inputFocus.unfocus();
-                _boxHeight = 0;
+                setState(() {
+                  _boxHeight = 0;
+                });
                 if (!_filteredItems.contains(_controller.text)) {
                   _controller.text = '';
                 } else if (widget.onChanged != null) {
@@ -84,7 +88,9 @@ class _SearchDropdownState extends State<SearchDropdown> {
             },
             onEditingComplete: () {
               inputFocus.unfocus();
-              _boxHeight = 0;
+              setState(() {
+                _boxHeight = 0;
+              });
               if (!_filteredItems.contains(_controller.text)) {
                 _controller.text = '';
               } else if (widget.onChanged != null) {
@@ -96,6 +102,7 @@ class _SearchDropdownState extends State<SearchDropdown> {
         AnimatedSize(
           duration: const Duration(milliseconds: 300),
           child: SizedBox(
+            key: Key('dropdown list tags'),
             height: _boxHeight,
             child: TextFieldTapRegion(
               child: ListView.builder(
@@ -109,9 +116,9 @@ class _SearchDropdownState extends State<SearchDropdown> {
                       }
 
                       inputFocus.unfocus();
-                      _boxHeight = 0;
 
                       setState(() {
+                        _boxHeight = 0;
                         _controller.text = item;
                         _controller.selection = TextSelection.fromPosition(TextPosition(offset: _controller.text.length));
                       });
