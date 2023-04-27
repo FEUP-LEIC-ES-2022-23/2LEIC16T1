@@ -57,7 +57,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 TextFormField(
                   controller: emailController,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: "EMAIL"),
+                  decoration: const InputDecoration(labelText: "Email"),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (email) =>
                       email != null && !EmailValidator.validate(email)
@@ -68,41 +68,59 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 TextFormField(
                   controller: passwordController,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: "PASSWORD"),
+                  decoration: const InputDecoration(labelText: "Password"),
                   obscureText: true,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => value != null && value.length < 6
-                      ? "Password needs to be at least 6 characters"
-                      : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please, enter a password';
+                    }
+                    if (value.length < 8) {
+                      return 'Password must be at least 8 characters long';
+                    }
+                    if (!RegExp(r'^(?=.*?[A-Z]).{8,}$').hasMatch(value)) {
+                      return 'Password must contain at least one uppercase letter';
+                    }
+                    if (!RegExp(r'^(?=.*?[a-z]).{8,}$').hasMatch(value)) {
+                      return 'Password must contain at least one lowercase letter';
+                    }
+                    if (!RegExp(r'^(?=.*?[0-9]).{8,}$').hasMatch(value)) {
+                      return 'Password must contain at least one number';
+                    }
+                    if (!RegExp(r'^(?=.*?[!@#\$&*~]).{8,}$').hasMatch(value)) {
+                      return 'Password must contain at least one special character';
+                    }
+                    return null;
+                  }
                 ),
                 const SizedBox(height: 4),
                 TextFormField(
                   controller: firstNameController,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: "FIRST NAME"),
+                  decoration: const InputDecoration(labelText: "First Name"),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) => value != null && value.isEmpty
-                      ? "Please enter your first name"
+                      ? "Please, enter your first name"
                       : null,
                 ),
                 const SizedBox(height: 4),
                 TextFormField(
                   controller: lastNameController,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: "LAST NAME"),
+                  decoration: const InputDecoration(labelText: "Last Name"),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) => value != null && value.isEmpty
-                      ? "Please enter your last name"
+                      ? "Please, enter your last name"
                       : null,
                 ),
                 const SizedBox(height: 4),
                 TextFormField(
                   controller: usernameController,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: "USERNAME"),
+                  decoration: const InputDecoration(labelText: "Username"),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) => value != null && value.isEmpty
-                      ? "Please enter your username"
+                      ? "Please, enter your username"
                       : null,
                 ),
                 const SizedBox(height: 4),
@@ -113,12 +131,12 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     style: const TextStyle(
                       color: Colors.black,
                     ),
-                    text: "Already have an account?  ",
+                    text: "Do you already have an account?  ",
                     children: [
                       TextSpan(
                         recognizer: TapGestureRecognizer()
                           ..onTap = widget.onClickLogIn,
-                        text: 'Log In',
+                        text: 'Login',
                         style: const TextStyle(
                           decoration: TextDecoration.underline,
                           color: Colors.blueAccent,
@@ -130,7 +148,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: register,
-                  child: const Text('REGISTER'),
+                  child: const Text('Register'),
                 ),
               ],
             ),
@@ -189,7 +207,7 @@ class _DateFormFieldState extends State<DateFormField> {
     return TextFormField(
       controller: widget.birthdateController,
       decoration: const InputDecoration(
-        labelText: 'BIRTHDATE',
+        labelText: 'Birthdate',
       ),
       readOnly: true, // Make the text field read-only
       onTap: () async {
@@ -203,13 +221,13 @@ class _DateFormFieldState extends State<DateFormField> {
           setState(() {
             _selectedDate = picked;
             widget.birthdateController.text =
-                DateFormat('yyyy-MM-dd').format(_selectedDate!); // Set the text of the text field to the selected date
+                DateFormat('dd-MM-yyyy').format(_selectedDate!); // Set the text of the text field to the selected date
           });
         }
       },
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) => value != null && value.isEmpty
-          ? 'Please enter your birthdate'
+          ? 'Please, enter your birthdate'
           : null,
     );
   }
