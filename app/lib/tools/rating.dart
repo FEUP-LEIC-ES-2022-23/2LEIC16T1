@@ -15,7 +15,7 @@ Future addRating(String facilityID, String userID, double rating) async {
       'rating': rating,
     });
     await FirebaseFirestore.instance
-        .collection('facilty')
+        .collection('facility')
         .doc(facilityID)
         .collection('ratings')
         .doc(userID)
@@ -51,7 +51,7 @@ Future removeRating(String facilityID, String userID, double rating) async {
 Future<double?> getFacilityRating(String facilityID) async {
   try {
     final ratings = await FirebaseFirestore.instance
-        .collection('facilityID')
+        .collection('facility')
         .doc(facilityID)
         .collection('ratings')
         .get();
@@ -62,7 +62,9 @@ Future<double?> getFacilityRating(String facilityID) async {
       total += rating.data()['rating'];
       count++;
     }
+    if(count == 0) return null;
     rating = total / count;
+    return rating;
   } on FirebaseAuthException catch (e) {
     Utils.showErrorBar(e.message);
   }

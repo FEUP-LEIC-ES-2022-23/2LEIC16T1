@@ -23,15 +23,16 @@ class FacilityPage extends StatefulWidget {
 class _FacilityPageState extends State<FacilityPage> {
   Widget rating = CircularProgressIndicator();
   Widget myRating = CircularProgressIndicator();
-  double? value;
-  double? myValue;
+  double? value = 0;
+  double? myValue = 0;
   buildRating() async {
 
-    value = await getFacilityRating(widget.facility.name);
+    value = await getFacilityRating(widget.facility.id);
     final user = FirebaseAuth.instance.currentUser;
     bool loggedIn = user != null;
     if (loggedIn) {
-      myValue = await getUserRating(user.uid, widget.facility.name);
+      myValue = await getUserRating(user.uid, widget.facility.id);
+      myValue ??= 0;
     }
     setState(() {
       value ??= 0;
@@ -62,7 +63,7 @@ class _FacilityPageState extends State<FacilityPage> {
           ),
           itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
           onRatingUpdate: (rating) {
-            addRating(widget.facility.name, user.uid, rating);
+            addRating(widget.facility.id, user.uid, rating);
           },
         );
       }
