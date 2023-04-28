@@ -20,6 +20,24 @@ void main() {
       );
     });
 
+    test('Filter items', () {
+      final searchDropdown = SearchDropdown(selectedItem: 'badminton', items: ["badminton", "outdoor"]);
+      searchDropdown.state.filterItems_('out');
+      expect(searchDropdown.state.filteredItems_, equals(["badminton"]));
+    });
+
+    test('Filter items with empty query', () {
+      final searchDropdown = SearchDropdown(selectedItem: 'badminton', items: ["badminton", "outdoor"]);
+      searchDropdown.state.filterItems_('');
+      expect(searchDropdown.state.filteredItems_, equals(["badminton", "outdoor"]));
+    });
+
+    test('Filter items with query containing only spaces', () {
+      final searchDropdown = SearchDropdown(selectedItem: 'badminton', items: ["badminton", "outdoor"]);
+      searchDropdown.state.filterItems_('   ');
+      expect(searchDropdown.state.filteredItems_, equals(["badminton", "outdoor"]));
+    });
+
     testWidgets('Box size before clicking', (WidgetTester tester) async {
       await tester.pumpWidget(testWidget);
 

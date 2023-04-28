@@ -29,19 +29,19 @@ void main() {
 
     test('testing if findPlaces returns a non-empty list for a valid source', () async {
       final source = Pair('ChIJj38IfwK6j4ARNcyPDnEGa9g', const LatLng(37.4224764, -122.0842499));
-      final places = await findPlaces(source);
+      final places = await findPlaces(source, 10 , List.empty());
       expect(places, isNotEmpty);
     });
 
     test('testing if findPlaces returns a list of Pairs', () async {
       final source = Pair('ChIJj38IfwK6j4ARNcyPDnEGa9g', const LatLng(37.4224764, -122.0842499));
-      final places = await findPlaces(source);
+      final places = await findPlaces(source, 10 , List.empty());
       expect(places, isA<List<Pair<Pair<String, String>, LatLng>>>());
     });
 
     test('testing if findPlaces returns a list of Pairs containing the correct id and LatLng for each place', () async {
       final source = Pair('ChIJYXxhoeW6j4ARis9VjjDkDVo', const LatLng(37.4224764, -122.0842499));
-      final places = await findPlaces(source);
+      final places = await findPlaces(source, 10 , List.empty());
       final expected = Pair('Blossom Birth & Family', 'ChIJYXxhoeW6j4ARis9VjjDkDVo');
       final expectedLatLng = const LatLng(37.424212507724185, -122.10286875396935);
       for (var place in places) {

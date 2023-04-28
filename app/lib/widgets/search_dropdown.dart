@@ -4,8 +4,9 @@ class SearchDropdown extends StatefulWidget {
   final String selectedItem;
   final List<String> items;
   final Function(String)? onChanged;
+  _SearchDropdownState state = _SearchDropdownState();
 
-  const SearchDropdown({
+  SearchDropdown({
     Key? key,
     required this.selectedItem,
     required this.items,
@@ -13,12 +14,15 @@ class SearchDropdown extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SearchDropdownState createState() => _SearchDropdownState();
+  _SearchDropdownState createState() {
+    state = _SearchDropdownState();
+  return state;}
 }
 
 class _SearchDropdownState extends State<SearchDropdown> {
   late TextEditingController _controller;
-  List<String> _filteredItems = [];
+  List<String> filteredItems_ = [];
+  late final List<String> items;
   double _boxHeight = 0;
   FocusNode inputFocus = FocusNode();
 
@@ -27,7 +31,8 @@ class _SearchDropdownState extends State<SearchDropdown> {
     super.initState();
     _controller = TextEditingController();
     _controller.text = widget.selectedItem;
-    _filteredItems = widget.items;
+    filteredItems_ = widget.items;
+    items = widget.items;
   }
 
   @override
@@ -36,11 +41,11 @@ class _SearchDropdownState extends State<SearchDropdown> {
     super.dispose();
   }
 
-  void _filterItems(String query) {
+  void filterItems_(String query) {
     setState(() {
-      _filteredItems = widget.items
+      filteredItems_ = widget.items
           .where((item) =>
-              item.toLowerCase().contains(query.trim().toLowerCase()))
+          item.toLowerCase().contains(query.trim().toLowerCase()))
           .toList();
     });
   }
@@ -61,7 +66,7 @@ class _SearchDropdownState extends State<SearchDropdown> {
           child: TextField(
             controller: _controller,
             focusNode: inputFocus,
-            onChanged: _filterItems,
+            onChanged: filterItems_,
             decoration: const InputDecoration(
               hintText: ' what are you looking for',
               border: InputBorder.none,
@@ -79,7 +84,7 @@ class _SearchDropdownState extends State<SearchDropdown> {
                 setState(() {
                   _boxHeight = 0;
                 });
-                if (!_filteredItems.contains(_controller.text) && _controller.text != '') {
+                if (!filteredItems_.contains(_controller.text) && _controller.text != '') {
                     _controller.text = widget.selectedItem;
                 }
                 if (widget.onChanged != null) {
@@ -92,7 +97,7 @@ class _SearchDropdownState extends State<SearchDropdown> {
               setState(() {
                 _boxHeight = 0;
               });
-              if (!_filteredItems.contains(_controller.text) && _controller.text != '') {
+              if (!filteredItems_.contains(_controller.text) && _controller.text != '') {
                 _controller.text = widget.selectedItem;
               }
               if (widget.onChanged != null) {
@@ -108,9 +113,9 @@ class _SearchDropdownState extends State<SearchDropdown> {
             height: _boxHeight,
             child: TextFieldTapRegion(
               child: ListView.builder(
-                itemCount: _filteredItems.length,
+                itemCount: filteredItems_.length,
                 itemBuilder: (context, index) {
-                  final item = _filteredItems[index];
+                  final item = filteredItems_[index];
                   return InkWell(
                     onTap: () {
                       if (widget.onChanged != null) {
