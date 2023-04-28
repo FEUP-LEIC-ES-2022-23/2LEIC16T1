@@ -79,9 +79,10 @@ class _SearchDropdownState extends State<SearchDropdown> {
                 setState(() {
                   _boxHeight = 0;
                 });
-                if (!_filteredItems.contains(_controller.text)) {
-                  _controller.text = '';
-                } else if (widget.onChanged != null) {
+                if (!_filteredItems.contains(_controller.text) && _controller.text != '') {
+                    _controller.text = widget.selectedItem;
+                }
+                if (widget.onChanged != null) {
                   widget.onChanged!(_controller.text);
                 }
               }
@@ -91,9 +92,10 @@ class _SearchDropdownState extends State<SearchDropdown> {
               setState(() {
                 _boxHeight = 0;
               });
-              if (!_filteredItems.contains(_controller.text)) {
-                _controller.text = '';
-              } else if (widget.onChanged != null) {
+              if (!_filteredItems.contains(_controller.text) && _controller.text != '') {
+                _controller.text = widget.selectedItem;
+              }
+              if (widget.onChanged != null) {
                 widget.onChanged!(_controller.text);
               }
             },
