@@ -17,6 +17,10 @@ class SearchDropdown extends StatefulWidget {
   _SearchDropdownState createState() {
     state = _SearchDropdownState();
   return state;}
+
+  filterItems_(String query) {
+    return items.where((item) => item.toLowerCase().contains(query.trim().toLowerCase())).toList();
+  }
 }
 
 class _SearchDropdownState extends State<SearchDropdown> {
@@ -43,10 +47,7 @@ class _SearchDropdownState extends State<SearchDropdown> {
 
   void filterItems_(String query) {
     setState(() {
-      filteredItems_ = widget.items
-          .where((item) =>
-          item.toLowerCase().contains(query.trim().toLowerCase()))
-          .toList();
+      filteredItems_ = widget.filterItems_(query);
     });
   }
 
