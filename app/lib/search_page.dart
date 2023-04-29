@@ -140,6 +140,7 @@ class CustomSearch extends SearchDelegate {
         if (value.first == query) {
           return [Pair(Pair(value.first, ""), value.second)] + locations;
         } else {
+          if (locations.isEmpty) return [Pair(Pair(query, ""), value.second)];
           return locations;
         }
       });
