@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sportspotter/models/facility.dart';
+import 'package:sportspotter/models/tag.dart';
 
 class DataService {
   static const apiKey = "AIzaSyAJTKPI8KJ_ulnXi-EuQN_5yrJbn5-cHP8";
@@ -28,6 +29,21 @@ class DataService {
           return Facility.fromJson(id, doc.data()!);
         }
       });
+
+  Future<List<String>> fetchFacilityTags(String id) => FirebaseFirestore.instance
+      .collection('facility')
+      .doc(id).get().then((doc) async {
+    if (!doc.exists) {
+      return [];
+    } else {
+      List<String> tags = [];
+      for (var reference in doc.data()!['tags']){
+        final snapshot = await reference.get();
+        tags.add(snapshot.id);
+      }
+      return tags;
+    }
+  });
   
   static getTags() async => availableTags = await FirebaseFirestore.instance
       .collection('tag').get()

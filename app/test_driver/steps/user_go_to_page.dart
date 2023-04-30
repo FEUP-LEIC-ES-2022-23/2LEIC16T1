@@ -10,5 +10,6 @@ class UserGoToPage extends Given1WithWorld<String, FlutterWorld> {
   Future<void> executeStep(String page) async {
     final locator = find.text(page);
     await FlutterDriverUtils.tap(world.driver, locator);
+    FlutterDriverUtils.waitForFlutter(world.driver);
   }
 }

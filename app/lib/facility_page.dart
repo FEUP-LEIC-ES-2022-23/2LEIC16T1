@@ -216,8 +216,7 @@ class _FacilityPageState extends State<FacilityPage> {
                               border: InputBorder.none,
                             )
                           ),
-
-                          dropdownButtonProps: const DropdownButtonProps(
+                            dropdownButtonProps: const DropdownButtonProps(
                             icon: Icon(
                               Icons.add_box,
                               size: 30,
