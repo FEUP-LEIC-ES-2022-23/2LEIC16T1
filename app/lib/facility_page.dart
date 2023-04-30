@@ -216,18 +216,11 @@ class _FacilityPageState extends State<FacilityPage> {
                               border: InputBorder.none,
                             )
                           ),
-
-
-                              ref.update({'tags': selectedTags?.map((tag) =>
-                                FirebaseFirestore.instance.collection('tag').doc(tag)).toList()});
-                            },
-
-                          dropdownButtonProps: const DropdownButtonProps(
+                            dropdownButtonProps: const DropdownButtonProps(
                             icon: Icon(
                               Icons.add_box,
                               size: 30,
                             )
-                            
                           ),
                           items: DataService.availableTags,
                           selectedItems: widget.facility.tags.map((tag) => tag.name).toList(),
