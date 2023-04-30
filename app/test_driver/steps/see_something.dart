@@ -13,3 +13,15 @@ class ThenSeeButton extends Then1WithWorld<String, FlutterWorld> {
     expectMatch(exists, true);
   }
 }
+
+class AndSeeButton extends And1WithWorld<String, FlutterWorld> {
+  @override
+  RegExp get pattern => RegExp(r"I should see a {string}");
+
+  @override
+  Future<void> executeStep(String key) async {
+    final locator = find.byValueKey(key);
+    var exists = await FlutterDriverUtils.isPresent(world.driver, locator);
+    expectMatch(exists, true);
+  }
+}
