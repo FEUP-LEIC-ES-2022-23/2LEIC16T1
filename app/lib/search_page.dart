@@ -70,6 +70,7 @@ class CustomSearch extends SearchDelegate {
         icon: const Icon(Icons.clear),
       ),
       IconButton(
+        key: Key('filter-icon'),
         onPressed: () {
           editSearchSettings(context);
         },
@@ -131,10 +132,7 @@ class CustomSearch extends SearchDelegate {
   }
   @override
   Widget buildResults(BuildContext context) {
-    //List<Pair<Pair<"name","id">, LatLng>>
     final coordinates = getCoordinates(query).then((value){
-      print("AAAAAAAAAAAAAAA");
-      print(filters);
       final places = findPlaces(value, radius.round() * 1000, filters);
       return places.then((locations) {
         if (value.first == query) {
@@ -238,6 +236,7 @@ class CustomSearch extends SearchDelegate {
                                   right: 20, top: 30, bottom: 20),
                               child: Text(
                                   'Tag #$i',
+                                  key: Key('Edit options menu $i'),
                                   style: const TextStyle(
                                       fontSize: 17,
                                       color: Color.fromRGBO(94, 97, 115, 1)
@@ -246,6 +245,7 @@ class CustomSearch extends SearchDelegate {
                             ),
                             Expanded(
                                 child: SearchDropdown(
+                                  key: Key('dropdown $i'),
                                   selectedItem: filters[i-1],
                                   items: DataService.availableTags,
                                   onChanged: (item) {
@@ -287,6 +287,7 @@ class CustomSearch extends SearchDelegate {
                         ),
                         ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(),
+                          key: Key('save button'),
                           child: const Text(
                             "Save",
                             style: TextStyle(

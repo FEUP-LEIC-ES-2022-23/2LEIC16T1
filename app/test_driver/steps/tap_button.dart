@@ -8,7 +8,7 @@ class WhenTapButton extends When1WithWorld<String, FlutterWorld> {
 
   @override
   Future<void> executeStep(String key) async {
-    final locator = find.text(key);
+    final locator = find.byValueKey(key);
     await FlutterDriverUtils.tap(world.driver, locator);
   }
 }
@@ -19,7 +19,8 @@ class ThenTapButton extends Then1WithWorld<String, FlutterWorld> {
 
   @override
   Future<void> executeStep(String key) async {
-    final locator = find.text(key);
+    final locator = find.byValueKey(key);
     await FlutterDriverUtils.tap(world.driver, locator);
+    FlutterDriverUtils.waitForFlutter(world.driver);
   }
 }
