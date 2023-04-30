@@ -3,6 +3,7 @@ import 'package:sportspotter/google_maps/google_maps.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
+  int radius = 10 * 1000;
   group('Google maps', () {
     test('testing if getCoordinates returns a Pair of address and LatLng for a valid address', () async {
       final pair = await getCoordinates('1600 Amphitheatre Parkway, Mountain View, CA');
@@ -27,21 +28,21 @@ void main() {
       expect(pair, isA<Pair<String, LatLng>>());
     });
 
-    test('testing if findPlaces returns a non-empty list for a valid source', () async {
+    test('testing if findPlacesWithoutFilters returns a non-empty list for a valid source', () async {
       final source = Pair('ChIJj38IfwK6j4ARNcyPDnEGa9g', const LatLng(37.4224764, -122.0842499));
-      final places = await findPlaces(source);
+      final places = await findPlacesWithoutFilters(source, radius);
       expect(places, isNotEmpty);
     });
 
-    test('testing if findPlaces returns a list of Pairs', () async {
+    test('testing if findPlacesWithoutFilters returns a list of Pairs', () async {
       final source = Pair('ChIJj38IfwK6j4ARNcyPDnEGa9g', const LatLng(37.4224764, -122.0842499));
-      final places = await findPlaces(source);
+      final places = await findPlacesWithoutFilters(source, radius);
       expect(places, isA<List<Pair<Pair<String, String>, LatLng>>>());
     });
 
-    test('testing if findPlaces returns a list of Pairs containing the correct id and LatLng for each place', () async {
+    test('testing if findPlacesWithoutFilters returns a list of Pairs containing the correct id and LatLng for each place', () async {
       final source = Pair('ChIJYXxhoeW6j4ARis9VjjDkDVo', const LatLng(37.4224764, -122.0842499));
-      final places = await findPlaces(source);
+      final places = await findPlacesWithoutFilters(source, radius);
       final expected = Pair('Blossom Birth & Family', 'ChIJYXxhoeW6j4ARis9VjjDkDVo');
       final expectedLatLng = const LatLng(37.424212507724185, -122.10286875396935);
       for (var place in places) {
@@ -52,6 +53,5 @@ void main() {
         }
       }
     });
-
   });
 }
