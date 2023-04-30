@@ -19,9 +19,9 @@ You can find below information and references related with the project managemen
 
   * ### Iteration 2
      Start of Iteration
-![board_start_iteration1](../images/productmanagement/iteration%232-start.png)
+![board_start_iteration2](../images/productmanagement/iteration%232-start.png)
      End of Iteration
-![board_end_iteration1](../images/productmanagement/iteration%232-end.png)
+![board_end_iteration2](../images/productmanagement/iteration%232-end.png)
 
 * ### Retrospective
 
@@ -29,3 +29,15 @@ You can find below information and references related with the project managemen
 **What went bad?** - We faced difficulties in creating validation and unit tests for the application. The lack of guidance on how to make validation tests made it especially challenging. Additionally, the structure of our code made it less straightforward to create unit tests.<br>
 **What problems are still to be fixed?** - We need to focus on developing more tests for the application.<br>
 Throughout this iteration, we recognized that we could begin working on another user story. As a result, we initiated the development of login and registration features, and we successfully established a connection with the database.<br>
+
+  * ### Iteration 3
+     Start of Iteration
+![board_start_iteration3](TBD)
+     End of Iteration
+![board_end_iteration3](TBD)
+
+* ### Retrospective
+
+**What went well?** - TBD <br>
+**What went bad?** -TBD <br>
+**What problems are still to be fixed?** - TBD<br>
