@@ -76,11 +76,20 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                           _buildProfileInfoItem(
                               'Email Address', userData?['email'] ?? ''),
                           const SizedBox(height: 10),
-                          _buildProfileInfoItem('Birthdate', userData?['birthdate'] ?? ''),
-                          const SizedBox(height: 20),
+                          _buildProfileInfoItem(
+                              'Birthdate', userData?['birthdate'] ?? ''),
+                          const SizedBox(height: 100),
                           ElevatedButton(
                             onPressed: () => FirebaseAuth.instance.signOut(),
-                            child: const Text('Sign Out'),
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(100, 40),
+                              backgroundColor: Colors.grey.shade300,
+                            ),
+                            child: const Text(
+                              'SIGN OUT',
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.black),
+                            ),
                           ),
                         ],
                       ),
