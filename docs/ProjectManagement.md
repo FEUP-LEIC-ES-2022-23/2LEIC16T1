@@ -3,7 +3,7 @@
 You can find below information and references related with the project management in our team: 
 
 * Backlog management: Product backlog and Iteration backlog in a [Github Projects board](https://github.com/orgs/FEUP-LEIC-ES-2022-23/projects/26);
-* Release management: [v0](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.1), [v1](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.2), [v2](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.3), v3, v...;
+* Release management: [v0](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.1), [v1](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.2), [v2](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.3), [v3](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC16T1/releases/tag/v0.4), v...;
 * Iteration planning and retrospectives: 
   * ### Iteration 1
      Start of Iteration
@@ -32,12 +32,12 @@ Throughout this iteration, we recognized that we could begin working on another 
 
   * ### Iteration 3
      Start of Iteration
-![board_start_iteration3](TBD)
+![board_start_iteration3](../images/productmanagement/iteration%233-start.png)
      End of Iteration
-![board_end_iteration3](TBD)
+![board_end_iteration3](../images/productmanagement/iteration%233-end.png)
 
 * ### Retrospective
 
-**What went well?** - TBD <br>
-**What went bad?** -TBD <br>
-**What problems are still to be fixed?** - TBD<br>
+**What went well?** - Making the acceptance tests was easier after performing some refactoring and having some practice with them. Moreover, we were able to implement the features successfully and without much trouble.<br>
+**What went bad?** - We faced difficulties in creating unit tests dependent on Firestore. The group invested a lot of effort into this, but it was not successful for this iteration.<br>
+**What problems are still to be fixed?** - We need to focus on developing more unit tests.<br>
