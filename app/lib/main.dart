@@ -23,10 +23,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       scaffoldMessengerKey: Utils.messengerKey,
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: const [
         Locale('pt', 'PT'),
         Locale('en', 'US'),
