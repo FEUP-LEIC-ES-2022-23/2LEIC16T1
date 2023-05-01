@@ -84,6 +84,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               'Email Address', userData?['email'] ?? ''),
                           const SizedBox(height: 20),
                           ElevatedButton(
+                            key: Key("sign out button"),
                             onPressed: () => FirebaseAuth.instance.signOut(),
                             child: const Text('Sign Out'),
                           ),

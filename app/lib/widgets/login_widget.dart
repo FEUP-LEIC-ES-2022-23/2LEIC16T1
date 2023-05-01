@@ -36,6 +36,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       body: Stack(
         children: [
           Column(
+            key: Key("sign in form"),
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 40),
@@ -45,12 +46,14 @@ class _LoginWidgetState extends State<LoginWidget> {
               ),
               const SizedBox(height: 40),
               TextField(
+                key: Key("sign in mail field"),
                 controller: emailController,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(labelText: "EMAIL"),
               ),
               const SizedBox(height: 4),
               TextField(
+                key: Key("sign in password field"),
                 controller: passwordController,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(labelText: "PASSWORD"),
@@ -78,6 +81,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
+                key: Key("login button"),
                 onPressed: logIn,
                 child: const Text('LOGIN'),
               ),
