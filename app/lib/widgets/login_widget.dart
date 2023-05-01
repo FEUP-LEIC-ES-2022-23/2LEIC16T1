@@ -33,63 +33,92 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 40),
-              const Text(
-                "SIGN IN",
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 40),
+            Text("SIGN IN",
+              style: TextStyle(
+                fontSize: 32, 
+                fontWeight: FontWeight.bold, 
+                color: Colors.grey.shade600,
               ),
-              const SizedBox(height: 40),
-              TextField(
-                controller: emailController,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: "Email"),
-              ),
-              const SizedBox(height: 4),
-              TextField(
-                controller: passwordController,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: "Password"),
-                obscureText: true,
-              ),
-              const SizedBox(height: 20),
-              RichText(
-                text: TextSpan(
-                  style: const TextStyle(
-                    color: Colors.black,
-                  ),
-                  text: "Don't have an account yet?  ",
-                  children: [
-                    TextSpan(
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = widget.onClickRegister,
-                      text: 'Register here',
-                      style: const TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                  ],
+            ),
+            const SizedBox(height: 40),
+            TextField(
+              controller: emailController,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide.none, 
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
                 ),
+                hintText: "Email",
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                filled: true,
+                fillColor: Colors.grey.shade300,
+                prefixIcon: const Icon(Icons.email),
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: logIn,
-                child: const Text('Login'),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: passwordController,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide.none, 
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
+                hintText: "Password",
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                filled: true,
+                fillColor: Colors.grey.shade300,
+                prefixIcon: const Icon(Icons.lock),
+                
               ),
-            ],
-          ),
-        ],
+              obscureText: true,
+            ),
+            const SizedBox(height: 20),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  color: Colors.black,
+                ),
+                text: "Don't have an account yet?  ",
+                children: [
+                  TextSpan(
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = widget.onClickRegister,
+                    text: 'Register here',
+                    style: const TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Colors.blueAccent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: logIn,
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(200, 40),
+                backgroundColor: Colors.grey.shade300,
+              ),
+              child: const Text(
+                'LOGIN',
+                style: TextStyle(fontSize: 20, color: Colors.black),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Future logIn() async {
-
     BuildContext dialogContext = context;
     showDialog(
       context: context,
@@ -110,7 +139,5 @@ class _LoginWidgetState extends State<LoginWidget> {
       Navigator.pop(dialogContext);
       Utils.showErrorBar(e.message);
     }
-
-   
   }
 }
