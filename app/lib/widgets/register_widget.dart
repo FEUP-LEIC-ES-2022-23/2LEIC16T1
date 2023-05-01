@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../utils.dart';
+import '../models/data_service.dart';
 
 class RegisterWidget extends StatefulWidget {
   final VoidCallback onClickLogIn;
@@ -96,7 +97,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 ),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => value != null && value.isEmpty
-                    ? "Please, enter your last name"
+                    ? "Please, enter your username"
                     : null,
               ),
               const SizedBox(height: 10),
@@ -235,6 +236,11 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     );
 
     try {
+      // Check if user is unique
+      if (await DataService.isDuplicateUsername(
+          usernameController.text.trim())) {
+        throw FirebaseAuthException(code: "", message: "This username is already taken.");
+      }
       // Create the user in Firebase Authentication
       final userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
