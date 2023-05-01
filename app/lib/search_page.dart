@@ -5,6 +5,7 @@ import 'package:sportspotter/navigation.dart';
 import 'package:sportspotter/google_maps/google_maps.dart';
 import 'package:sportspotter/tools/location.dart';
 import 'package:sportspotter/tools/geocoding.dart';
+import 'package:sportspotter/widgets/search_dropdown.dart';
 
 import 'facility_page.dart';
 import 'models/data_service.dart';
@@ -44,6 +45,8 @@ class SearchScreen extends StatelessWidget {
 
 class CustomSearch extends SearchDelegate {
   List<String> data = [];
+  List<String> filters = List<String>.filled(5, '');
+  double radius = 10;
 
   Future<void> getSelfCoordinates() async {
     LocationData? locationData = await getLocation(Location());
@@ -65,6 +68,13 @@ class CustomSearch extends SearchDelegate {
           query = '';
         },
         icon: const Icon(Icons.clear),
+      ),
+      IconButton(
+        key: Key('filter-icon'),
+        onPressed: () {
+          editSearchSettings(context);
+        },
+        icon: const Icon(Icons.filter_alt)
       ),
       TextButton(
         onPressed: () {
@@ -120,16 +130,15 @@ class CustomSearch extends SearchDelegate {
       },
     );
   }
-
   @override
   Widget buildResults(BuildContext context) {
-    //List<Pair<Pair<"name","id">, LatLng>>
     final coordinates = getCoordinates(query).then((value){
-      final places = findPlaces(value);
+      final places = findPlaces(value, radius.round() * 1000, filters);
       return places.then((locations) {
         if (value.first == query) {
           return [Pair(Pair(value.first, ""), value.second)] + locations;
         } else {
+          if (locations.isEmpty) return [Pair(Pair(query, ""), value.second)];
           return locations;
         }
       });
@@ -193,6 +202,109 @@ class CustomSearch extends SearchDelegate {
         },
       );
     });
+  }
+
+  editSearchSettings(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (context, state) {
+                return AlertDialog(
+                    contentPadding: const EdgeInsets.only(top: 10.0),
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                  content: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.85,
+                    height: 550,
+                    child: ListView(
+                      padding: const EdgeInsets.all(20),
+                      children: [
+                        const Center(
+                            child: Text(
+                              "Options",
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(94, 97, 115, 1)
+                              ),
+                            )
+                        ),
+                        for (int i = 1; i <= 5; i++)
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 20, top: 30, bottom: 20),
+                              child: Text(
+                                  'Tag #$i',
+                                  key: Key('Edit options menu $i'),
+                                  style: const TextStyle(
+                                      fontSize: 17,
+                                      color: Color.fromRGBO(94, 97, 115, 1)
+                                  )
+                              ),
+                            ),
+                            Expanded(
+                                child: SearchDropdown(
+                                  key: Key('dropdown $i'),
+                                  selectedItem: filters[i-1],
+                                  items: DataService.availableTags,
+                                  onChanged: (item) {
+                                    filters[i-1] = item;
+                                  },
+                                )
+                            ),
+                          ],
+                        ),
+                        Row(
+                            children: [
+                              const Text("5"),
+                              Expanded(
+                                child: Slider(
+                                  value: radius,
+                                  divisions: 9,
+                                  min: 5,
+                                  max: 50,
+                                  label: "${(radius.round())
+                                      .toString()} km",
+                                  onChanged: (value) {
+                                    state(() {
+                                      radius = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                              const Text("50")
+                            ]
+                        ),
+                        const Center(
+                          child: Text(
+                            "Search radius (km)",
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: Color.fromRGBO(94, 97, 115, 1)
+                            ),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          key: Key('save button'),
+                          child: const Text(
+                            "Save",
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: Colors.white
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                );
+              }
+          );
+        }
+    );
   }
 
 }

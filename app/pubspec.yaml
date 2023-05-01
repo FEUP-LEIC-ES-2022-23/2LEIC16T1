@@ -60,11 +60,12 @@ dependencies:
   cloud_firestore:
   firebase_storage: ^11.0.16
   firebase_database:
-  firebase_auth: 
+  firebase_auth:
 
   # Validate Emails
-  email_validator: 
-
+  email_validator:
+  firebase_core_platform_interface: ^4.6.0
+  flutter_rating_bar: ^4.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

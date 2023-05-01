@@ -11,8 +11,9 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          key: Key("profile page"),
           automaticallyImplyLeading: false,
-          title: const Text('Profile'),
+          title: const Text('My profile'),
         ),
         body: Stack(
           children: [

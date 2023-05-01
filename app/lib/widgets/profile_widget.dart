@@ -80,6 +80,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               'Birthdate', userData?['birthdate'] ?? ''),
                           const SizedBox(height: 100),
                           ElevatedButton(
+                            key: Key("sign out button"),
                             onPressed: () => FirebaseAuth.instance.signOut(),
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(100, 40),
