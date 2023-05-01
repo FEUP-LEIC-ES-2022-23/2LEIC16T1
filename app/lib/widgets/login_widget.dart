@@ -36,23 +36,26 @@ class _LoginWidgetState extends State<LoginWidget> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
         child: Column(
+          key: const Key("sign in form"),
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 40),
-            Text("SIGN IN",
+            Text(
+              "SIGN IN",
               style: TextStyle(
-                fontSize: 32, 
-                fontWeight: FontWeight.bold, 
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
                 color: Colors.grey.shade600,
               ),
             ),
             const SizedBox(height: 40),
             TextField(
+              key: const Key("sign in mail field"),
               controller: emailController,
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(
-                  borderSide: BorderSide.none, 
+                  borderSide: BorderSide.none,
                   borderRadius: BorderRadius.all(Radius.circular(5)),
                 ),
                 hintText: "Email",
@@ -64,11 +67,12 @@ class _LoginWidgetState extends State<LoginWidget> {
             ),
             const SizedBox(height: 10),
             TextField(
+              key: const Key("sign in password field"),
               controller: passwordController,
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(
-                  borderSide: BorderSide.none, 
+                  borderSide: BorderSide.none,
                   borderRadius: BorderRadius.all(Radius.circular(5)),
                 ),
                 hintText: "Password",
@@ -76,7 +80,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                 filled: true,
                 fillColor: Colors.grey.shade300,
                 prefixIcon: const Icon(Icons.lock),
-                
               ),
               obscureText: true,
             ),
@@ -102,6 +105,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
+              key: const Key("login button"),
               onPressed: logIn,
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(200, 40),

@@ -9,6 +9,7 @@ class ShowMessage extends When1WithWorld<String, FlutterWorld> {
   @override
   Future<void> executeStep(String key) async {
     final noResults = find.text(key);
+    FlutterDriverUtils.waitForFlutter(world.driver);
     var exists = await FlutterDriverUtils.isPresent(world.driver, noResults);
     expectMatch(exists, true);
   }

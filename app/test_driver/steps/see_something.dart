@@ -2,7 +2,7 @@ import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:gherkin/gherkin.dart';
 
-class ThenSeeButton extends Then1WithWorld<String, FlutterWorld> {
+class SeeButton extends Then1WithWorld<String, FlutterWorld> {
   @override
   RegExp get pattern => RegExp(r"I should see a {string}");
 

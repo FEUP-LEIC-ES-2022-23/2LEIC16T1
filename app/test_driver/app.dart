@@ -1,7 +1,5 @@
-import '../lib/main.dart';
-import 'package:flutter/widgets.dart';
+import '../lib/main.dart' as app;
 import 'package:flutter_driver/driver_extension.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   // This line enables the extension
@@ -9,7 +7,5 @@ Future<void> main() async {
 
   // Call the `main()` function of your app or call `runApp` with any widget you
   // are interested in testing.
-  //await Firebase.initializeApp();
-
-  runApp(MyApp());
+  app.main();
 }

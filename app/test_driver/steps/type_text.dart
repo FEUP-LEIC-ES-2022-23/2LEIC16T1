@@ -2,15 +2,14 @@ import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:gherkin/gherkin.dart';
 
-class TypeInTheSearchBar extends When1WithWorld<String, FlutterWorld> {
+
+class Type extends When2WithWorld<String, String, FlutterWorld> {
   @override
-  RegExp get pattern => RegExp(r"I input a location {string} in the search bar");
+  RegExp get pattern => RegExp(r"I input {string} in the {string}");
 
   @override
-  Future<void> executeStep(String key) async {
-    final locator = find.byValueKey("search bar");
+  Future<void> executeStep(String key, String button) async {
+    final locator = find.byValueKey(button);
     await FlutterDriverUtils.enterText(world.driver, locator, "$key\n");
-    final search = find.byValueKey("search-icon");
-    await FlutterDriverUtils.tap(world.driver, search);
   }
 }
