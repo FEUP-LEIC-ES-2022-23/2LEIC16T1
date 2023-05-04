@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sportspotter/favourites.dart';
-import 'package:sportspotter/main.dart';
+import 'package:sportspotter/home_page.dart';
 import 'package:sportspotter/profile_page.dart';
 import 'package:sportspotter/search_page.dart';
 
@@ -198,7 +198,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                     context,
                     PageRouteBuilder(
                         pageBuilder: (context, animation1, animation2) =>
-                            const MyHomePage(),
+                            const HomeScreen(),
                         transitionDuration: Duration.zero,
                         reverseTransitionDuration: Duration.zero),
                   );
