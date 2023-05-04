@@ -24,7 +24,6 @@ class _FacilityPageState extends State<FacilityPage> {
   double? value = 0;
   double? myValue = 0;
   buildRating() async {
-
     value = await getFacilityRating(widget.facility.id);
     final user = FirebaseAuth.instance.currentUser;
     bool loggedIn = user != null;
@@ -48,7 +47,7 @@ class _FacilityPageState extends State<FacilityPage> {
         itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
         onRatingUpdate: (rating) {},
       );
-      if(loggedIn){
+      if (loggedIn) {
         myRating = RatingBar(
           initialRating: myValue!,
           direction: Axis.horizontal,
@@ -64,27 +63,25 @@ class _FacilityPageState extends State<FacilityPage> {
             addRating(widget.facility.id, user.uid, rating);
           },
         );
-      }
-      else {
-        myRating = Text("Log in to rate this facility", style: TextStyle(fontSize: 20, color: Colors.grey),);
+      } else {
+        myRating = Text(
+          "Log in to rate this facility",
+          style: TextStyle(fontSize: 20, color: Colors.grey),
+        );
       }
     });
-
-
   }
+
   @override
   Widget build(BuildContext context) {
     //final double averageRating = getAverageRating();
     buildRating();
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(
-          size: 40,
-          color: Colors.black
-        ),
-        backgroundColor: const Color(0x00fdfdfd),
-        elevation: 0,
-        /*actions: [
+        appBar: AppBar(
+          iconTheme: const IconThemeData(size: 40, color: Colors.black),
+          backgroundColor: const Color(0x00fdfdfd),
+          elevation: 0,
+          /*actions: [
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             icon: const Icon(
@@ -95,46 +92,43 @@ class _FacilityPageState extends State<FacilityPage> {
             },
           )
         ],*/
-      ),
-      body: Stack(
-        children: [
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                (widget.facility.photo == "") ?
-                  Image.asset(
-                    'assets/images/error-image-generic.png',
-                    width: MediaQuery.of(context).size.width,
-                    height: 200,
-                    fit: BoxFit.cover,
-                  ) : Image.network(
-                  widget.facility.photo,
-                  width: MediaQuery.of(context).size.width,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
-                Row(
-                  children: [
-                    Text(value.toString(), style: const TextStyle(
+        ),
+        body: Stack(children: [
+          ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            children: [
+              (widget.facility.photo == "")
+                  ? Image.asset(
+                      'assets/images/error-image-generic.png',
+                      width: MediaQuery.of(context).size.width,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.network(
+                      widget.facility.photo,
+                      width: MediaQuery.of(context).size.width,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
+              Row(
+                children: [
+                  Text(value.toString(),
+                      style: const TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.bold,
                         color: Colors.amber,
-                    )),
-                    rating,
-                  ],
-                ),
-                Text(
-                  widget.facility.name,
+                      )),
+                  rating,
+                ],
+              ),
+              Text(widget.facility.name,
                   style: const TextStyle(
-                    color: Color.fromRGBO(94, 97, 115, 1),
-                    fontSize: 35
-                  ),
+                      color: Color.fromRGBO(94, 97, 115, 1), fontSize: 35),
                   maxLines: 2,
-                  overflow: TextOverflow.ellipsis
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 5),
-                  /*child: Row(
+                  overflow: TextOverflow.ellipsis),
+              Container(
+                padding: const EdgeInsets.only(left: 5),
+                /*child: Row(
                     children: [
                       Text(
                         averageRating == -1 ? "No Reviews" : averageRating.toStringAsFixed(1),
@@ -150,86 +144,92 @@ class _FacilityPageState extends State<FacilityPage> {
                           const Icon(Icons.star_outline),
                     ],
                   ),*/
-                ),
-                SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(7),
-                              child: const Icon(
-                                Icons.house_sharp,
-                                color: Color.fromRGBO(94, 97, 115, 1),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                widget.facility.address,
-                                style: const TextStyle(
-                                  color: Color.fromRGBO(94, 97, 115, 1),
-                                  fontSize: 17,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                              ),
-                            )
-                          ],
+              ),
+              SingleChildScrollView(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(7),
+                        child: const Icon(
+                          Icons.house_sharp,
+                          color: Color.fromRGBO(94, 97, 115, 1),
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(7),
-                              child: const Icon(
-                                Icons.phone,
-                                color: Color.fromRGBO(94, 97, 115, 1),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                widget.facility.phoneNumber,
-                                style: const TextStyle(
-                                  color: Color.fromRGBO(94, 97, 115, 1),
-                                  fontSize: 17,
-                                ),
-                                overflow: TextOverflow.clip,
-                                maxLines: 1,
-                              ),
-                            )
-                          ],
+                      ),
+                      Expanded(
+                        child: Text(
+                          widget.facility.address,
+                          style: const TextStyle(
+                            color: Color.fromRGBO(94, 97, 115, 1),
+                            fontSize: 17,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
-                        DropdownSearch<String>.multiSelection(
-                          popupProps: const PopupPropsMultiSelection.dialog(
-                            showSearchBox: true,
-                            searchDelay: Duration(seconds: 0),
-                            searchFieldProps: TextFieldProps(
-                              autofocus: true,
-                            ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(7),
+                        child: const Icon(
+                          Icons.phone,
+                          color: Color.fromRGBO(94, 97, 115, 1),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          widget.facility.phoneNumber,
+                          style: const TextStyle(
+                            color: Color.fromRGBO(94, 97, 115, 1),
+                            fontSize: 17,
                           ),
-                          dropdownDecoratorProps: const DropDownDecoratorProps(
-                            dropdownSearchDecoration: InputDecoration(
-                              labelText: "Add or remove tags for this facility",
-                              contentPadding: EdgeInsets.all(5),
-                              border: InputBorder.none,
-                            )
-                          ),
-                            dropdownButtonProps: const DropdownButtonProps(
-                            icon: Icon(
-                              Icons.add_box,
-                              size: 30,
-                            )
-                          ),
-                          items: DataService.availableTags,
-                          selectedItems: widget.facility.tags.map((tag) => tag.name).toList(),
-                          onChanged: (List<String>? selectedTags) {
-                            final ref = FirebaseFirestore.instance.collection('facility').doc(widget.facility.id);
+                          overflow: TextOverflow.clip,
+                          maxLines: 1,
+                        ),
+                      )
+                    ],
+                  ),
+                  DropdownSearch<String>.multiSelection(
+                    popupProps: const PopupPropsMultiSelection.dialog(
+                      showSearchBox: true,
+                      searchDelay: Duration(seconds: 0),
+                      searchFieldProps: TextFieldProps(
+                        autofocus: true,
+                      ),
+                    ),
+                    dropdownDecoratorProps: const DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                      labelText: "Add or remove tags for this facility",
+                      contentPadding: EdgeInsets.all(5),
+                      border: InputBorder.none,
+                    )),
+                    dropdownButtonProps: const DropdownButtonProps(
+                        icon: Icon(
+                      Icons.add_box,
+                      size: 30,
+                    )),
+                    items: DataService.availableTags,
+                    selectedItems:
+                        widget.facility.tags.map((tag) => tag.name).toList(),
+                    onChanged: (List<String>? selectedTags) {
+                      final ref = FirebaseFirestore.instance
+                          .collection('facility')
+                          .doc(widget.facility.id);
 
-                            ref.update({'tags': selectedTags?.map((tag) =>
-                              FirebaseFirestore.instance.collection('tag').doc(tag)).toList()});
-                          },
-                        ),
-                        /*Wrap(
+                      ref.update({
+                        'tags': selectedTags
+                            ?.map((tag) => FirebaseFirestore.instance
+                                .collection('tag')
+                                .doc(tag))
+                            .toList()
+                      });
+                    },
+                  ),
+                  /*Wrap(
                             children: [
                               for (int i = 0; i < widget.facility.tags.length; i++)
                                 Container(
@@ -249,7 +249,7 @@ class _FacilityPageState extends State<FacilityPage> {
                                 ),
                             ]
                         ),*/
-                        /*Row(
+                  /*Row(
                           children: [
                             for (int i = 0; i < 5; i++)
                               Container(
@@ -317,21 +317,40 @@ class _FacilityPageState extends State<FacilityPage> {
                             ],
                           ),
                         ),*/
-                        const SizedBox(height: 100)
-                      ],
-                    )
+                  const SizedBox(height: 100)
+                ],
+              )),
+              myRating,
+              const SizedBox(
+                height: 30,
+                child: Text(
+                  "Write review:",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
-                myRating,
-              ]
+              ),
+              const SizedBox(
+                height: 100,
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a search term',
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 100,
+                child: Center(
+                  child: Text(
+                    "Reviews",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
           ),
           const Positioned(
-              bottom: 0,
-              left: 0,
-              child: NavigationWidget(selectedIndex: 4)
-          ),
-        ]
-      )
-    );
+              bottom: 0, left: 0, child: NavigationWidget(selectedIndex: 4)),
+        ]));
   }
 /*
   double getAverageRating(){
