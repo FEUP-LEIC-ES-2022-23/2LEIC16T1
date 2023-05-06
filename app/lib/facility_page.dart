@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sportspotter/models/data_service.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:sportspotter/tools/favourite.dart';
 import 'package:sportspotter/tools/rating.dart';
 
 import 'models/facility.dart';
@@ -23,13 +24,15 @@ class _FacilityPageState extends State<FacilityPage> {
   Widget myRating = CircularProgressIndicator();
   double? value = 0;
   double? myValue = 0;
+  final User? _user = FirebaseAuth.instance.currentUser;
+  bool _isFavourite = false;
+
   buildRating() async {
 
     value = await getFacilityRating(widget.facility.id);
-    final user = FirebaseAuth.instance.currentUser;
-    bool loggedIn = user != null;
+    bool loggedIn = _user != null;
     if (loggedIn) {
-      myValue = await getUserRating(user.uid, widget.facility.id);
+      myValue = await getUserRating(_user!.uid, widget.facility.id);
       myValue ??= 0;
     }
     setState(() {
@@ -61,7 +64,7 @@ class _FacilityPageState extends State<FacilityPage> {
           ),
           itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
           onRatingUpdate: (rating) {
-            addRating(widget.facility.id, user.uid, rating);
+            addRating(widget.facility.id, _user!.uid, rating);
           },
         );
       }
@@ -69,13 +72,22 @@ class _FacilityPageState extends State<FacilityPage> {
         myRating = Text("Log in to rate this facility", style: TextStyle(fontSize: 20, color: Colors.grey),);
       }
     });
-
-
   }
+
+  getFavourite() async{
+    if (_user != null) {
+      final favourite = await isFavourite(widget.facility.id, _user!.uid);
+      setState(() {
+        _isFavourite = favourite;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     //final double averageRating = getAverageRating();
     buildRating();
+    getFavourite();
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
@@ -84,17 +96,35 @@ class _FacilityPageState extends State<FacilityPage> {
         ),
         backgroundColor: const Color(0x00fdfdfd),
         elevation: 0,
-        /*actions: [
-          IconButton(
-            padding: const EdgeInsets.only(right: 10),
-            icon: const Icon(
-              Icons.star_outline,
-            ),
-            onPressed: () {
-
-            },
-          )
-        ],*/
+        actions: [
+          if (_user != null)
+          _isFavourite ?
+            IconButton(
+              padding: const EdgeInsets.only(right: 10),
+              icon: const Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              onPressed: () {
+                removeFavourite(widget.facility.id, _user!.uid);
+                setState(() {
+                  _isFavourite = false;
+                });
+              },
+            ) :
+            IconButton(
+              padding: const EdgeInsets.only(right: 10),
+              icon: const Icon(
+                Icons.star_outline,
+              ),
+              onPressed: () {
+                addFavourite(widget.facility.id, _user!.uid);
+                setState(() {
+                  _isFavourite = true;
+                });
+              },
+            )
+        ],
       ),
       body: Stack(
         children: [
