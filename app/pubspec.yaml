@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.17.0
   flutter_polyline_points: ^1.0.0
   google_maps_flutter: ^2.2.5
+  sqflite:
   dropdown_search: ^5.0.6
   glob: ^2.1.1
   mockito: ^5.4.0

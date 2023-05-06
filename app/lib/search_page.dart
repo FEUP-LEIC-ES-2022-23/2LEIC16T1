@@ -19,6 +19,13 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Pair<Pair<String, String>, LatLng>> visitedList = [
+      Pair(Pair("Holmes Place Boavista", "ChIJMd4IVZllJA0RqJ1YxwBQSbE"), LatLng(41.1615408, -8.6429631)),
+      Pair(Pair("Little Dragon Academy", "ChIJ_____wJlJA0Rg2bCH8rVFq8"), LatLng(41.1650788, -8.616526799999999)),
+      Pair(Pair("Vidya - Academia de Yoga do Porto", "ChIJdRmVPwhlJA0RBxjPuS2Nwbc"), LatLng(41.15733549999999, -8.6280247)),
+      Pair(Pair("CrossFit Durius", "ChIJ1-EhKoxkJA0RcwW-ZIdT7g0"), LatLng(41.1576917, -8.6322545))
+    ];
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -37,6 +44,46 @@ class SearchScreen extends StatelessWidget {
           },
           child: const Text('Enter a location'),
         ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            key: Key("results-map"),
+            child: MapScreen(showMap: true, coordinates: visitedList, context: context, recentVisited: true),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: visitedList.length,
+              itemBuilder: (context, index) {
+                var listTile = ListTile(
+                    key: Key("results-list"),
+                    title: Text(visitedList[index].first.first),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return const Center(
+                            child: CircularProgressIndicator(color: Colors.white),
+                          );
+                        },
+                      );
+
+                      DataService.fetchFacility(visitedList[index].first.second).then((selectedFacility){
+                        Navigator.of(context).pop();
+                        Navigator.push(context, PageRouteBuilder(
+                            pageBuilder: (context, animation1, animation2) => FacilityPage(facility: selectedFacility),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero
+                        ));
+                      });
+                    }
+                );
+                return listTile;
+              },
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: const NavigationWidget(selectedIndex: 1),
     );
@@ -158,7 +205,7 @@ class CustomSearch extends SearchDelegate {
               children: [
                 Expanded(
                   key: Key("results-map"),
-                  child: MapScreen(showMap: true, coordinates: snapshot.data, context: context),
+                  child: MapScreen(showMap: true, coordinates: snapshot.data, recentVisited: false, context: context),
                 ),
                 Expanded(
                   child: ListView.builder(
@@ -316,12 +363,14 @@ class MapScreen extends StatelessWidget {
 
   Set<Marker> markers = {};
   late final LatLng cameraPosition;
+  bool recentVisited = false;
 
   MapScreen(
       {Key? key,
       required bool showMap,
       List<Pair<Pair<String, String>, LatLng>>? coordinates,
-      required BuildContext context})
+      required BuildContext context,
+      required this.recentVisited})
       : super(key: key) {
     if (showMap) {
       cameraPosition = coordinates![0].second;
@@ -331,13 +380,20 @@ class MapScreen extends StatelessWidget {
 
   Set<Marker> buildMarkers(List<Pair<Pair<String, String>, LatLng>> coordinates, BuildContext context) {
     Set<Marker> markers_ = {};
-    BitmapDescriptor blueMarker =
-        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
-    BitmapDescriptor redMarker =
-        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
-    markers_.add(buildMarker(coordinates[0], blueMarker, 2, context));
-    for (int i = 1; i < coordinates.length; i++) {
-      markers_.add(buildMarker(coordinates[i], redMarker, 1, context));
+    if (!recentVisited) {
+      BitmapDescriptor blueMarker =
+          BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+      BitmapDescriptor redMarker =
+          BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+      markers_.add(buildMarker(coordinates[0], blueMarker, 2, context));
+      for (int i = 1; i < coordinates.length; i++) {
+        markers_.add(buildMarker(coordinates[i], redMarker, 1, context));
+      }
+    } else {
+      BitmapDescriptor redMarker = BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+      for (int i = 0; i < coordinates.length; i++) {
+        markers_.add(buildMarker(coordinates[i], redMarker, 1, context));
+      }
     }
     return markers_;
   }
