@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:sportspotter/models/local_storage.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:sportspotter/google_maps/google_maps.dart';
 import 'package:sportspotter/tools/location.dart';
@@ -9,8 +10,9 @@ import 'package:sportspotter/widgets/search_dropdown.dart';
 
 import 'facility_page.dart';
 import 'models/data_service.dart';
+import 'models/facility.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends StatefulWidget {
   final String customMapStyle =
       '[ { "featureType": "water", "elementType": "geometry.fill", "stylers": [ { "color": "#0099dd" } ] } ]';
 
@@ -18,14 +20,30 @@ class SearchScreen extends StatelessWidget {
   const SearchScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    List<Pair<Pair<String, String>, LatLng>> visitedList = [
-      Pair(Pair("Holmes Place Boavista", "ChIJMd4IVZllJA0RqJ1YxwBQSbE"), LatLng(41.1615408, -8.6429631)),
-      Pair(Pair("Little Dragon Academy", "ChIJ_____wJlJA0Rg2bCH8rVFq8"), LatLng(41.1650788, -8.616526799999999)),
-      Pair(Pair("Vidya - Academia de Yoga do Porto", "ChIJdRmVPwhlJA0RBxjPuS2Nwbc"), LatLng(41.15733549999999, -8.6280247)),
-      Pair(Pair("CrossFit Durius", "ChIJ1-EhKoxkJA0RcwW-ZIdT7g0"), LatLng(41.1576917, -8.6322545))
-    ];
+  State<SearchScreen> createState() => _SearchScreenState();
+}
 
+VisitedPlaces placesIDs = VisitedPlaces(facilities: []);
+
+/*
+class _SearchScreenState extends State<SearchScreen>{
+  List<Pair<String, String>> places = [];
+  bool _initState = true;
+  @override
+  Widget build(BuildContext context) {
+    if (_initState){
+      _initState = false;
+      setState(() {
+        placesIDs.fetchFacilities();
+        if (placesIDs.facilities.isNotEmpty) {
+          for (String item in placesIDs.facilities) {
+            DataService.fetchFacility(item).then((facility) {
+              places.add(Pair(item, facility.name));
+            });
+          }
+        }
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -48,16 +66,12 @@ class SearchScreen extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            key: Key("results-map"),
-            child: MapScreen(showMap: true, coordinates: visitedList, context: context, recentVisited: true),
-          ),
-          Expanded(
             child: ListView.builder(
-              itemCount: visitedList.length,
+              itemCount: places.length,
               itemBuilder: (context, index) {
                 var listTile = ListTile(
                     key: Key("results-list"),
-                    title: Text(visitedList[index].first.first),
+                    title: Text(places[index].second),
                     onTap: () {
                       showDialog(
                         context: context,
@@ -69,7 +83,7 @@ class SearchScreen extends StatelessWidget {
                         },
                       );
 
-                      DataService.fetchFacility(visitedList[index].first.second).then((selectedFacility){
+                      DataService.fetchFacility(places[index].first).then((selectedFacility){
                         Navigator.of(context).pop();
                         Navigator.push(context, PageRouteBuilder(
                             pageBuilder: (context, animation1, animation2) => FacilityPage(facility: selectedFacility),
@@ -84,6 +98,105 @@ class SearchScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: const NavigationWidget(selectedIndex: 1),
+    );
+  }
+}
+*/
+class _SearchScreenState extends State<SearchScreen>{
+  late Future<List<Pair<String, String>>> _futurePlaces;
+  VisitedPlaces placesIDs = VisitedPlaces(facilities: []);
+  bool _initState = true;
+
+  @override
+  void initState() {
+    if (_initState) {
+      _initState = false;
+      _futurePlaces = _fetchPlaces();
+    }
+  }
+
+  Future<List<Pair<String, String>>> _fetchPlaces() async {
+    debugPrint("--------> Inside _fetchPlaces(): before await\n");
+    await placesIDs.fetchFacilities();
+    debugPrint("--------> Inside _fetchPlaces(): after await\n");
+    List<Pair<String, String>> places = [];
+    if (placesIDs.facilities.isNotEmpty) {
+      for (String item in placesIDs.facilities) {
+        if (item != "") {
+          var facility = await DataService.fetchFacility(item);
+          places.add(Pair(item, facility.name));
+        }
+      }
+    }
+    return places;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: CustomSearch());
+            }),
+        title: GestureDetector(
+          key: Key("search bar"),
+          onTap: () {
+            showSearch(
+              context: context,
+              delegate: CustomSearch(),
+            );
+          },
+          child: const Text('Enter a location'),
+        ),
+      ),
+      body: FutureBuilder<List<Pair<String, String>>>(
+        future: _futurePlaces,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      var listTile = ListTile(
+                          key: Key("results-list"),
+                          title: Text(snapshot.data![index].second),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return const Center(
+                                  child: CircularProgressIndicator(color: Colors.white),
+                                );
+                              },
+                            );
+                            DataService.fetchFacility(snapshot.data![index].first).then((selectedFacility){
+                              Navigator.of(context).pop();
+                              Navigator.push(context, PageRouteBuilder(
+                                  pageBuilder: (context, animation1, animation2) => FacilityPage(facility: selectedFacility),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero
+                              ));
+                            });
+                          }
+                      );
+                      return listTile;
+                    },
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
       bottomNavigationBar: const NavigationWidget(selectedIndex: 1),
     );
@@ -228,7 +341,7 @@ class CustomSearch extends SearchDelegate {
                                 );
                               },
                             );
-
+                            placesIDs.updateFacilities(snapshot.data[index].first.second);
                             DataService.fetchFacility(snapshot.data[index].first.second).then((selectedFacility){
                               Navigator.of(context).pop();
                               Navigator.push(context, PageRouteBuilder(

@@ -1,97 +1,82 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-import 'facility.dart';
-
 class VisitedPlaces {
-  final String id = "visited";
-  final List<Facility> facilities;
+  List<String> facilities = [];
 
-  const VisitedPlaces({required this.facilities});
+  VisitedPlaces({required this.facilities});
 
-  factory VisitedPlaces.fromJson(Map<String, dynamic> json) => VisitedPlaces(
-    facilities: json['facilities']
-  );
+  VisitedPlaces.fromMap(Map<String, dynamic> item) :
+    //facilities = [item["id1"], item["id2"]];
+    facilities = [item["id1"], ""];
+  Map<String, Object> toMap(){
+    /*if (facilities.length == 1) {
+      return {'id1': facilities[0]};
+    } else {
+      return {'id1': facilities[0],'id2': facilities[1]};
+    }*/
+    return {'id1': facilities[0],'id2': ""};
+  }
+
+  Future<int> updateFacilities(String newFac) {
+    facilities.add(newFac);
+    return DatabaseHelper.updateFacilities(this);
+  }
+
+  Future<void> fetchFacilities() async {
+    debugPrint("--------> Inside fetchFacilities(): before getList\n");
+    var list = await DatabaseHelper.getList();
+    facilities = list.facilities;
+    debugPrint("--------> Inside fetchFacilities(): ( ");
+    for (String st in facilities) {
+      debugPrint(st);
+      debugPrint(" ");
+    }
+    debugPrint(")\n");
+  }
 }
-/*class localStorageController {
 
-}
-class LocalDBHelper {
-  LocalDBHelper._privateConstructor();
+class DatabaseHelper {
+  DatabaseHelper._privateConstructor();
 
-  static final LocalDBHelper instance = LocalDBHelper._privateConstructor();
+  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
   static Database? _database;
-  Future<Database> get database async => _database ??= await initDatabase();
+  Future<Database> get database async => _database ??= await initializeDB();
 
-  Future<Database> initDatabase() async {
-    String path = join(await getDatabasesPath(), 'localTransactions.db');
-    return await openDatabase(
-      path,
+  static Future<Database> initializeDB() async {
+    String path = await getDatabasesPath();
+
+    await deleteDatabase(join(path, 'database.db'));
+
+    return openDatabase(
+      join(path, 'database.db'),
       version: 1,
-      onCreate: _onCreate,
+      onCreate: (database, version) async {
+        await database.execute(
+            "CREATE TABLE Recents (id1 TEXT, id2 TEXT);",
+        );
+      },
     );
   }
 
-  Future _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE Categor(
-      userID NUMERIC PRIMARY KEY,
-      name VARCHAR(50) NOT NULL,
-      color VARCHAR(50) NOT NULL
-      );
-      
-      CREATE TABLE Transact(
-      userID NUMERIC PRIMARY KEY,
-      expense NUMERIC,
-      name VARCHAR(50) NOT NULL,
-      total NUMERIC NOT NULL CHECK (total >= 0),
-      date NUMERIC,
-      notes VARCHAR(200)
-      );
-      ''');
+  static Future<int> updateFacilities(VisitedPlaces fac) async {
+    final Database db = await instance.database;
+    final result = await db.insert(
+        'Recents', fac.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace
+    );
+    debugPrint("----> Inside updateFacilities: added fac with success");
+    return result;
   }
 
-  Future<List<model.TransactionModel>> getTransactions() async {
-    Database db = await instance.database;
-    final List<Map<String, dynamic>> maps =
-    await db.query('Transact', orderBy: 'date DESC');
-    return List.generate(maps.length, (i) {
-      return model.TransactionModel(
-        userID: maps[i]['userID'],
-        categoryID: maps[i]['categoryID'],
-        expense: maps[i]['expense'],
-        name: maps[i]['name'],
-        total: maps[i]['total'],
-        date: DateTime.fromMillisecondsSinceEpoch(maps[i]['date']),
-        notes: maps[i]['notes'],
-      );
-    });
+  static Future<VisitedPlaces> getList() async {
+    final Database db = await instance.database;
+    final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM Recents');
+    if (queryResult.isEmpty) return VisitedPlaces(facilities: []);
+    var listEnc = queryResult[0];
+    var listDec = VisitedPlaces.fromMap(listEnc);
+    return listDec;
   }
-
-  Future<void> addTransaction(model.TransactionModel transaction) async {
-    Database db = await instance.database;
-    await db.insert('Transact', transaction.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
-  }
-
-  Future<int> removeTransaction(int id) async {
-    Database db = await instance.database;
-    return await db
-        .delete('Transac', where: 'userID = ?', whereArgs: [id]);
-  }
-
-  Future deleteLocalDB() async {
-    Database db = await instance.database;
-    await db.execute('''
-      DELETE FROM Transact
-      ''');
-  }
-
-  Future<bool> isLocalDBEmpty() async {
-    Database db = await instance.database;
-    var x = await db.rawQuery('SELECT COUNT(*) FROM Transact');
-    int count = Sqflite.firstIntValue(x) as int;
-    return count == 0;
-  }
-}*/
+}
