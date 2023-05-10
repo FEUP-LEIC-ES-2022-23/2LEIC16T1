@@ -10,7 +10,6 @@ import 'package:sportspotter/widgets/search_dropdown.dart';
 
 import 'facility_page.dart';
 import 'models/data_service.dart';
-import 'models/facility.dart';
 
 class SearchScreen extends StatefulWidget {
   final String customMapStyle =
@@ -23,7 +22,7 @@ class SearchScreen extends StatefulWidget {
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
-VisitedPlaces placesIDs = VisitedPlaces(facilities: []);
+VisitedPlaces placesIDs = VisitedPlaces(facilities: ["", ""]);
 
 /*
 class _SearchScreenState extends State<SearchScreen>{
@@ -105,22 +104,21 @@ class _SearchScreenState extends State<SearchScreen>{
 }
 */
 class _SearchScreenState extends State<SearchScreen>{
-  late Future<List<Pair<String, String>>> _futurePlaces;
-  VisitedPlaces placesIDs = VisitedPlaces(facilities: []);
+  //late Future<List<Pair<String, String>>> _futurePlaces;
   bool _initState = true;
 
   @override
   void initState() {
     if (_initState) {
+      //_futurePlaces = _fetchPlaces();
       _initState = false;
-      _futurePlaces = _fetchPlaces();
     }
   }
 
   Future<List<Pair<String, String>>> _fetchPlaces() async {
-    debugPrint("--------> Inside _fetchPlaces(): before await\n");
-    await placesIDs.fetchFacilities();
-    debugPrint("--------> Inside _fetchPlaces(): after await\n");
+    debugPrint("----> BEFORE FETCH: [ ${placesIDs.facilities[0]} , ${placesIDs.facilities[1]} ]");
+    placesIDs.fetchFacilities();
+    debugPrint("----> AFTER FETCH: [ ${placesIDs.facilities[0]} , ${placesIDs.facilities[1]} ]");
     List<Pair<String, String>> places = [];
     if (placesIDs.facilities.isNotEmpty) {
       for (String item in placesIDs.facilities) {
@@ -155,7 +153,8 @@ class _SearchScreenState extends State<SearchScreen>{
         ),
       ),
       body: FutureBuilder<List<Pair<String, String>>>(
-        future: _futurePlaces,
+        future: _fetchPlaces(),
+        //future: _futurePlaces,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(
@@ -341,7 +340,9 @@ class CustomSearch extends SearchDelegate {
                                 );
                               },
                             );
+                            debugPrint("----> BEFORE UPDATE: [ ${placesIDs.facilities[0]} , ${placesIDs.facilities[1]} ]");
                             placesIDs.updateFacilities(snapshot.data[index].first.second);
+                            debugPrint("----> AFTER UPDATE: [ ${placesIDs.facilities[0]} , ${placesIDs.facilities[1]} ]");
                             DataService.fetchFacility(snapshot.data[index].first.second).then((selectedFacility){
                               Navigator.of(context).pop();
                               Navigator.push(context, PageRouteBuilder(
