@@ -1,19 +1,26 @@
-import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class VisitedPlaces {
-  static const int MAX_PLACES = 2;
+  static const int MAX_PLACES = 6; // Here we can define the nr of visited places
 
   List<String> facilities = [];
 
   VisitedPlaces({required this.facilities});
 
-  VisitedPlaces.fromMap(Map<String, dynamic> item) :
-    facilities = [item["id1"], item["id2"]];
+  VisitedPlaces.fromMap(Map<String, dynamic> item) {
+    facilities.clear();
+    for (int i = 1; i <= MAX_PLACES; i++) {
+      facilities.add(item['id$i']);
+    }
+  }
 
   Map<String, Object> toMap(){
-    return {'id1': facilities[0], 'id2': facilities[1]};
+    Map<String, Object> map = {};
+    for (int i = 1; i <= MAX_PLACES; i++) {
+      map['id$i'] = facilities[i-1];
+    }
+    return map;
   }
 
   Future<int> updateFacilities(String newFac) {
@@ -29,8 +36,6 @@ class VisitedPlaces {
     }
 
     return DatabaseHelper.updateFacilities(this);
-    /*facilities.add(newFac);
-    return DatabaseHelper.updateFacilities(this);*/
   }
 
   Future<void> fetchFacilities() async {
@@ -52,12 +57,18 @@ class DatabaseHelper {
 
     await deleteDatabase(join(path, 'database.db'));
 
+    List<String> idFields = [];
+    for (int i = 1; i <= VisitedPlaces.MAX_PLACES; i++) {
+      idFields.add('id$i TEXT');
+    }
+    String tableAttrs = idFields.join(', ');
+
     return openDatabase(
       join(path, 'database.db'),
       version: 1,
       onCreate: (database, version) async {
         await database.execute(
-            "CREATE TABLE Recents (id1 TEXT, id2 TEXT);",
+            'CREATE TABLE Recents ($tableAttrs);',
         );
       },
     );
@@ -65,7 +76,6 @@ class DatabaseHelper {
 
   static Future<int> updateFacilities(VisitedPlaces fac) async {
     final Database db = await instance.database;
-    debugPrint("----> STORING ON DB: [ ${fac.facilities[0]} , ${fac.facilities[1]} ]");
     await db.execute(
       "DELETE FROM Recents;",
     );
@@ -79,9 +89,8 @@ class DatabaseHelper {
   static Future<VisitedPlaces> getList() async {
     final Database db = await instance.database;
     final List<Map<String, Object?>> queryResult = await db.rawQuery('SELECT * FROM Recents');
-    if (queryResult.isEmpty) return VisitedPlaces(facilities: ["", ""]);
+    if (queryResult.isEmpty) return VisitedPlaces(facilities: List.generate(VisitedPlaces.MAX_PLACES, (index) => ""));
     var listEnc = queryResult[0];
-    if (queryResult.length > 1) debugPrint("Something here...");
     var listDec = VisitedPlaces.fromMap(listEnc);
     return listDec;
   }

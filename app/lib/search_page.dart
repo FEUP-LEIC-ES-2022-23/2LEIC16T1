@@ -22,103 +22,20 @@ class SearchScreen extends StatefulWidget {
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
-VisitedPlaces placesIDs = VisitedPlaces(facilities: ["", ""]);
+VisitedPlaces placesIDs = VisitedPlaces(facilities: List.generate(VisitedPlaces.MAX_PLACES, (index) => ""));
 
-/*
 class _SearchScreenState extends State<SearchScreen>{
-  List<Pair<String, String>> places = [];
-  bool _initState = true;
-  @override
-  Widget build(BuildContext context) {
-    if (_initState){
-      _initState = false;
-      setState(() {
-        placesIDs.fetchFacilities();
-        if (placesIDs.facilities.isNotEmpty) {
-          for (String item in placesIDs.facilities) {
-            DataService.fetchFacility(item).then((facility) {
-              places.add(Pair(item, facility.name));
-            });
-          }
-        }
-      });
-    }
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: CustomSearch());
-            }),
-        title: GestureDetector(
-          key: Key("search bar"),
-          onTap: () {
-            showSearch(
-              context: context,
-              delegate: CustomSearch(),
-            );
-          },
-          child: const Text('Enter a location'),
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: places.length,
-              itemBuilder: (context, index) {
-                var listTile = ListTile(
-                    key: Key("results-list"),
-                    title: Text(places[index].second),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return const Center(
-                            child: CircularProgressIndicator(color: Colors.white),
-                          );
-                        },
-                      );
-
-                      DataService.fetchFacility(places[index].first).then((selectedFacility){
-                        Navigator.of(context).pop();
-                        Navigator.push(context, PageRouteBuilder(
-                            pageBuilder: (context, animation1, animation2) => FacilityPage(facility: selectedFacility),
-                            transitionDuration: Duration.zero,
-                            reverseTransitionDuration: Duration.zero
-                        ));
-                      });
-                    }
-                );
-                return listTile;
-              },
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: const NavigationWidget(selectedIndex: 1),
-    );
-  }
-}
-*/
-class _SearchScreenState extends State<SearchScreen>{
-  //late Future<List<Pair<String, String>>> _futurePlaces;
   bool _initState = true;
 
   @override
   void initState() {
     if (_initState) {
-      //_futurePlaces = _fetchPlaces();
       _initState = false;
     }
   }
 
   Future<List<Pair<String, String>>> _fetchPlaces() async {
-    debugPrint("----> BEFORE FETCH: [ ${placesIDs.facilities[0]} , ${placesIDs.facilities[1]} ]");
     placesIDs.fetchFacilities();
-    debugPrint("----> AFTER FETCH: [ ${placesIDs.facilities[0]} , ${placesIDs.facilities[1]} ]");
     List<Pair<String, String>> places = [];
     if (placesIDs.facilities.isNotEmpty) {
       for (String item in placesIDs.facilities) {
@@ -152,51 +69,87 @@ class _SearchScreenState extends State<SearchScreen>{
           child: const Text('Enter a location'),
         ),
       ),
+
       body: FutureBuilder<List<Pair<String, String>>>(
         future: _fetchPlaces(),
-        //future: _futurePlaces,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      var listTile = ListTile(
-                          key: Key("results-list"),
-                          title: Text(snapshot.data![index].second),
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return const Center(
-                                  child: CircularProgressIndicator(color: Colors.white),
-                                );
-                              },
-                            );
-                            DataService.fetchFacility(snapshot.data![index].first).then((selectedFacility){
-                              Navigator.of(context).pop();
-                              Navigator.push(context, PageRouteBuilder(
-                                  pageBuilder: (context, animation1, animation2) => FacilityPage(facility: selectedFacility),
-                                  transitionDuration: Duration.zero,
-                                  reverseTransitionDuration: Duration.zero
-                              ));
-                            });
-                          }
-                      );
-                      return listTile;
-                    },
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            return Container(
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      "Past Visited Places",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: ListTile(
+                            title: Text(snapshot.data![index].second),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                                    ),
+                                  );
+                                },
+                              );
+                              DataService.fetchFacility(snapshot.data![index].first).then((selectedFacility){
+                                Navigator.of(context).pop();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FacilityPage(facility: selectedFacility),
+                                  ),
+                                );
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             );
           } else {
-            return const Center(child: CircularProgressIndicator());
+            return Container(
+              color: Colors.white,
+              child: Center(
+                child: Text(
+                  "You can see the facilities you have visited here",
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            );
           }
         },
       ),
+
       bottomNavigationBar: const NavigationWidget(selectedIndex: 1),
     );
   }
@@ -340,9 +293,7 @@ class CustomSearch extends SearchDelegate {
                                 );
                               },
                             );
-                            debugPrint("----> BEFORE UPDATE: [ ${placesIDs.facilities[0]} , ${placesIDs.facilities[1]} ]");
                             placesIDs.updateFacilities(snapshot.data[index].first.second);
-                            debugPrint("----> AFTER UPDATE: [ ${placesIDs.facilities[0]} , ${placesIDs.facilities[1]} ]");
                             DataService.fetchFacility(snapshot.data[index].first.second).then((selectedFacility){
                               Navigator.of(context).pop();
                               Navigator.push(context, PageRouteBuilder(
