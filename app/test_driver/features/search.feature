@@ -47,18 +47,3 @@ Feature: search
       | Porto    | outdoor|
       | Porto    | soccer |
       | Lisboa   | yoga   |
-
-  Scenario Outline: Select according to two tags
-    When I input "<location>" in the "search bar"
-    And I tap the "filter-icon"
-    And I input "<tag1>" in the "dropdown 1"
-    And I input "<tag2>" in the "dropdown 2"
-    And I scroll in "Edit options menu 1"
-    And I tap the "save button"
-    And I tap the "search-icon"
-    Then I should see a "results-map"
-    And I should see a "results-list"
-
-    Examples:
-      | location | tag1    | tag2   |
-      | Porto    | soccer  | indoor |

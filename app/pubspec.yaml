@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.17.0
   flutter_polyline_points: ^1.0.0
   google_maps_flutter: ^2.2.5
+  sqflite:
   dropdown_search: ^5.0.6
   glob: ^2.1.1
   mockito: ^5.4.0
@@ -76,6 +77,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.1
+  sqflite_common_ffi: ^2.1.1+1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
