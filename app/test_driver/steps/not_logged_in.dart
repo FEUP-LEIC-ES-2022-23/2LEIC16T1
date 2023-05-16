@@ -14,6 +14,7 @@ class NotLoggedIn extends AndWithWorld<FlutterWorld> {
 
     final signOutLocator = find.byValueKey("sign out button");
     var exists = await FlutterDriverUtils.isPresent(world.driver, signOutLocator);
+    FlutterDriverUtils.waitForFlutter(world.driver);
     if (exists) {
       await FlutterDriverUtils.tap(world.driver, signOutLocator);
       FlutterDriverUtils.waitForFlutter(world.driver);
