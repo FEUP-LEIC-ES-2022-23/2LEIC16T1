@@ -89,6 +89,7 @@ class _FacilityPageState extends State<FacilityPage> {
     buildRating();
     getFavourite();
     return Scaffold(
+      key: Key("Facility ${widget.facility.name}"),
       appBar: AppBar(
         iconTheme: const IconThemeData(
           size: 40,
