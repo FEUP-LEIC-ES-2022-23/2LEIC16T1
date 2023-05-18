@@ -14,14 +14,12 @@ class HomeScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: const Text('Home page'),
       ),
-      body: Stack(
+      body: Column(
         children: const [
-          HomeWidget(),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: NavigationWidget(selectedIndex: 0),
+          Expanded(
+            child: HomeWidget(),
           ),
+          NavigationWidget(selectedIndex: 0),
         ],
       ),
     );
