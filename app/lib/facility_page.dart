@@ -75,15 +75,13 @@ class _FacilityPageState extends State<FacilityPage> {
   getFavourite() async {
     if (_user != null) {
       final favourite = await isFavourite(widget.facility.id, _user!.uid);
-      setState(() {
-        _isFavourite = favourite;
-      });
+      _isFavourite = favourite;
     }
   }
 
   buildData() async {
-    buildRating();
-    getFavourite();
+    await getFavourite();
+    await buildRating();
   }
 
   buildRating() async {
