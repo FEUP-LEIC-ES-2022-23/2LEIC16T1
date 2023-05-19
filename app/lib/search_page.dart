@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:sportspotter/models/local_storage.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:sportspotter/google_maps/google_maps.dart';
 import 'package:sportspotter/tools/location.dart';
@@ -10,12 +11,42 @@ import 'package:sportspotter/widgets/search_dropdown.dart';
 import 'facility_page.dart';
 import 'models/data_service.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends StatefulWidget {
   final String customMapStyle =
       '[ { "featureType": "water", "elementType": "geometry.fill", "stylers": [ { "color": "#0099dd" } ] } ]';
 
   static const String test = 'R. Dr. Roberto Frias, 4200-465 Porto';
   const SearchScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+VisitedPlaces placesIDs = VisitedPlaces(facilities: List.generate(VisitedPlaces.MAX_PLACES, (index) => ""));
+
+class _SearchScreenState extends State<SearchScreen>{
+  bool _initState = true;
+
+  @override
+  void initState() {
+    if (_initState) {
+      _initState = false;
+    }
+  }
+
+  Future<List<Pair<String, String>>> _fetchPlaces() async {
+    placesIDs.fetchFacilities();
+    List<Pair<String, String>> places = [];
+    if (placesIDs.facilities.isNotEmpty) {
+      for (String item in placesIDs.facilities) {
+        if (item != "") {
+          var facility = await DataService.fetchFacility(item);
+          places.add(Pair(item, facility.name));
+        }
+      }
+    }
+    return places;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +69,87 @@ class SearchScreen extends StatelessWidget {
           child: const Text('Enter a location'),
         ),
       ),
+
+      body: FutureBuilder<List<Pair<String, String>>>(
+        future: _fetchPlaces(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            return Container(
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      "Past Visited Places",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: ListTile(
+                            title: Text(snapshot.data![index].second),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                                    ),
+                                  );
+                                },
+                              );
+                              DataService.fetchFacility(snapshot.data![index].first).then((selectedFacility){
+                                Navigator.of(context).pop();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FacilityPage(facility: selectedFacility),
+                                  ),
+                                );
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return Container(
+              color: Colors.white,
+              child: Center(
+                child: Text(
+                  "You can see the facilities you have visited here",
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+      ),
+
       bottomNavigationBar: const NavigationWidget(selectedIndex: 1),
     );
   }
@@ -158,7 +270,7 @@ class CustomSearch extends SearchDelegate {
               children: [
                 Expanded(
                   key: Key("results-map"),
-                  child: MapScreen(showMap: true, coordinates: snapshot.data, context: context),
+                  child: MapScreen(showMap: true, coordinates: snapshot.data, recentVisited: false, context: context),
                 ),
                 Expanded(
                   child: ListView.builder(
@@ -181,7 +293,7 @@ class CustomSearch extends SearchDelegate {
                                 );
                               },
                             );
-
+                            placesIDs.updateFacilities(snapshot.data[index].first.second);
                             DataService.fetchFacility(snapshot.data[index].first.second).then((selectedFacility){
                               Navigator.of(context).pop();
                               Navigator.push(context, PageRouteBuilder(
@@ -316,12 +428,14 @@ class MapScreen extends StatelessWidget {
 
   Set<Marker> markers = {};
   late final LatLng cameraPosition;
+  bool recentVisited = false;
 
   MapScreen(
       {Key? key,
       required bool showMap,
       List<Pair<Pair<String, String>, LatLng>>? coordinates,
-      required BuildContext context})
+      required BuildContext context,
+      required this.recentVisited})
       : super(key: key) {
     if (showMap) {
       cameraPosition = coordinates![0].second;
@@ -331,13 +445,20 @@ class MapScreen extends StatelessWidget {
 
   Set<Marker> buildMarkers(List<Pair<Pair<String, String>, LatLng>> coordinates, BuildContext context) {
     Set<Marker> markers_ = {};
-    BitmapDescriptor blueMarker =
-        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
-    BitmapDescriptor redMarker =
-        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
-    markers_.add(buildMarker(coordinates[0], blueMarker, 2, context));
-    for (int i = 1; i < coordinates.length; i++) {
-      markers_.add(buildMarker(coordinates[i], redMarker, 1, context));
+    if (!recentVisited) {
+      BitmapDescriptor blueMarker =
+          BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+      BitmapDescriptor redMarker =
+          BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+      markers_.add(buildMarker(coordinates[0], blueMarker, 2, context));
+      for (int i = 1; i < coordinates.length; i++) {
+        markers_.add(buildMarker(coordinates[i], redMarker, 1, context));
+      }
+    } else {
+      BitmapDescriptor redMarker = BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+      for (int i = 0; i < coordinates.length; i++) {
+        markers_.add(buildMarker(coordinates[i], redMarker, 1, context));
+      }
     }
     return markers_;
   }

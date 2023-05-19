@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:sportspotter/models/data_service.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:sportspotter/tools/favourite.dart';
 import 'package:sportspotter/tools/rating.dart';
 import 'package:sportspotter/tools/review.dart';
 
@@ -23,11 +24,13 @@ class FacilityPage extends StatefulWidget {
 
 class _FacilityPageState extends State<FacilityPage> {
   final TextEditingController reviewController = TextEditingController();
-  Widget rating = CircularProgressIndicator();
-  Widget myRating = CircularProgressIndicator();
+  Widget rating = const CircularProgressIndicator();
+  Widget myRating = const CircularProgressIndicator();
   double? value = 0;
   double? myValue = 0;
   late List<Review> reviews;
+  final User? _user = FirebaseAuth.instance.currentUser;
+  bool _isFavourite = false;
 
   submitReview() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -69,12 +72,25 @@ class _FacilityPageState extends State<FacilityPage> {
     reviews = result;
   }
 
+  getFavourite() async {
+    if (_user != null) {
+      final favourite = await isFavourite(widget.facility.id, _user!.uid);
+      setState(() {
+        _isFavourite = favourite;
+      });
+    }
+  }
+
+  buildData() async {
+    buildRating();
+    getFavourite();
+  }
+
   buildRating() async {
     value = await getFacilityRating(widget.facility.id);
-    final user = FirebaseAuth.instance.currentUser;
-    bool loggedIn = user != null;
+    bool loggedIn = _user != null;
     if (loggedIn) {
-      myValue = await getUserRating(user.uid, widget.facility.id);
+      myValue = await getUserRating(_user!.uid, widget.facility.id);
       myValue ??= 0;
     }
     value ??= 0;
@@ -105,11 +121,11 @@ class _FacilityPageState extends State<FacilityPage> {
           ),
           itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
           onRatingUpdate: (rating) async {
-            await addRating(widget.facility.id, user.uid, rating);
+            await addRating(widget.facility.id, _user!.uid, rating);
             setState(() {});
           });
     } else {
-      myRating = Text(
+      myRating = const Text(
         "Log in to rate this facility",
         style: TextStyle(fontSize: 20, color: Colors.grey),
       );
@@ -124,20 +140,38 @@ class _FacilityPageState extends State<FacilityPage> {
           iconTheme: const IconThemeData(size: 40, color: Colors.black),
           backgroundColor: const Color(0x00fdfdfd),
           elevation: 0,
-          /*actions: [
-          IconButton(
-            padding: const EdgeInsets.only(right: 10),
-            icon: const Icon(
-              Icons.star_outline,
-            ),
-            onPressed: () {
-
-            },
-          )
-        ],*/
+          actions: [
+            if (_user != null)
+              _isFavourite
+                  ? IconButton(
+                      padding: const EdgeInsets.only(right: 10),
+                      icon: const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onPressed: () {
+                        removeFavourite(widget.facility.id, _user!.uid);
+                        setState(() {
+                          _isFavourite = false;
+                        });
+                      },
+                    )
+                  : IconButton(
+                      padding: const EdgeInsets.only(right: 10),
+                      icon: const Icon(
+                        Icons.star_outline,
+                      ),
+                      onPressed: () {
+                        addFavourite(widget.facility.id, _user!.uid);
+                        setState(() {
+                          _isFavourite = true;
+                        });
+                      },
+                    )
+          ],
         ),
         body: FutureBuilder(
-            future: buildRating(),
+            future: buildData(),
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
                 return Center(child: CircularProgressIndicator());
@@ -385,21 +419,21 @@ class _FacilityPageState extends State<FacilityPage> {
                         height: 60,
                         child: TextField(
                           controller: reviewController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: 'Enter your review here',
                           ),
                         ),
                       ),
                       TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.blue,
-                        ),
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.blue,
+                          ),
                           onPressed: () {
                             submitReview();
                           },
-                          child: Text("Submit")),
+                          child: const Text("Submit")),
                       const SizedBox(
                         height: 30,
                         child: Text(
@@ -420,7 +454,6 @@ class _FacilityPageState extends State<FacilityPage> {
                                     ConnectionState.done) {
                                   return Expanded(
                                       child: ListView.builder(
-
                                           itemCount: reviews.length,
                                           itemBuilder: (context, index) =>
                                               Review(
@@ -430,14 +463,14 @@ class _FacilityPageState extends State<FacilityPage> {
                                                 user: reviews[index].user,
                                               )));
                                 } else {
-                                  return CircularProgressIndicator();
+                                  return const CircularProgressIndicator();
                                 }
                               },
                             )
                           ],
                         )),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 300,
                       )
                     ],
@@ -496,11 +529,13 @@ class Review extends StatelessWidget {
             children: [
               Text(
                 user,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Text(
                 date,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ],
           ),
