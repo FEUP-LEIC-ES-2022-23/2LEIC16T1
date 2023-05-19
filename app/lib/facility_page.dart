@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,7 +27,7 @@ class _FacilityPageState extends State<FacilityPage> {
   Widget myRating = CircularProgressIndicator();
   double? value = 0;
   double? myValue = 0;
-  late List<ReviewData>? reviews;
+  late List<Review> reviews;
 
   submitReview() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -38,18 +40,34 @@ class _FacilityPageState extends State<FacilityPage> {
   }
 
   Future<void> getReviews() async {
+    List<Review> result = [];
     List<dynamic>? aux = await getFacilityReviews(widget.facility.id);
     for (int i = 0; i < aux.length; i++) {
       final user = await FirebaseFirestore.instance
           .collection('user')
           .doc(aux[i]['userID'])
           .get();
-      aux[i]['user'] = user['firstName'] + ' ' + user['lastName'] + '(' + user['username'] + ')';
-      aux[i]['date'] = DateTime.fromMillisecondsSinceEpoch(aux[i]['date'].seconds * 1000);
+      String userName = user['firstName'] +
+          ' ' +
+          user['lastName'] +
+          ' (' +
+          user['username'] +
+          ')';
+      String date = aux[i]['date'];
+      double? rating =
+          await getUserRating(aux[i]['userID'], widget.facility.id);
+      String review = aux[i]['review'].toString();
 
+      result.add(Review(
+        review: review,
+        date: date,
+        user: userName,
+        rating: rating!.toString(),
+      ));
     }
 
-
+    reviews = result;
+  }
 
   buildRating() async {
     value = await getFacilityRating(widget.facility.id);
@@ -59,23 +77,23 @@ class _FacilityPageState extends State<FacilityPage> {
       myValue = await getUserRating(user.uid, widget.facility.id);
       myValue ??= 0;
     }
-     value ??= 0;
-      rating = RatingBar(
-        ignoreGestures: true,
-        initialRating: value!,
-        direction: Axis.horizontal,
-        allowHalfRating: true,
-        itemCount: 5,
-        ratingWidget: RatingWidget(
-          full: const Icon(Icons.star, color: Colors.amber),
-          half: const Icon(Icons.star_half, color: Colors.amber),
-          empty: const Icon(Icons.star_outline, color: Colors.amber),
-        ),
-        itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
-        onRatingUpdate: (rating) {},
-      );
-      if (loggedIn) {
-        myRating = RatingBar(
+    value ??= 0;
+    rating = RatingBar(
+      ignoreGestures: true,
+      initialRating: value!,
+      direction: Axis.horizontal,
+      allowHalfRating: true,
+      itemCount: 5,
+      ratingWidget: RatingWidget(
+        full: const Icon(Icons.star, color: Colors.amber),
+        half: const Icon(Icons.star_half, color: Colors.amber),
+        empty: const Icon(Icons.star_outline, color: Colors.amber),
+      ),
+      itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
+      onRatingUpdate: (rating) {},
+    );
+    if (loggedIn) {
+      myRating = RatingBar(
           initialRating: myValue!,
           direction: Axis.horizontal,
           allowHalfRating: true,
@@ -89,15 +107,13 @@ class _FacilityPageState extends State<FacilityPage> {
           onRatingUpdate: (rating) async {
             await addRating(widget.facility.id, user.uid, rating);
             setState(() {});
-          }
-        );
-      } else {
-        myRating = Text(
-          "Log in to rate this facility",
-          style: TextStyle(fontSize: 20, color: Colors.grey),
-        );
-      }
-
+          });
+    } else {
+      myRating = Text(
+        "Log in to rate this facility",
+        style: TextStyle(fontSize: 20, color: Colors.grey),
+      );
+    }
   }
 
   @override
@@ -121,47 +137,48 @@ class _FacilityPageState extends State<FacilityPage> {
         ],*/
         ),
         body: FutureBuilder(
-          future:  buildRating(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return Center(child: CircularProgressIndicator());
-            } else {
-              return Stack(children: [
-              ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                children: [
-                  (widget.facility.photo == "")
-                      ? Image.asset(
-                          'assets/images/error-image-generic.png',
-                          width: MediaQuery.of(context).size.width,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        )
-                      : Image.network(
-                          widget.facility.photo,
-                          width: MediaQuery.of(context).size.width,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        ),
-                  Row(
+            future: buildRating(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                return Stack(children: [
+                  ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     children: [
-                      Text(value.toString(),
+                      (widget.facility.photo == "")
+                          ? Image.asset(
+                              'assets/images/error-image-generic.png',
+                              width: MediaQuery.of(context).size.width,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.network(
+                              widget.facility.photo,
+                              width: MediaQuery.of(context).size.width,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
+                      Row(
+                        children: [
+                          Text(value.toString(),
+                              style: const TextStyle(
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.amber,
+                              )),
+                          rating,
+                        ],
+                      ),
+                      Text(widget.facility.name,
                           style: const TextStyle(
-                            fontSize: 35,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.amber,
-                          )),
-                      rating,
-                    ],
-                  ),
-                  Text(widget.facility.name,
-                      style: const TextStyle(
-                          color: Color.fromRGBO(94, 97, 115, 1), fontSize: 35),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis),
-                  Container(
-                    padding: const EdgeInsets.only(left: 5),
-                    /*child: Row(
+                              color: Color.fromRGBO(94, 97, 115, 1),
+                              fontSize: 35),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis),
+                      Container(
+                        padding: const EdgeInsets.only(left: 5),
+                        /*child: Row(
                         children: [
                           Text(
                             averageRating == -1 ? "No Reviews" : averageRating.toStringAsFixed(1),
@@ -177,92 +194,94 @@ class _FacilityPageState extends State<FacilityPage> {
                               const Icon(Icons.star_outline),
                         ],
                       ),*/
-                  ),
-                  SingleChildScrollView(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(7),
-                            child: const Icon(
-                              Icons.house_sharp,
-                              color: Color.fromRGBO(94, 97, 115, 1),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              widget.facility.address,
-                              style: const TextStyle(
-                                color: Color.fromRGBO(94, 97, 115, 1),
-                                fontSize: 17,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                            ),
-                          )
-                        ],
                       ),
-                      Row(
+                      SingleChildScrollView(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(7),
-                            child: const Icon(
-                              Icons.phone,
-                              color: Color.fromRGBO(94, 97, 115, 1),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              widget.facility.phoneNumber,
-                              style: const TextStyle(
-                                color: Color.fromRGBO(94, 97, 115, 1),
-                                fontSize: 17,
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(7),
+                                child: const Icon(
+                                  Icons.house_sharp,
+                                  color: Color.fromRGBO(94, 97, 115, 1),
+                                ),
                               ),
-                              overflow: TextOverflow.clip,
-                              maxLines: 1,
-                            ),
-                          )
-                        ],
-                      ),
-                      DropdownSearch<String>.multiSelection(
-                        popupProps: const PopupPropsMultiSelection.dialog(
-                          showSearchBox: true,
-                          searchDelay: Duration(seconds: 0),
-                          searchFieldProps: TextFieldProps(
-                            autofocus: true,
+                              Expanded(
+                                child: Text(
+                                  widget.facility.address,
+                                  style: const TextStyle(
+                                    color: Color.fromRGBO(94, 97, 115, 1),
+                                    fontSize: 17,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                ),
+                              )
+                            ],
                           ),
-                        ),
-                        dropdownDecoratorProps: const DropDownDecoratorProps(
-                            dropdownSearchDecoration: InputDecoration(
-                          labelText: "Add or remove tags for this facility",
-                          contentPadding: EdgeInsets.all(5),
-                          border: InputBorder.none,
-                        )),
-                        dropdownButtonProps: const DropdownButtonProps(
-                            icon: Icon(
-                          Icons.add_box,
-                          size: 30,
-                        )),
-                        items: DataService.availableTags,
-                        selectedItems:
-                            widget.facility.tags.map((tag) => tag.name).toList(),
-                        onChanged: (List<String>? selectedTags) {
-                          final ref = FirebaseFirestore.instance
-                              .collection('facility')
-                              .doc(widget.facility.id);
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(7),
+                                child: const Icon(
+                                  Icons.phone,
+                                  color: Color.fromRGBO(94, 97, 115, 1),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  widget.facility.phoneNumber,
+                                  style: const TextStyle(
+                                    color: Color.fromRGBO(94, 97, 115, 1),
+                                    fontSize: 17,
+                                  ),
+                                  overflow: TextOverflow.clip,
+                                  maxLines: 1,
+                                ),
+                              )
+                            ],
+                          ),
+                          DropdownSearch<String>.multiSelection(
+                            popupProps: const PopupPropsMultiSelection.dialog(
+                              showSearchBox: true,
+                              searchDelay: Duration(seconds: 0),
+                              searchFieldProps: TextFieldProps(
+                                autofocus: true,
+                              ),
+                            ),
+                            dropdownDecoratorProps:
+                                const DropDownDecoratorProps(
+                                    dropdownSearchDecoration: InputDecoration(
+                              labelText: "Add or remove tags for this facility",
+                              contentPadding: EdgeInsets.all(5),
+                              border: InputBorder.none,
+                            )),
+                            dropdownButtonProps: const DropdownButtonProps(
+                                icon: Icon(
+                              Icons.add_box,
+                              size: 30,
+                            )),
+                            items: DataService.availableTags,
+                            selectedItems: widget.facility.tags
+                                .map((tag) => tag.name)
+                                .toList(),
+                            onChanged: (List<String>? selectedTags) {
+                              final ref = FirebaseFirestore.instance
+                                  .collection('facility')
+                                  .doc(widget.facility.id);
 
-                          ref.update({
-                            'tags': selectedTags
-                                ?.map((tag) => FirebaseFirestore.instance
-                                    .collection('tag')
-                                    .doc(tag))
-                                .toList()
-                          });
-                        },
-                      ),
-                      /*Wrap(
+                              ref.update({
+                                'tags': selectedTags
+                                    ?.map((tag) => FirebaseFirestore.instance
+                                        .collection('tag')
+                                        .doc(tag))
+                                    .toList()
+                              });
+                            },
+                          ),
+                          /*Wrap(
                                 children: [
                                   for (int i = 0; i < widget.facility.tags.length; i++)
                                     Container(
@@ -282,7 +301,7 @@ class _FacilityPageState extends State<FacilityPage> {
                                     ),
                                 ]
                             ),*/
-                      /*Row(
+                          /*Row(
                               children: [
                                 for (int i = 0; i < 5; i++)
                                   Container(
@@ -350,76 +369,86 @@ class _FacilityPageState extends State<FacilityPage> {
                                 ],
                               ),
                             ),*/
-                      const SizedBox(height: 100)
-                    ],
-                  )),
-                  myRating,
-                  const SizedBox(
-                    height: 30,
-                    child: Text(
-                      "Write review:",
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  SizedBox(
-                          height: 100,
-                          child: TextField(
-                            controller: reviewController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Enter your review here',
-                            ),
+                          const SizedBox(height: 100)
+                        ],
+                      )),
+                      myRating,
+                      const SizedBox(
+                        height: 30,
+                        child: Text(
+                          "Write review:",
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 60,
+                        child: TextField(
+                          controller: reviewController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter your review here',
                           ),
                         ),
-                        TextButton(
-                            onPressed: (){
-                              submitReview();
-                            },
-                            child: Text("Submit")),
-                  SizedBox(
-                    height: 100,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Text(
-                            "Reviews:",
-                            style: TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.bold),
-                          ),
-                          FutureBuilder(
-                            future: getReviews(),
+                      ),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.blue,
+                        ),
+                          onPressed: () {
+                            submitReview();
+                          },
+                          child: Text("Submit")),
+                      const SizedBox(
+                        height: 30,
+                        child: Text(
+                          "Reviews:",
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 300,
+                        child: Center(
+                            child: Column(
+                          children: [
+                            FutureBuilder(
+                              future: getReviews(),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.done) {
                                   return Expanded(
                                       child: ListView.builder(
-                                          itemCount: reviews!.length,
-                                          itemBuilder: (context, index) => Review(
-                                              review: reviews![index].data()!['review'],
-                                              user: reviews![index].data()!['userID'],
-                                            )
-                                          )
-                                      );
+
+                                          itemCount: reviews.length,
+                                          itemBuilder: (context, index) =>
+                                              Review(
+                                                review: reviews[index].review,
+                                                date: reviews[index].date,
+                                                rating: reviews[index].rating,
+                                                user: reviews[index].user,
+                                              )));
                                 } else {
                                   return CircularProgressIndicator();
                                 }
                               },
-                          )
-                        ],
+                            )
+                          ],
+                        )),
+                      ),
+                      SizedBox(
+                        height: 300,
                       )
-                    ),
+                    ],
                   ),
-                  SizedBox(height: 300,)
-                ],
-
-              ),
-              const Positioned(
-                  bottom: 0, left: 0, child: NavigationWidget(selectedIndex: 4)),
-            ]);
-            }
-          }
-        )
-    );
+                  const Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: NavigationWidget(selectedIndex: 4)),
+                ]);
+              }
+            }));
   }
 /*
   double getAverageRating(){
@@ -434,43 +463,75 @@ class _FacilityPageState extends State<FacilityPage> {
   }*/
 }
 
-
 class Review extends StatelessWidget {
-
   final String review;
   final String date;
   final String rating;
   final String user;
 
-  const Review({
-    Key? key,
-    required this.review,
-    required this.date,
-    required this.rating,
-    required this.user}
-  ) : super(key: key);
+  const Review(
+      {Key? key,
+      required this.review,
+      required this.date,
+      required this.rating,
+      required this.user})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(children: [
-        Text(review),
-        Text(date),
-        Row(
-          children: [
-            for (int i = 0; i < 5; i++)
-              Container(
-                margin: EdgeInsets.fromLTRB(
-                    i == 0 ? 10 : 4, 4, i == 4 ? 15 : 4 , 4),
-                child: const Icon(
-                  Icons.star_outline,
-                  size: 40,
-                ),
-              ),
-          ],
+      margin: const EdgeInsets.fromLTRB(10, 0, 10, 35),
+      padding: const EdgeInsets.all(10),
+      foregroundDecoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.black,
+          width: 2,
         ),
-        Text(user)
-      ],)
+      ),
+      child: Column(
+        children: [
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            children: [
+              Text(
+                user,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                date,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              for (int i = 0; i < 5; i++)
+                Container(
+                  margin: EdgeInsets.fromLTRB(
+                    i == 0 ? 10 : 4,
+                    4,
+                    i == 4 ? 15 : 4,
+                    4,
+                  ),
+                  child: Icon(
+                    i < double.parse(rating).floor()
+                        ? Icons.star
+                        : i < double.parse(rating).ceil()
+                            ? Icons.star_half
+                            : Icons.star_outline,
+                    size: 20,
+                    color: Colors.amber,
+                  ),
+                ),
+            ],
+          ),
+          Text(
+            review,
+            style: const TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
     );
   }
 }
