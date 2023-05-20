@@ -6,8 +6,9 @@ import '../facility_page.dart';
 
 class FacilityPreview extends StatefulWidget {
   final Facility facility;
+  final Function onTap;
 
-  const FacilityPreview({Key? key, required this.facility}) : super(key: key);
+  const FacilityPreview({Key? key, required this.facility, required this.onTap}) : super(key: key);
 
   @override
   _FacilityPreviewState createState() => _FacilityPreviewState();
@@ -35,13 +36,7 @@ class _FacilityPreviewState extends State<FacilityPreview> {
           color : Color.fromRGBO(243, 243, 243, 1),
         ),
         child: InkWell(
-          onTap: () {
-            Navigator.push(context, PageRouteBuilder(
-                pageBuilder: (context, animation1, animation2) => FacilityPage(facility: widget.facility),
-                transitionDuration: Duration.zero,
-                reverseTransitionDuration: Duration.zero
-            ));
-          },
+          onTap: () => widget.onTap(),
           borderRadius: const BorderRadius.all(Radius.circular(20)),
           child: Stack(
             children: [
@@ -49,7 +44,7 @@ class _FacilityPreviewState extends State<FacilityPreview> {
                   top: 40,
                   left: 20,
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 150,
+                    width: MediaQuery.of(context).size.width - 170,
                     child: Text(widget.facility.name,
                       textAlign: TextAlign.left,
                       maxLines: 1,
