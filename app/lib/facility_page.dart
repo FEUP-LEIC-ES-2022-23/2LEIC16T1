@@ -134,6 +134,7 @@ class _FacilityPageState extends State<FacilityPage> {
   Widget build(BuildContext context) {
     //final double averageRating = getAverageRating();
     return Scaffold(
+        key: Key("Facility ${widget.facility.name}"),
         appBar: AppBar(
           iconTheme: const IconThemeData(size: 40, color: Colors.black),
           backgroundColor: const Color(0x00fdfdfd),

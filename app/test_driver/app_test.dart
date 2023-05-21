@@ -3,6 +3,7 @@ import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:gherkin/gherkin.dart';
 import 'package:glob/glob.dart';
 
+import 'steps/logged_in.dart';
 import 'steps/not_logged_in.dart';
 import 'steps/scroll.dart';
 import 'steps/see_something.dart';
@@ -20,7 +21,7 @@ Future<void> main() {
       JsonReporter(path: './report.json')
     ] // you can include the "StdoutReporter()" without the message level parameter for verbose log information
   //..hooks = [HookExample()]
-    ..stepDefinitions = [NotLoggedIn(), Scroll(), Type(), UserGoToPage(), SeeButton(), ShowMessage(), TapButton(), TapFacility()]
+    ..stepDefinitions = [LoggedIn(), NotLoggedIn(), Scroll(), Type(), UserGoToPage(), SeeButton(), ShowMessage(), TapButton(), TapFacility()]
     ..customStepParameterDefinitions = []
     ..restartAppBetweenScenarios = true
     ..targetAppPath = "test_driver/app.dart";
