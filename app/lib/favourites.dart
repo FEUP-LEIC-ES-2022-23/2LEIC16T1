@@ -43,6 +43,7 @@ class FavouritesScreen extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: FutureBuilder(
+                  key: Key("favorites-list"),
                   future: getFavourites(user.uid),
                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {

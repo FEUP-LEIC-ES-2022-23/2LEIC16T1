@@ -101,6 +101,7 @@ class _FacilityPageState extends State<FacilityPage> {
           if (_user != null)
           _isFavourite ?
             IconButton(
+              key: Key("fav-star"),
               padding: const EdgeInsets.only(right: 10),
               icon: const Icon(
                 Icons.star,

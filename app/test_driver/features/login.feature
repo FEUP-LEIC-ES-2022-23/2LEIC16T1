@@ -12,6 +12,7 @@ Feature: login
   Scenario: Successful login redirects to profile page
     When I input "esof@gmail.pt" in the "sign in mail field"
     And I input "Es123456.?" in the "sign in password field"
+    And I tap the "login button"
     Then I should see a "profile page"
 
   Scenario: Incorrect password on login form
