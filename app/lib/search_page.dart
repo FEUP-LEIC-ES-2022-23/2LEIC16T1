@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:sportspotter/models/facility.dart';
 import 'package:sportspotter/models/local_storage.dart';
 import 'package:sportspotter/navigation.dart';
 import 'package:sportspotter/google_maps/google_maps.dart';
 import 'package:sportspotter/tools/location.dart';
 import 'package:sportspotter/tools/geocoding.dart';
+import 'package:sportspotter/widgets/facility_preview.dart';
 import 'package:sportspotter/widgets/search_dropdown.dart';
 
 import 'facility_page.dart';
@@ -24,7 +26,7 @@ class SearchScreen extends StatefulWidget {
 
 VisitedPlaces placesIDs = VisitedPlaces(facilities: List.generate(VisitedPlaces.MAX_PLACES, (index) => ""));
 
-class _SearchScreenState extends State<SearchScreen>{
+class _SearchScreenState extends State<SearchScreen> {
   bool _initState = true;
 
   @override
@@ -34,14 +36,14 @@ class _SearchScreenState extends State<SearchScreen>{
     }
   }
 
-  Future<List<Pair<String, String>>> _fetchPlaces() async {
+  Future<List<Facility>> _fetchPlaces() async {
     placesIDs.fetchFacilities();
-    List<Pair<String, String>> places = [];
+    List<Facility> places = [];
     if (placesIDs.facilities.isNotEmpty) {
       for (String item in placesIDs.facilities) {
         if (item != "") {
           var facility = await DataService.fetchFacility(item);
-          places.add(Pair(item, facility.name));
+          places.add(facility);
         }
       }
     }
@@ -51,106 +53,100 @@ class _SearchScreenState extends State<SearchScreen>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: CustomSearch());
-            }),
-        title: GestureDetector(
-          key: Key("search bar"),
-          onTap: () {
-            showSearch(
-              context: context,
-              delegate: CustomSearch(),
-            );
-          },
-          child: const Text('Enter a location'),
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
+          shape: const ContinuousRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30)
+            )
+          ),
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+              icon: const Icon(Icons.search),
+              color: const Color.fromRGBO(94, 97, 115, 1),
+              onPressed: () {
+                showSearch(context: context, delegate: CustomSearch()).then((_) => setState(() {}));
+              }),
+          title: GestureDetector(
+            key: Key("search bar"),
+            onTap: () {
+              showSearch(
+                context: context,
+                delegate: CustomSearch(),
+              ).then((_) => setState(() {}));
+            },
+            child: const Text('Enter a location', style: TextStyle(color: Color.fromRGBO(94, 97, 115, 1))),
+          ),
         ),
-      ),
 
-      body: FutureBuilder<List<Pair<String, String>>>(
-        future: _fetchPlaces(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            return Container(
-              color: Colors.white,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      "Past Visited Places",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: ListTile(
-                            title: Text(snapshot.data![index].second),
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                                    ),
-                                  );
-                                },
-                              );
-                              DataService.fetchFacility(snapshot.data![index].first).then((selectedFacility){
-                                Navigator.of(context).pop();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => FacilityPage(facility: selectedFacility),
-                                  ),
-                                );
-                              });
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return Container(
-              color: Colors.white,
-              child: Center(
-                child: Text(
-                  "You can see the facilities you have visited here",
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            const Positioned(
+              top: 30,
+              left: 30,
+              child: Text('Past Visited Places',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Color.fromRGBO(124, 124, 124, 1),
+                    fontFamily: 'Inter',
+                    fontSize: 25,
+                    letterSpacing: 0,
+                    fontWeight: FontWeight.bold,
+                    height: 1
                 ),
               ),
-            );
-          }
-        },
-      ),
-
-      bottomNavigationBar: const NavigationWidget(selectedIndex: 1),
+            ),
+            Positioned(
+              top: 80,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: FutureBuilder(
+                  future: _fetchPlaces(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Wrap(children: const [Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          "You can see the facilities you have visited here",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                      )
+                      ]));
+                    } else {
+                      var pastPlaces = snapshot.data!;
+                      return ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: pastPlaces.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return FacilityPreview(
+                              facility: pastPlaces[index],
+                              onTap: () {
+                                Navigator.push(context, PageRouteBuilder(
+                                    pageBuilder: (context, animation1, animation2) =>
+                                        FacilityPage(facility: pastPlaces[index]),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero
+                                ));
+                              },
+                            );
+                          });
+                    }
+                  }
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: const NavigationWidget(selectedIndex: 1)
     );
   }
 }
@@ -419,7 +415,6 @@ class CustomSearch extends SearchDelegate {
         }
     );
   }
-
 }
 
 class MapScreen extends StatelessWidget {

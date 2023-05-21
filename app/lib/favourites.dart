@@ -3,19 +3,24 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sportspotter/tools/favourite.dart';
 import 'package:sportspotter/widgets/facility_preview.dart';
+import 'facility_page.dart';
 import 'models/facility.dart';
 import 'navigation.dart';
 
 
-class FavouritesScreen extends StatelessWidget {
+class FavouritesScreen extends StatefulWidget {
 
   const FavouritesScreen({Key? key}) : super(key: key);
 
   @override
+  _FavouritesScreenState createState() => _FavouritesScreenState();
+}
+
+class _FavouritesScreenState extends State<FavouritesScreen> {
+  @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     final loggedIn = (user != null);
-    List<Facility> favouriteFacilities = [];
 
     return Scaffold(
         body: Stack(
@@ -47,7 +52,7 @@ class FavouritesScreen extends StatelessWidget {
                   future: getFavourites(user.uid),
                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: const CircularProgressIndicator()); // Show a loading indicator
+                      return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -61,13 +66,21 @@ class FavouritesScreen extends StatelessWidget {
                         ),
                       )]));
                     } else {
-                      final favouriteFacilities = snapshot.data!;
+                      var favouriteFacilities = snapshot.data!;
                       return ListView.builder(
                           physics: const BouncingScrollPhysics(),
                           itemCount: favouriteFacilities.length,
                           itemBuilder: (BuildContext context, int index) {
                             return FacilityPreview(
-                                facility: favouriteFacilities[index]);
+                                facility: favouriteFacilities[index],
+                                onTap: () {
+                                  Navigator.push(context, PageRouteBuilder(
+                                      pageBuilder: (context, animation1, animation2) => FacilityPage(facility: favouriteFacilities[index]),
+                                      transitionDuration: Duration.zero,
+                                      reverseTransitionDuration: Duration.zero
+                                  )).then((_) => setState(() {}));
+                                },
+                            );
                           });
                     }
                   }
@@ -82,13 +95,9 @@ class FavouritesScreen extends StatelessWidget {
                 ),
               ),
             )])),
-            const Positioned(
-                bottom: 0,
-                left: 0,
-                child: NavigationWidget(selectedIndex: 2)
-            )
           ],
-        )
+        ),
+        bottomNavigationBar: const NavigationWidget(selectedIndex: 2)
     );
   }
 }
