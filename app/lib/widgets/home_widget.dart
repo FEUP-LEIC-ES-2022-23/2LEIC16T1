@@ -12,7 +12,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   List<GridItemData> gridItems = [
     GridItemData(
       icon: Icons.sports_soccer,
-      text: 'Football',
+      text: 'Soccer',
       color: Colors.indigo,
     ),
     GridItemData(
@@ -36,8 +36,8 @@ class _HomeWidgetState extends State<HomeWidget> {
       color: Colors.amber,
     ),
     GridItemData(
-      icon: Icons.sports_golf,
-      text: 'Golf',
+      icon: Icons.fitness_center,
+      text: 'Weigthlifting',
       color: Colors.lightGreen,
     ),
     GridItemData(
@@ -86,8 +86,8 @@ class _HomeWidgetState extends State<HomeWidget> {
       color: Colors.lightBlue,
     ),
     GridItemData(
-      icon: Icons.mode_standby,
-      text: 'Archery',
+      icon: Icons.sports_golf,
+      text: 'Golf',
       color: Colors.amberAccent,
     ),
     GridItemData(
@@ -103,7 +103,14 @@ class _HomeWidgetState extends State<HomeWidget> {
   ];
 
   void handleCardTap(String sportName) {
-    print(sportName);
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) =>
+              const SearchScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero),
+    );
   }
 
   @override
@@ -174,7 +181,7 @@ class GridItem extends StatelessWidget {
       color: color,
       child: InkWell(
         onTap: () {
-          onTap;
+          onTap();
         },
         child: Stack(
           children: [
