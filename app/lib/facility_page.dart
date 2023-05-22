@@ -45,6 +45,7 @@ class _FacilityPageState extends State<FacilityPage> {
   Future<void> getReviews() async {
     List<Review> result = [];
     List<dynamic>? aux = await getFacilityReviews(widget.facility.id);
+
     for (int i = 0; i < aux.length; i++) {
       final user = await FirebaseFirestore.instance
           .collection('user')
@@ -60,12 +61,12 @@ class _FacilityPageState extends State<FacilityPage> {
       double? rating =
           await getUserRating(aux[i]['userID'], widget.facility.id);
       String review = aux[i]['review'].toString();
-
+      rating ??= 0;
       result.add(Review(
         review: review,
         date: date,
         user: userName,
-        rating: rating!.toString(),
+        rating: rating.toString(),
       ));
     }
 
