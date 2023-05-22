@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:sportspotter/widgets/home_widget.dart';
 import 'navigation.dart';

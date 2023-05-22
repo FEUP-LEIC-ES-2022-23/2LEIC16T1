@@ -146,7 +146,9 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                     context,
                     PageRouteBuilder(
                         pageBuilder: (context, animation1, animation2) =>
-                            const SearchScreen(),
+                            const SearchScreen(
+                              sportTag: '',
+                            ),
                         transitionDuration: Duration.zero,
                         reverseTransitionDuration: Duration.zero),
                   );
