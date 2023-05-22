@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sportspotter/favourites.dart';
-import 'package:sportspotter/home_page.dart';
+import 'package:sportspotter/main.dart';
 import 'package:sportspotter/profile_page.dart';
 import 'package:sportspotter/search_page.dart';
 
@@ -146,9 +146,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                     context,
                     PageRouteBuilder(
                         pageBuilder: (context, animation1, animation2) =>
-                            const SearchScreen(
-                              sportTag: '',
-                            ),
+                            const SearchScreen(),
                         transitionDuration: Duration.zero,
                         reverseTransitionDuration: Duration.zero),
                   );
@@ -200,7 +198,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
                     context,
                     PageRouteBuilder(
                         pageBuilder: (context, animation1, animation2) =>
-                            const HomeScreen(),
+                            const MyHomePage(),
                         transitionDuration: Duration.zero,
                         reverseTransitionDuration: Duration.zero),
                   );

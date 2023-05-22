@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sportspotter/models/data_service.dart';
-import 'package:sportspotter/home_page.dart';
+import 'package:sportspotter/navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sportspotter/tools/favourite.dart';
 import 'package:sportspotter/utils.dart';
@@ -32,7 +32,26 @@ class MyApp extends StatelessWidget {
       locale: const Locale('pt'),
       title: 'SportSpotter',
       theme: ThemeData(primarySwatch: Colors.blueGrey),
-      home: const HomeScreen(),
+      home: const MyHomePage(),
     );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text('Home Page'),
+        ),
+        body: Stack(
+          children: const [
+            Positioned(
+                bottom: 0, left: 0, child: NavigationWidget(selectedIndex: 0))
+          ],
+        ));
   }
 }
