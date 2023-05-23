@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_webservice_ex/places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:sportspotter/search_page.dart';
 
 import '../facility_page.dart';
 import '../models/data_service.dart';
@@ -62,6 +63,7 @@ Marker buildMarker(Pair<Pair<String, String>, LatLng> coordinates, BitmapDescrip
           );
 
           DataService.fetchFacility(coordinates.first.second).then((selectedFacility){
+            placesIDs.updateFacilities(selectedFacility.id);
             Navigator.of(context).pop();
             Navigator.push(context, PageRouteBuilder(
                 pageBuilder: (context, animation1, animation2) => FacilityPage(facility: selectedFacility),

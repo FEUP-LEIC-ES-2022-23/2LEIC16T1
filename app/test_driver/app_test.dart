@@ -14,7 +14,7 @@ import 'steps/user_go_to_page.dart';
 
 Future<void> main() {
   final config = FlutterTestConfiguration()
-    ..features = [Glob(r"test_driver/features/home_page.feature")]
+    ..features = [Glob(r"test_driver/features/**.feature")]
     ..reporters = [
       ProgressReporter(),
       TestRunSummaryReporter(),
