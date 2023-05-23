@@ -170,7 +170,7 @@ class _SearchScreenState extends State<SearchScreen> {
 }
 
 class CustomSearch extends SearchDelegate {
-  final String sportTag;
+  String sportTag;
   CustomSearch(this.sportTag);
 
   List<String> data = [];
@@ -263,7 +263,11 @@ class CustomSearch extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     final coordinates = getCoordinates(query).then((value) {
-      if(filters[0] == '' && sportTag != '') filters[0] = sportTag;
+      if (filters[0] == '' && sportTag != '') {
+        filters[0] = sportTag;
+        radius = 50;
+        sportTag = '';
+      }
       final places = findPlaces(value, radius.round() * 1000, filters);
       return places.then((locations) {
         if (value.first == query) {

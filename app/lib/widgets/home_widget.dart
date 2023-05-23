@@ -140,12 +140,13 @@ class _HomeWidgetState extends State<HomeWidget> {
         child: Column(
           children: [
             Container(
-              margin: const EdgeInsets.all(10),
+              margin: const EdgeInsets.fromLTRB(10,45,10,10),
               child: const Text(
                 'SportSpotter',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 48,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Inter'
                 ),
               ),
             ),
@@ -229,8 +230,9 @@ class GridItem extends StatelessWidget {
                 text,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 28,
+                  fontSize: 26,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Inter',
                 ),
               ),
             ),
