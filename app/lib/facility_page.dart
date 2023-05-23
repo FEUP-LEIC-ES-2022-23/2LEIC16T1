@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +10,7 @@ import 'package:sportspotter/tools/rating.dart';
 import 'package:sportspotter/tools/review.dart';
 
 import 'models/facility.dart';
+import 'models/review.dart';
 
 class FacilityPage extends StatefulWidget {
   final Facility facility;
@@ -32,13 +31,23 @@ class _FacilityPageState extends State<FacilityPage> {
   final User? _user = FirebaseAuth.instance.currentUser;
   bool _isFavourite = false;
 
-  submitReview() async {
+  @override
+  void initState() {
+    super.initState();
+    if (_user != null) {
+      isFavourite(widget.facility.id, _user!.uid).then(
+              (favourite) => setState(() {_isFavourite = favourite;}));
+    }
+  }
+
+  submitReview() {
     final user = FirebaseAuth.instance.currentUser;
     final description = reviewController.text;
     if (description.isNotEmpty) {
-      await addReview(widget.facility.id, user!.uid, description);
-      reviewController.clear();
-      setState(() {});
+      addReview(widget.facility.id, user!.uid, description).then((value) {
+        reviewController.clear();
+        setState(() {});
+      });
     }
   }
 
@@ -71,18 +80,6 @@ class _FacilityPageState extends State<FacilityPage> {
     }
 
     reviews = result;
-  }
-
-  getFavourite() async {
-    if (_user != null) {
-      final favourite = await isFavourite(widget.facility.id, _user!.uid);
-      _isFavourite = favourite;
-    }
-  }
-
-  buildData() async {
-    await getFavourite();
-    await buildRating();
   }
 
   buildRating() async {
@@ -119,9 +116,8 @@ class _FacilityPageState extends State<FacilityPage> {
             empty: const Icon(Icons.star_outline, color: Colors.amber),
           ),
           itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
-          onRatingUpdate: (rating) async {
-            await addRating(widget.facility.id, _user!.uid, rating);
-            setState(() {});
+          onRatingUpdate: (rating) {
+            addRating(widget.facility.id, _user!.uid, rating).then((value) => setState(() {}));
           });
     } else {
       myRating = const Text(
@@ -133,7 +129,6 @@ class _FacilityPageState extends State<FacilityPage> {
 
   @override
   Widget build(BuildContext context) {
-    //final double averageRating = getAverageRating();
     return Scaffold(
         key: Key("Facility ${widget.facility.name}"),
         appBar: AppBar(
@@ -171,10 +166,10 @@ class _FacilityPageState extends State<FacilityPage> {
           ],
         ),
         body: FutureBuilder(
-            future: buildData(),
+            future: buildRating(),
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else {
                 return Stack(children: [
                   ListView(
@@ -195,7 +190,7 @@ class _FacilityPageState extends State<FacilityPage> {
                             ),
                       Row(
                         children: [
-                          Text(value.toString(),
+                          Text(value!.toStringAsFixed(2),
                               style: const TextStyle(
                                 fontSize: 35,
                                 fontWeight: FontWeight.bold,
@@ -210,25 +205,6 @@ class _FacilityPageState extends State<FacilityPage> {
                               fontSize: 35),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis),
-                      Container(
-                        padding: const EdgeInsets.only(left: 5),
-                        /*child: Row(
-                        children: [
-                          Text(
-                            averageRating == -1 ? "No Reviews" : averageRating.toStringAsFixed(1),
-                            style: const TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-                          if (averageRating != -1)
-                            for (int i = 1; i <= averageRating.round(); i++)
-                              const Icon(Icons.star),
-                            for (int i = 5; i > averageRating.round(); i--)
-                              const Icon(Icons.star_outline),
-                        ],
-                      ),*/
-                      ),
                       SingleChildScrollView(
                           child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,94 +291,6 @@ class _FacilityPageState extends State<FacilityPage> {
                               });
                             },
                           ),
-                          /*Wrap(
-                                children: [
-                                  for (int i = 0; i < widget.facility.tags.length; i++)
-                                    Container(
-                                        width: 90,
-                                        height: 22,
-                                        margin: const EdgeInsets.all(5),
-                                        decoration: const BoxDecoration(
-                                          borderRadius : BorderRadius.all(Radius.circular(5)),
-                                          color : Color.fromRGBO(217, 217, 217, 1),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          widget.facility.tags[i].name,
-                                          style: const TextStyle(fontSize: 13),
-                                          overflow: TextOverflow.ellipsis,
-                                        )
-                                    ),
-                                ]
-                            ),*/
-                          /*Row(
-                              children: [
-                                for (int i = 0; i < 5; i++)
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        i == 0 ? 10 : 4, 4, i == 4 ? 15 : 4 , 4),
-                                    child: const Icon(
-                                      Icons.star_outline,
-                                      size: 40,
-                                    ),
-                                  ),
-                                /*
-                                Container(
-                                    width: 130,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                      border : Border.all(
-                                          color: const Color.fromRGBO(94, 97, 115, 1),
-                                          width: 3
-                                      ),
-                                      color : const Color.fromRGBO(217, 217, 217, 1),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: const Text(
-                                      "Review",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold
-                                      ),
-                                    )
-                                ),*/
-                              ],
-                            ),
-                            Container(
-                              margin: const EdgeInsets.all(7),
-                              child: const Text(
-                                "Reviews:",
-                                style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ),
-                            for (int i = 0; i < 10; i++)
-                            Container(
-                              margin: const EdgeInsets.fromLTRB(10, 0, 10, 35),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                      'assets/icons/profile.png',
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.fill,
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10),
-                                    child: Column(
-                                      children: const [
-                                        Text("a"),
-                                        Text("b"),
-                                        Text("c")
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),*/
                           const SizedBox(height: 100)
                         ],
                       )),
@@ -471,7 +359,7 @@ class _FacilityPageState extends State<FacilityPage> {
                         )),
                       ),
                       const SizedBox(
-                        height: 300,
+                        height: 80,
                       )
                     ],
                   ),
@@ -482,91 +370,5 @@ class _FacilityPageState extends State<FacilityPage> {
                 ]);
               }
             }));
-  }
-/*
-  double getAverageRating(){
-    if (widget.facility.ratings.isEmpty) {
-      return -1;
-    }
-    double sum = 0;
-    for (double rating in widget.facility.ratings) {
-      sum += rating;
-    }
-    return sum / widget.facility.ratings.length;
-  }*/
-}
-
-class Review extends StatelessWidget {
-  final String review;
-  final String date;
-  final String rating;
-  final String user;
-
-  const Review(
-      {Key? key,
-      required this.review,
-      required this.date,
-      required this.rating,
-      required this.user})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(10, 0, 10, 35),
-      padding: const EdgeInsets.all(10),
-      foregroundDecoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.black,
-          width: 2,
-        ),
-      ),
-      child: Column(
-        children: [
-          Wrap(
-            alignment: WrapAlignment.spaceBetween,
-            children: [
-              Text(
-                user,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                date,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              for (int i = 0; i < 5; i++)
-                Container(
-                  margin: EdgeInsets.fromLTRB(
-                    i == 0 ? 10 : 4,
-                    4,
-                    i == 4 ? 15 : 4,
-                    4,
-                  ),
-                  child: Icon(
-                    i < double.parse(rating).floor()
-                        ? Icons.star
-                        : i < double.parse(rating).ceil()
-                            ? Icons.star_half
-                            : Icons.star_outline,
-                    size: 20,
-                    color: Colors.amber,
-                  ),
-                ),
-            ],
-          ),
-          Text(
-            review,
-            style: const TextStyle(fontSize: 16),
-          ),
-        ],
-      ),
-    );
   }
 }
