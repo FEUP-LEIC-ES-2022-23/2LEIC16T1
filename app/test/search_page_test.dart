@@ -13,7 +13,7 @@ void main() {
     final searchButton = find.text('Search');
     expect(searchButton, findsOneWidget);
     await tester.tap(searchButton);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 100));
 
     final searchBar = find.byIcon(Icons.search);
     expect(searchBar, findsOneWidget);
