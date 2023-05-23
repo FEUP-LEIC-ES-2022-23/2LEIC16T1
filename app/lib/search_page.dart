@@ -52,7 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<List<Facility>> _fetchPlaces() async {
-    placesIDs.fetchFacilities();
+    await placesIDs.fetchFacilities();
     List<Facility> places = [];
     if (placesIDs.facilities.isNotEmpty) {
       for (String item in placesIDs.facilities) {
