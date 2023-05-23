@@ -21,7 +21,7 @@ class ProfileScreen extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   );
                 } else if (snapshot.hasData) {
-                  return const ProfileWidget();
+                  return const ProfileWidget(key: Key('profile page'));
                 } else {
                   return const AuthWidget();
                 }
