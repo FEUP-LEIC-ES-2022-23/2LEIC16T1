@@ -143,6 +143,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               margin: const EdgeInsets.fromLTRB(10,45,10,10),
               child: const Text(
                 'SportSpotter',
+                key: Key('app-name'),
                 style: TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
@@ -193,12 +194,12 @@ class GridItem extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
 
-  const GridItem({
+   GridItem({
     required this.icon,
     required this.text,
     required this.color,
     required this.onTap,
-  });
+  }) : super(key : Key(text));
 
   @override
   Widget build(BuildContext context) {
