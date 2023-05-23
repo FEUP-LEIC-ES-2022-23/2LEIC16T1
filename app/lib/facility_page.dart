@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +14,8 @@ import 'models/facility.dart';
 class FacilityPage extends StatefulWidget {
   final Facility facility;
 
-  const FacilityPage({Key? key, required this.facility}) : super(key: key);
+  const FacilityPage({required this.facility}) :
+        super(key: const Key("facility-page"));
 
   @override
   _FacilityPageState createState() => _FacilityPageState();
@@ -418,6 +417,7 @@ class _FacilityPageState extends State<FacilityPage> {
                       SizedBox(
                         height: 60,
                         child: TextField(
+                          key: const Key("review-field"),
                           controller: reviewController,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
@@ -426,6 +426,7 @@ class _FacilityPageState extends State<FacilityPage> {
                         ),
                       ),
                       TextButton(
+                        key: const Key("submit-review-button"),
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.white,
                             backgroundColor: Colors.blue,
@@ -457,6 +458,7 @@ class _FacilityPageState extends State<FacilityPage> {
                                           itemCount: reviews.length,
                                           itemBuilder: (context, index) =>
                                               Review(
+                                                key: Key(reviews[index].review),
                                                 review: reviews[index].review,
                                                 date: reviews[index].date,
                                                 rating: reviews[index].rating,

@@ -9,6 +9,7 @@ class TapButton extends When1WithWorld<String, FlutterWorld> {
   @override
   Future<void> executeStep(String key) async {
     final locator = find.byValueKey(key);
+
     await FlutterDriverUtils.tap(world.driver, locator);
   }
 }
