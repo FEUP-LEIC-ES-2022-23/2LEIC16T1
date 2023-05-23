@@ -10,6 +10,7 @@ class Type extends When2WithWorld<String, String, FlutterWorld> {
   @override
   Future<void> executeStep(String key, String button) async {
     final locator = find.byValueKey(button);
+    await Future.delayed(const Duration(seconds: 1));
     await FlutterDriverUtils.enterText(world.driver, locator, "$key\n");
   }
 }
