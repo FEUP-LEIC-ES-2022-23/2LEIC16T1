@@ -28,7 +28,6 @@ Future<Pair<String, LatLng>> getCoordinates(String address) async {
   final data = json.decode(response.body);
 
   if(data['results'].length == 0){
-    print('No data found for address $address');
     throw ('No data found for address $address');
   }
   final lat = data['results'][0]['geometry']['location']['lat'];

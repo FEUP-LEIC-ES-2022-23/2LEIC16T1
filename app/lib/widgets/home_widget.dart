@@ -42,7 +42,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     ),
     GridItemData(
       icon: Icons.fitness_center,
-      text: 'Weigthlifting',
+      text: 'Weightlifting',
       color: Colors.lightGreen,
       tag: 'weightlifting',
     ),

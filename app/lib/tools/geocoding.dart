@@ -12,4 +12,5 @@ Future<String?> getAddressFromCoordinates(double latitude, double longitude) asy
   } catch (e) {
     print('Error: $e');
   }
+  return null;
 }
