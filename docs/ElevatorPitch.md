@@ -1,7 +1,10 @@
 ## Elevator Pitch
-Draft a small text to help you quickly introduce and describe your product in a short time and a few words (~800 characters), a technique usually known as elevator pitch.
+Bom dia!
+Vou apresentar-vos o SportSpotter, uma aplicação indicada para entusiastas do desporto.
 
-Take a look at the following links to learn some techniques:
-* [Crafting an Elevator Pitch](https://www.mindtools.com/pages/article/elevator-pitch.htm)
-* [The Best Elevator Pitch Examples, Templates, and Tactics - A Guide to Writing an Unforgettable Elevator Speech, by strategypeak.com](https://strategypeak.com/elevator-pitch-examples/)
-* [Top 7 Killer Elevator Pitch Examples, by toggl.com](https://blog.toggl.com/elevator-pitch-examples/)
+Se estão cansados de perder tempo a procurar um estabelecimento ideal para praticar desporto, imaginem aceder aos locais que atendem às vossas preferências com apenas alguns toques. Seja para encontrar um local próximo, uma modalidade específica ou outras caraterísticas, o SportSpotter economiza o vosso tempo e esforço.
+
+Ao contrário das soluções existentes, a nossa aplicação permite uma pesquisa personalizada por tags, por exemplo, procurar um sítio indoor para jogar futebol.
+Mas não é só isso! Nós acreditamos em experiências baseadas na comunidade, pelo que incentivamos os utilizadores a avaliarem e a fornecerem feedback sobre os estabelecimentos visitados.
+
+Portanto, não percam mais tempo e juntem-se a nós.
