@@ -3,7 +3,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sportspotter/models/data_service.dart';
 import 'package:sportspotter/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:sportspotter/tools/favourite.dart';
 import 'package:sportspotter/utils.dart';
 import 'firebase_options.dart';
 

@@ -13,9 +13,6 @@ class Facility {
 
   final List<Tag> tags;
 
-  //final List<Review> reviews;
-  //final List<double> ratings;
-
   Facility({
     required this.id,
     required this.name,
@@ -23,8 +20,6 @@ class Facility {
     required this.phoneNumber,
     required this.address,
     required this.tags,
-    //required this.reviews,
-    //required this.ratings,
   });
 
   static Future<Facility> fromJson(String id, Map<String, dynamic> json) async {
@@ -82,8 +77,6 @@ class Facility {
         phoneNumber: phoneNumber,
         address: address,
         tags: tags
-        //reviews: json['reviews'],
-        //ratings: json['ratings']
     );
   }
 }

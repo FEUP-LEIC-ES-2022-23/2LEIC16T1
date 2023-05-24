@@ -15,8 +15,8 @@ import 'models/review.dart';
 class FacilityPage extends StatefulWidget {
   final Facility facility;
 
-  const FacilityPage({required this.facility}) :
-        super(key: const Key("facility-page"));
+  const FacilityPage({required this.facility})
+      : super(key: const Key("facility-page"));
 
   @override
   _FacilityPageState createState() => _FacilityPageState();
@@ -36,8 +36,10 @@ class _FacilityPageState extends State<FacilityPage> {
   void initState() {
     super.initState();
     if (_user != null) {
-      isFavourite(widget.facility.id, _user!.uid).then(
-              (favourite) => setState(() {_isFavourite = favourite;}));
+      isFavourite(widget.facility.id, _user!.uid)
+          .then((favourite) => setState(() {
+                _isFavourite = favourite;
+              }));
     }
   }
 
@@ -118,7 +120,8 @@ class _FacilityPageState extends State<FacilityPage> {
           ),
           itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
           onRatingUpdate: (rating) {
-            addRating(widget.facility.id, _user!.uid, rating).then((value) => setState(() {}));
+            addRating(widget.facility.id, _user!.uid, rating)
+                .then((value) => setState(() {}));
           });
     } else {
       myRating = const Text(
@@ -140,7 +143,7 @@ class _FacilityPageState extends State<FacilityPage> {
             if (_user != null)
               _isFavourite
                   ? IconButton(
-                      key: Key('fav-star'),
+                      key: const Key('fav-star'),
                       padding: const EdgeInsets.only(right: 10),
                       icon: const Icon(
                         Icons.star,
@@ -154,7 +157,7 @@ class _FacilityPageState extends State<FacilityPage> {
                       },
                     )
                   : IconButton(
-                      key: Key('fav-star'),
+                      key: const Key('fav-star'),
                       padding: const EdgeInsets.only(right: 10),
                       icon: const Icon(
                         Icons.star_outline,
@@ -318,7 +321,7 @@ class _FacilityPageState extends State<FacilityPage> {
                         ),
                       ),
                       TextButton(
-                        key: const Key("submit-review-button"),
+                          key: const Key("submit-review-button"),
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.white,
                             backgroundColor: Colors.blue,

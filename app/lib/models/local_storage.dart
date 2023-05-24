@@ -55,8 +55,6 @@ class DatabaseHelper {
   static Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
 
-    // await deleteDatabase(join(path, 'database.db'));
-
     List<String> idFields = [];
     for (int i = 1; i <= VisitedPlaces.MAX_PLACES; i++) {
       idFields.add('id$i TEXT');

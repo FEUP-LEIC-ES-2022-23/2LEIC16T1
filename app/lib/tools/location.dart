@@ -1,7 +1,6 @@
 import 'package:location/location.dart';
 
-Future<LocationData?> getLocation(Location location) async{
-
+Future<LocationData?> getLocation(Location location) async {
   bool _serviceEnabled;
   PermissionStatus _permissionGranted;
 

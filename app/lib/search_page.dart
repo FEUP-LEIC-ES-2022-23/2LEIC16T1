@@ -83,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     .then((_) => setState(() {}));
               }),
           title: GestureDetector(
-            key: Key("search bar"),
+            key: const Key("search bar"),
             onTap: () {
               showSearch(
                 context: context,
@@ -199,7 +199,7 @@ class CustomSearch extends SearchDelegate {
         icon: const Icon(Icons.clear),
       ),
       IconButton(
-          key: Key('filter-icon'),
+          key: const Key('filter-icon'),
           onPressed: () {
             editSearchSettings(context);
           },
@@ -209,7 +209,7 @@ class CustomSearch extends SearchDelegate {
           showResults(context);
         },
         child: IconButton(
-            key: Key('search-icon'), // set the key property
+            key: const Key('search-icon'), // set the key property
             icon: const Icon(Icons.search),
             onPressed: () {
               showResults(context);
@@ -243,8 +243,8 @@ class CustomSearch extends SearchDelegate {
         if (index == 0) {
           // The first item is the button
           return ListTile(
-            leading: Icon(Icons.location_on),
-            title: Text('Get Location'),
+            leading: const Icon(Icons.location_on),
+            title: const Text('Get Location'),
             onTap: () async {
               await getSelfCoordinates();
             },
@@ -292,7 +292,7 @@ class CustomSearch extends SearchDelegate {
             return Column(
               children: [
                 Expanded(
-                  key: Key("results-map"),
+                  key: const Key("results-map"),
                   child: MapScreen(
                       showMap: true,
                       coordinates: snapshot.data,
@@ -308,7 +308,7 @@ class CustomSearch extends SearchDelegate {
                       }
 
                       var listTile = ListTile(
-                          key: Key("results-list"),
+                          key: const Key("results-list"),
                           title: Text(snapshot.data[index].first.first),
                           onTap: () {
                             showDialog(
@@ -426,7 +426,7 @@ class CustomSearch extends SearchDelegate {
                       ),
                       ElevatedButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        key: Key('save button'),
+                        key: const Key('save button'),
                         child: const Text(
                           "Save",
                           style: TextStyle(fontSize: 17, color: Colors.white),
